@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:grow_app/models/slider.dart';
-import 'package:grow_app/screens/onboarding.dart';
-import 'package:grow_app/screens/signin.dart';
+import 'package:grow_app/screens/onboardings/onboardingScreen1.dart';
+import 'package:grow_app/screens/autheciation/signin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 int initScreen = 0;
@@ -31,7 +31,7 @@ class GrowApp extends StatelessWidget {
       initialRoute:
           initScreen == 0 || initScreen == null ? 'onboard' : 'signin',
       routes: {
-        'onboard': (context) => onboardingScreen(),
+        'onboard': (context) => onboardingScreen1(),
         'signin': (context) => signinScreen(),
       },
     );

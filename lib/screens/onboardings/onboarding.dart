@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grow_app/models/slider.dart';
-import 'package:grow_app/screens/signin.dart';
+import 'package:grow_app/screens/autheciation/signin.dart';
 
 class onboardingScreen extends StatefulWidget {
   @override
