@@ -137,6 +137,27 @@ class onboardingScreen1 extends StatelessWidget {
                       )),
                 ),
               ),
+              SizedBox(height: 32),
+              Container(
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  //action navigate (skip) to onboarding screen 3
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => onboardingScreen3(),
+                      ),
+                    );
+                  },
+                  child: AnimatedContainer(
+                    alignment: Alignment.center,
+                    duration: Duration(milliseconds: 300),
+                    child:
+                        SvgPicture.asset(outlineClose, height: 40, width: 40),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

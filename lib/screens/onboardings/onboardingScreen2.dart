@@ -37,45 +37,47 @@ class onboardingScreen2 extends StatelessWidget {
             children: [
               SizedBox(height: 60),
               Container(
-                alignment: Alignment.topRight,
-                child: Image.asset(obHandcalendar, scale: 1),
-              ),
-              SizedBox(height: 47),
-              Container(
-                padding: EdgeInsets.only(right: padding32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'Manage Your Schedule',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: title32,
-                            color: white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.right,
-                        )),
-                    SizedBox(height: 8),
-                    Container(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'We’re more than a application.' +
-                              '\n' +
-                              'Customize Grow to work the way you do.',
-                          style: TextStyle(
+                  decoration: BoxDecoration(
+                    color: white,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Positioned(
+                        top: 100,
+                        child: Image.asset(obTargetdynamic, scale: 1),
+                      ),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Build the target' + '\n' + 'you want',
+                            style: TextStyle(
                               fontFamily: 'Poppins',
-                              fontSize: content16,
-                              color: white,
-                              fontWeight: FontWeight.w400,
-                              height: 1.6),
-                          textAlign: TextAlign.right,
-                        )),
-                  ],
-                ),
-              ),
+                              fontSize: title32,
+                              color: black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.left,
+                          )),
+                      SizedBox(height: 8),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Build the target you want.' +
+                                '\n' +
+                                'Customize Grow to make it work' +
+                                '\n' +
+                                'the way you want it to.',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: content16,
+                                color: black,
+                                fontWeight: FontWeight.w400,
+                                height: 1.6),
+                            textAlign: TextAlign.left,
+                          )),
+                    ],
+                  )),
               SizedBox(height: 43),
               Container(
                 alignment: Alignment.center,
@@ -128,13 +130,34 @@ class onboardingScreen2 extends StatelessWidget {
                         ],
                       ),
                       child: Text(
-                        "Get started",
+                        "Next",
                         style: TextStyle(
                             color: white,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                             fontSize: textButton),
                       )),
+                ),
+              ),
+              SizedBox(height: 32),
+              Container(
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  //action navigate (skip) to onboarding screen 3
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => onboardingScreen3(),
+                      ),
+                    );
+                  },
+                  child: AnimatedContainer(
+                    alignment: Alignment.center,
+                    duration: Duration(milliseconds: 300),
+                    child:
+                        SvgPicture.asset(outlineClose, height: 40, width: 40),
+                  ),
                 ),
               ),
             ],

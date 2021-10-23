@@ -8,3 +8,5 @@ const background = 'assets/images/background/background.png';
 
 //onboarding images
 const obHandcalendar = 'assets/images/onboarding/hand_calendar.png';
+const obTargetdynamic = 'assets/images/onboarding/target_dynamic.png';
+const obDocumentfile = 'assets/images/onboarding/document_file.png';
