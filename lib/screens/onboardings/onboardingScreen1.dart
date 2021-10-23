@@ -42,7 +42,7 @@ class onboardingScreen1 extends StatelessWidget {
               ),
               SizedBox(height: 47),
               Container(
-                padding: EdgeInsets.only(right: padding32),
+                padding: EdgeInsets.only(right: 32),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-//default app padding
+//set app padding for this app
 
 const double appPadding = 20.0;
-const double padding32 = 32.0;
+
+//set app margin for this app
+
+const double appMargin = 20.0;

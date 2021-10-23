@@ -9,7 +9,6 @@ import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
 //import screens
-import 'package:grow_app/screens/onboardings/onboardingScreen1.dart';
 import 'package:grow_app/screens/onboardings/onboardingScreen2.dart';
 import 'package:grow_app/screens/autheciation/signin.dart';
 
@@ -30,52 +29,83 @@ class onboardingScreen3 extends StatelessWidget {
           statusBarColor: Colors.transparent),
       child: Scaffold(
         body: Container(
+          padding: EdgeInsets.all(38),
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(background), fit: BoxFit.cover),
           ),
           child: Column(
             children: [
-              SizedBox(height: 60),
-              Container(
-                alignment: Alignment.topRight,
-                child: Image.asset(obHandcalendar, scale: 1),
-              ),
-              SizedBox(height: 47),
-              Container(
-                padding: EdgeInsets.only(right: padding32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'Manage Your Schedule',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: title32,
-                            color: white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.right,
-                        )),
-                    SizedBox(height: 8),
-                    Container(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'We’re more than a application.' +
-                              '\n' +
-                              'Customize Grow to work the way you do.',
-                          style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: content16,
+              Stack(
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 140),
+                        width: 240,
+                        height: 372,
+                        decoration: BoxDecoration(
+                            color: white.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 122),
+                        width: 270,
+                        height: 372,
+                        decoration: BoxDecoration(
+                            color: white.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
+                      Container(
+                          padding:
+                              EdgeInsets.only(top: 142, left: 19, right: 19),
+                          margin: EdgeInsets.only(top: 104),
+                          height: 372,
+                          decoration: BoxDecoration(
                               color: white,
-                              fontWeight: FontWeight.w400,
-                              height: 1.6),
-                          textAlign: TextAlign.right,
-                        )),
-                  ],
-                ),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Build the target' + '\n' + 'you want',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: title32,
+                                      color: black,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  )),
+                              SizedBox(height: 8),
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Build the target you want.' +
+                                        '\n' +
+                                        'Customize Grow to make it work' +
+                                        '\n' +
+                                        'the way you want it to.',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: content16,
+                                        color: black,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.6),
+                                    textAlign: TextAlign.left,
+                                  )),
+                            ],
+                          )),
+                    ],
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Image.asset(obTargetdynamic, scale: 1),
+                  ),
+                ],
               ),
               SizedBox(height: 43),
               Container(
@@ -100,7 +130,7 @@ class onboardingScreen3 extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => onboardingScreen2(),
+                        builder: (context) => signinScreen(),
                       ),
                     );
                   },
@@ -129,7 +159,7 @@ class onboardingScreen3 extends StatelessWidget {
                         ],
                       ),
                       child: Text(
-                        "Get started",
+                        "Next",
                         style: TextStyle(
                             color: white,
                             fontFamily: 'Poppins',
@@ -138,6 +168,7 @@ class onboardingScreen3 extends StatelessWidget {
                       )),
                 ),
               ),
+              SizedBox(height: 32),
             ],
           ),
         ),
