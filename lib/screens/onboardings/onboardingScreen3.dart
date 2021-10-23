@@ -9,15 +9,16 @@ import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
 //import screens
+import 'package:grow_app/screens/onboardings/onboardingScreen1.dart';
 import 'package:grow_app/screens/onboardings/onboardingScreen2.dart';
-import 'package:grow_app/screens/onboardings/onboardingScreen3.dart';
+import 'package:grow_app/screens/autheciation/signin.dart';
 
 //import others
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class onboardingScreen1 extends StatelessWidget {
-  const onboardingScreen1({Key? key}) : super(key: key);
+class onboardingScreen3 extends StatelessWidget {
+  const onboardingScreen3({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -82,11 +83,11 @@ class onboardingScreen1 extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    SvgPicture.asset(obCircledot, height: 8, width: 8),
+                    SizedBox(width: 8),
+                    SvgPicture.asset(obCircledot, height: 8, width: 8),
+                    SizedBox(width: 8),
                     SvgPicture.asset(obRectangledot, height: 8, width: 30),
-                    SizedBox(width: 8),
-                    SvgPicture.asset(obCircledot, height: 8, width: 8),
-                    SizedBox(width: 8),
-                    SvgPicture.asset(obCircledot, height: 8, width: 8),
                   ],
                 ),
               ),
