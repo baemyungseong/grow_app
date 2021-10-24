@@ -57,14 +57,13 @@ class onboardingScreen1 extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.right,
-                        )),
+                        )
+                    ),
                     SizedBox(height: 8),
                     Container(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          'We’re more than a application.' +
-                              '\n' +
-                              'Customize Grow to work the way you do.',
+                          'We’re more than a application.' + '\n' + 'Customize Grow to work the way you do.',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: content16,
@@ -72,7 +71,8 @@ class onboardingScreen1 extends StatelessWidget {
                               fontWeight: FontWeight.w400,
                               height: 1.6),
                           textAlign: TextAlign.right,
-                        )),
+                        )
+                    ),
                   ],
                 ),
               ),
@@ -82,11 +82,60 @@ class onboardingScreen1 extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(obRectangledot, height: 8, width: 30),
+                    GestureDetector(
+                      child: AnimatedContainer(
+                          alignment: Alignment.center,
+                          duration: Duration(milliseconds: 300),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: white.withOpacity(0.1),
+                                spreadRadius: 0,
+                                blurRadius: 10,
+                                offset: Offset(1, 1), // changes position of shadow
+                              ),
+                              BoxShadow(
+                                color: white.withOpacity(0.3),
+                                blurRadius: 5,
+                                offset: Offset(3, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: SvgPicture.asset(obRectangledot, height: 8, width: 30),
+                      ),
+                    ),
                     SizedBox(width: 8),
-                    SvgPicture.asset(obCircledot, height: 8, width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => onboardingScreen2(),
+                          ),
+                        );
+                      },
+                      child: AnimatedContainer(
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        child: SvgPicture.asset(obCircledot, height: 8, width: 8),
+                      ),
+                    ),
                     SizedBox(width: 8),
-                    SvgPicture.asset(obCircledot, height: 8, width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => onboardingScreen3(),
+                          ),
+                        );
+                      },
+                      child: AnimatedContainer(
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        child: SvgPicture.asset(obCircledot, height: 8, width: 8),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -134,7 +183,8 @@ class onboardingScreen1 extends StatelessWidget {
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                             fontSize: textButton),
-                      )),
+                      )
+                  ),
                 ),
               ),
               SizedBox(height: 32),
@@ -153,8 +203,7 @@ class onboardingScreen1 extends StatelessWidget {
                   child: AnimatedContainer(
                     alignment: Alignment.center,
                     duration: Duration(milliseconds: 300),
-                    child:
-                        SvgPicture.asset(outlineClose, height: 40, width: 40),
+                    child: SvgPicture.asset(outlineClose, height: 40, width: 40),
                   ),
                 ),
               ),

@@ -9,6 +9,7 @@ import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
 //import screens
+import 'package:grow_app/screens/onboardings/onboardingScreen1.dart';
 import 'package:grow_app/screens/onboardings/onboardingScreen2.dart';
 import 'package:grow_app/screens/autheciation/signin.dart';
 
@@ -36,88 +37,105 @@ class onboardingScreen3 extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Stack(
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 140),
-                        width: 240,
-                        height: 372,
-                        decoration: BoxDecoration(
-                            color: white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(30)),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 122),
-                        width: 270,
-                        height: 372,
-                        decoration: BoxDecoration(
-                            color: white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(30)),
-                      ),
-                      Container(
-                          padding:
-                              EdgeInsets.only(top: 142, left: 19, right: 19),
-                          margin: EdgeInsets.only(top: 104),
-                          height: 372,
-                          decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Build the target' + '\n' + 'you want',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: title32,
-                                      color: black,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  )),
-                              SizedBox(height: 8),
-                              Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Build the target you want.' +
-                                        '\n' +
-                                        'Customize Grow to make it work' +
-                                        '\n' +
-                                        'the way you want it to.',
-                                    style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: content16,
-                                        color: black,
-                                        fontWeight: FontWeight.w400,
-                                        height: 1.6),
-                                    textAlign: TextAlign.left,
-                                  )),
-                            ],
-                          )),
-                    ],
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Image.asset(obTargetdynamic, scale: 1),
-                  ),
-                ],
+              SizedBox(height: 48),
+              Container(
+                alignment: Alignment.center,
+                child: Image.asset(obDocumentfile, scale: 1),
               ),
-              SizedBox(height: 43),
+              SizedBox(height: 32),
+              Container(
+                // padding: EdgeInsets.only(right: 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Team up without' + '\n' + 'the chaos',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: title32,
+                            color: white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        )),
+                    SizedBox(height: 8),
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Team up without the chaos.' + '\n' + 'Connect your teams, projects, and' + '\n' + 'docs in Grow - so you can bust silos' + '\n' + 'and move as one.',
+                          style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: content16,
+                              color: white,
+                              fontWeight: FontWeight.w400,
+                              height: 1.6),
+                          textAlign: TextAlign.center,
+                        )),
+                  ],
+                ),
+              ),
+              SizedBox(height: 55),
               Container(
                 alignment: Alignment.center,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(obCircledot, height: 8, width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => onboardingScreen1(),
+                          ),
+                        );
+                      },
+                      child: AnimatedContainer(
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        child: SvgPicture.asset(obCircledot, height: 8, width: 8),
+                      ),
+                    ),
                     SizedBox(width: 8),
-                    SvgPicture.asset(obCircledot, height: 8, width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => onboardingScreen2(),
+                          ),
+                        );
+                      },
+                      child: AnimatedContainer(
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        child: SvgPicture.asset(obCircledot, height: 8, width: 8),
+                      ),
+                    ),
                     SizedBox(width: 8),
-                    SvgPicture.asset(obRectangledot, height: 8, width: 30),
+                    GestureDetector(
+                      child: AnimatedContainer(
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: white.withOpacity(0.1),
+                              spreadRadius: 0,
+                              blurRadius: 10,
+                              offset: Offset(1, 1), // changes position of shadow
+                            ),
+                            BoxShadow(
+                              color: white.withOpacity(0.3),
+                              blurRadius: 5,
+                              offset: Offset(3, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: SvgPicture.asset(obRectangledot, height: 8, width: 30),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -159,7 +177,7 @@ class onboardingScreen3 extends StatelessWidget {
                         ],
                       ),
                       child: Text(
-                        "Next",
+                        "Close",
                         style: TextStyle(
                             color: white,
                             fontFamily: 'Poppins',

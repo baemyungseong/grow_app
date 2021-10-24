@@ -47,7 +47,8 @@ class onboardingScreen2 extends StatelessWidget {
                         height: 372,
                         decoration: BoxDecoration(
                             color: white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(30)),
+                            borderRadius: BorderRadius.circular(30)
+                        ),
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 122),
@@ -55,7 +56,8 @@ class onboardingScreen2 extends StatelessWidget {
                         height: 372,
                         decoration: BoxDecoration(
                             color: white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(30)),
+                            borderRadius: BorderRadius.circular(30)
+                        ),
                       ),
                       Container(
                           padding:
@@ -64,7 +66,8 @@ class onboardingScreen2 extends StatelessWidget {
                           height: 372,
                           decoration: BoxDecoration(
                               color: white,
-                              borderRadius: BorderRadius.circular(30)),
+                              borderRadius: BorderRadius.circular(30)
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -79,16 +82,13 @@ class onboardingScreen2 extends StatelessWidget {
                                       fontWeight: FontWeight.w600,
                                     ),
                                     textAlign: TextAlign.left,
-                                  )),
+                                  )
+                              ),
                               SizedBox(height: 8),
                               Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Build the target you want.' +
-                                        '\n' +
-                                        'Customize Grow to make it work' +
-                                        '\n' +
-                                        'the way you want it to.',
+                                    'Build the target you want.' + '\n' + 'Customize Grow to make it work' + '\n' + 'the way you want it to.',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: content16,
@@ -96,9 +96,11 @@ class onboardingScreen2 extends StatelessWidget {
                                         fontWeight: FontWeight.w400,
                                         height: 1.6),
                                     textAlign: TextAlign.left,
-                                  )),
+                                  )
+                              ),
                             ],
-                          )),
+                          )
+                      ),
                     ],
                   ),
                   Container(
@@ -113,11 +115,60 @@ class onboardingScreen2 extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(obCircledot, height: 8, width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => onboardingScreen1(),
+                          ),
+                        );
+                      },
+                      child: AnimatedContainer(
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        child: SvgPicture.asset(obCircledot, height: 8, width: 8),
+                      ),
+                    ),
                     SizedBox(width: 8),
-                    SvgPicture.asset(obRectangledot, height: 8, width: 30),
+                    GestureDetector(
+                      child: AnimatedContainer(
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: white.withOpacity(0.1),
+                              spreadRadius: 0,
+                              blurRadius: 10,
+                              offset: Offset(1, 1), // changes position of shadow
+                            ),
+                            BoxShadow(
+                              color: white.withOpacity(0.3),
+                              blurRadius: 5,
+                              offset: Offset(3, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: SvgPicture.asset(obRectangledot, height: 8, width: 30),
+                      ),
+                    ),
                     SizedBox(width: 8),
-                    SvgPicture.asset(obCircledot, height: 8, width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => onboardingScreen3(),
+                          ),
+                        );
+                      },
+                      child: AnimatedContainer(
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        child: SvgPicture.asset(obCircledot, height: 8, width: 8),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -165,7 +216,8 @@ class onboardingScreen2 extends StatelessWidget {
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                             fontSize: textButton),
-                      )),
+                      )
+                  ),
                 ),
               ),
               SizedBox(height: 32),
