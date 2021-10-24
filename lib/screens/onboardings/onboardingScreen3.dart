@@ -12,8 +12,8 @@ import 'package:grow_app/constants/others.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class onboardingScreen1 extends StatelessWidget {
-  const onboardingScreen1({Key? key}) : super(key: key);
+class onboardingScreen3 extends StatelessWidget {
+  const onboardingScreen3({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,50 +25,49 @@ class onboardingScreen1 extends StatelessWidget {
           statusBarColor: Colors.transparent),
       child: Scaffold(
         body: Container(
+          padding: EdgeInsets.all(38),
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(background), fit: BoxFit.cover),
           ),
           child: Column(
             children: [
-              SizedBox(height: 60),
+              SizedBox(height: 48),
               Container(
-                alignment: Alignment.topRight,
-                child: Image.asset(obHandcalendar, scale: 1),
+                alignment: Alignment.center,
+                child: Image.asset(obDocumentfile, scale: 1),
               ),
-              SizedBox(height: 47),
+              SizedBox(height: 32),
               Container(
-                padding: EdgeInsets.only(right: 32),
+                // padding: EdgeInsets.only(right: 32),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.center,
                         child: Text(
-                          'Manage Your Schedule',
+                          'Team up without' + '\n' + 'the chaos',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: title32,
                             color: white,
                             fontWeight: FontWeight.w600,
                           ),
-                          textAlign: TextAlign.right,
-                        )
-                    ),
+                          textAlign: TextAlign.center,
+                        )),
                     SizedBox(height: 8),
                     Container(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.center,
                         child: Text(
-                          'We’re more than a application.' + '\n' + 'Customize Grow to work the way you do.',
+                          'Team up without the chaos.' + '\n' + 'Connect your teams, projects, and' + '\n' + 'docs in Grow - so you can bust silos' + '\n' + 'and move as one.',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: content16,
                               color: white,
                               fontWeight: FontWeight.w400,
                               height: 1.6),
-                          textAlign: TextAlign.right,
-                        )
-                    ),
+                          textAlign: TextAlign.center,
+                        )),
                   ],
                 ),
               ),

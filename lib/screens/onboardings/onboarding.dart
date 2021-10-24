@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:grow_app/models/slider.dart';
+import 'package:flutter/cupertino.dart';
+
+//import constants
+import 'package:grow_app/constants/colors.dart';
+import 'package:grow_app/constants/fonts.dart';
+import 'package:grow_app/constants/images.dart';
+import 'package:grow_app/constants/icons.dart';
+import 'package:grow_app/constants/others.dart';
+
+//import screens
+import 'package:grow_app/screens/onboardings/onboardingScreen1.dart';
+import 'package:grow_app/screens/onboardings/onboardingScreen2.dart';
+import 'package:grow_app/screens/onboardings/onboardingScreen3.dart';
 import 'package:grow_app/screens/autheciation/signin.dart';
+
+//import others
+import 'package:flutter_svg/flutter_svg.dart';
 
 class onboardingScreen extends StatefulWidget {
   @override
@@ -12,21 +27,9 @@ class _OnboardingState extends State<onboardingScreen> {
   PageController _controller = PageController();
 
   List<Widget> _pages = [
-    SliderPage(
-        title: "Live with moments",
-        description:
-            "Post photos with friends and family to be immersed in those wonderful moments!",
-        image: 'assets/images/onboarding1.png'),
-    SliderPage(
-        title: "Make New Friends",
-        description:
-            "Exchange and make many new people into your friend groups.",
-        image: 'assets/images/onboarding2.png'),
-    SliderPage(
-        title: "Increase Intimacy",
-        description:
-            "Let's increase feelings together with friends, relatives and ourselves.",
-        image: 'assets/images/onboarding3.png'),
+    onboardingScreen1(),
+    onboardingScreen2(),
+    onboardingScreen3()
   ];
 
   _onchanged(int index) {
@@ -49,101 +52,168 @@ class _OnboardingState extends State<onboardingScreen> {
               return _pages[index];
             },
           ),
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            alignment: Alignment.topRight,
-            padding: EdgeInsets.fromLTRB(0, 75, 40, 0),
-            child: (_currentPage != _pages.length - 1)
-                ? GestureDetector(
-                    onTap: () {
-                      _controller.animateToPage(_pages.length - 1,
-                          duration: Duration(milliseconds: 400),
-                          curve: Curves.linear);
-                    },
-                    child: Text(
-                      "Skip",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'MontserratMedium',
-                          fontSize: 17),
-                    ),
-                  )
-                : Container(
-                    child: Text(""),
-                  ),
-          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
+            children: [
+              //dot
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List<Widget>.generate(_pages.length, (int index) {
                     return AnimatedContainer(
                         duration: Duration(milliseconds: 300),
-                        height: 10,
-                        width: (index == _currentPage) ? 30 : 10,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 30),
-                        decoration: BoxDecoration(
+                        height: 8,
+                        width: (index == _currentPage) ? 30 : 8,
+                        margin: EdgeInsets.symmetric(horizontal: 4),
+                        decoration: (index == _currentPage) ? BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: (index == _currentPage)
-                                ? Colors.blue
-                                : Colors.blue.withOpacity(0.5)));
-                  })),
-              InkWell(
-                child: (_currentPage == (_pages.length - 1))
-                    ? GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => signinScreen(),
-                            ),
-                          );
-                        },
-                        child: AnimatedContainer(
+                            color: white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: white.withOpacity(0.1),
+                                spreadRadius: 0,
+                                blurRadius: 10,
+                                offset: Offset(1, 1), // changes position of shadow
+                              ),
+                              BoxShadow(
+                                color: white.withOpacity(0.3),
+                                blurRadius: 5,
+                                offset: Offset(3, 3), // changes position of shadow
+                              ),
+                            ]
+                        ) : 
+                        BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: greyUltralight,
+                        )
+                    );
+                  }
+                )
+              ),
+              SizedBox(height: 32),
+
+              //button navigation
+              Container(
+                alignment: Alignment.center,
+                  child: (_currentPage == (_pages.length - 1))
+                      ? GestureDetector(
+                          //action navigate to signin screen
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => signinScreen(),
+                              ),
+                            );
+                          },
+                          child: AnimatedContainer(
                             alignment: Alignment.center,
                             duration: Duration(milliseconds: 300),
-                            height: 70,
-                            width: 200,
+                            height: 54,
+                            width: 260,
                             decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(35)),
+                              color: purpleDark,
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: white.withOpacity(0.1),
+                                  spreadRadius: 0,
+                                  blurRadius: 64,
+                                  offset: Offset(15, 15), // changes position of shadow
+                                ),
+                                BoxShadow(
+                                  color: white.withOpacity(0.2),
+                                  spreadRadius: 0,
+                                  blurRadius: 20,
+                                  offset: Offset(8, 8), // changes position of shadow
+                                ),
+                              ],
+                            ),
                             child: Text(
-                              "Get Started!",
+                              "Close",
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'MontserratSemiBold',
-                                  fontSize: 20),
-                            )),
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          _controller.nextPage(
-                              duration: Duration(milliseconds: 800),
-                              curve: Curves.easeInOutQuint);
-                        },
-                        child: AnimatedContainer(
-                          alignment: Alignment.center,
-                          duration: Duration(milliseconds: 300),
-                          height: 70,
-                          width: 75,
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(35)),
-                          child: Icon(
-                            Icons.navigate_next,
-                            size: 50,
-                            color: Colors.white,
+                                  color: white,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: textButton),
+                            ),
                           ),
-                        )),
+                        ) : 
+                        GestureDetector(
+                          //action navigate to next onboarding screen
+                          onTap: () {
+                            _controller.nextPage(
+                                duration: Duration(milliseconds: 800),
+                                curve: Curves.easeInOutQuint);
+                          },
+                          child: AnimatedContainer(
+                              alignment: Alignment.center,
+                              duration: Duration(milliseconds: 300),
+                              height: 54,
+                              width: 260,
+                              decoration: BoxDecoration(
+                                color: purpleDark,
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: white.withOpacity(0.1),
+                                    spreadRadius: 0,
+                                    blurRadius: 64,
+                                    offset: Offset(15, 15), // changes position of shadow
+                                  ),
+                                  BoxShadow(
+                                    color: white.withOpacity(0.2),
+                                    spreadRadius: 0,
+                                    blurRadius: 20,
+                                    offset: Offset(8, 8), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: (_currentPage == 0)
+                              ? Text(
+                                  "Get started",
+                                  style: TextStyle(
+                                          color: white,
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: textButton
+                                  ),
+                              )
+                              : Text(
+                                  "Next",
+                                  style: TextStyle(
+                                          color: white,
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: textButton
+                                  ),
+                              )
+                          ),
+                        )
               ),
-              SizedBox(
-                height: 85,
-              )
+              SizedBox(height: 32),
+
+              //button close
+              Container(
+                alignment: Alignment.topCenter,
+                child: (_currentPage != _pages.length - 1)
+                    ? GestureDetector(
+                        onTap: () {
+                          _controller.animateToPage(_pages.length - 1,
+                              duration: Duration(milliseconds: 400),
+                              curve: Curves.linear);
+                        },
+                        child: Container(
+                          child: SvgPicture.asset(outlineClose,
+                              height: 40, width: 40),
+                        ),
+                      )
+                    : Container(
+                        child: Text(""),
+                      ),
+              ),
+              SizedBox(height: (_currentPage == _pages.length - 1) ? 38 : 53),
             ],
-          ),
+          )
         ],
       ),
     );
