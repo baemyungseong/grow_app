@@ -14,3 +14,4 @@ const Color purpleLight = Color(0xFFF1E9F6);
 
 const Color greyDark = Color(0xFF6F7175);
 const Color greyLight = Color(0xFFAAAAAA);
+const Color greyUltralight = Color(0xFFC4C4C4);

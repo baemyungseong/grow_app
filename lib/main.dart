@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:grow_app/models/slider.dart';
-import 'package:grow_app/screens/onboardings/onboardingScreen1.dart';
+
+//import screens
+import 'package:grow_app/screens/onboardings/onboarding.dart';
 import 'package:grow_app/screens/autheciation/signin.dart';
+
+//import others
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -12,7 +15,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   initScreen = (preferences.getInt('initScreen') ?? 0);
-  await preferences.setInt('initScreen', 0);
+  await preferences.setInt('initScreen', 1);
   runApp(GrowApp());
 }
 
@@ -30,10 +33,10 @@ class GrowApp extends StatelessWidget {
         accentColor: Colors.white,
       ),
       initialRoute:
-          initScreen == 0 || initScreen == null ? 'onboard' : 'signin',
+          initScreen == 0 || initScreen == null ? 'onboarding' : 'signin',
       routes: {
-        'onboard': (context) => onboardingScreen1(),
-        'signin': (context) => onboardingScreen1(),
+        'onboarding': (context) => onboardingScreen(),
+        'signin': (context) => signinScreen(),
       },
     );
   }
