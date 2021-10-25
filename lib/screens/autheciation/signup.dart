@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:grow_app/constants/images.dart';
-import 'signin.dart';
 
-class SignUpScreen extends StatefulWidget {
+//import constants
+import 'package:grow_app/constants/colors.dart';
+import 'package:grow_app/constants/fonts.dart';
+import 'package:grow_app/constants/images.dart';
+import 'package:grow_app/constants/icons.dart';
+import 'package:grow_app/constants/others.dart';
+
+//import screens
+import 'package:grow_app/screens/autheciation/signin.dart';
+
+//import others
+import 'package:flutter/services.dart';
+import 'package:blur/blur.dart';
+
+class SignupScreen extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _SignUpPageState extends State<SignUpScreen> {
+class _SignupPageState extends State<SignupScreen> {
   final formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -47,7 +58,7 @@ class _SignUpPageState extends State<SignUpScreen> {
                       SizedBox(width: 15),
                       Container(
                         alignment: Alignment.topRight,
-                        child: Image(image: AssetImage(suExciting)),
+                        child: Image(image: AssetImage(atPhoneExciting)),
                       ),
                     ],
                   ),
@@ -219,8 +230,8 @@ class _SignUpPageState extends State<SignUpScreen> {
                                   width: 50,
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
-                                          image: AssetImage(suGoogle)),
-                                      borderRadius: BorderRadius.circular(35)),
+                                          image: AssetImage(googleLogoIcon)),
+                                  ),
                                 ),
                               ),
                             ),
@@ -234,8 +245,8 @@ class _SignUpPageState extends State<SignUpScreen> {
                                   width: 50,
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
-                                          image: AssetImage(suFacebook)),
-                                      borderRadius: BorderRadius.circular(35)),
+                                          image: AssetImage(facebookLogoIcon)),
+                                  ),
                                 ),
                               ),
                             ),
@@ -258,10 +269,11 @@ class _SignUpPageState extends State<SignUpScreen> {
                             Container(
                               child: GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
+                                    Navigator.pop(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => signinScreen()),
+                                        builder: (context) => signinScreen(),
+                                      ),
                                     );
                                   },
                                   child: Text(
@@ -275,24 +287,21 @@ class _SignUpPageState extends State<SignUpScreen> {
                             )
                           ],
                         ),
-                        SizedBox(height: 20),
-                        Container(
-                            width: 134,
-                            height: 5,
-                            decoration: BoxDecoration(
-                                color: Color(0xffACB8C2),
-                                borderRadius: BorderRadius.circular(100))),
-                      ]))
-                ]))));
+                      ]
+                      )
+                  )
+                ]
+                )
+            )
+        )
+    );
   }
 
+  //Create function
   void _togglePasswordSignUp() {}
-
   void _activeCheckAccept(bool? value) {}
+
+  controlSignUpWithFacebook() {}
+  controlSignUpWithGoogle() {}
+  controlSignUp() {}
 }
-
-controlSignUpWithFacebook() {}
-
-controlSignUpWithGoogle() {}
-
-controlSignUp() {}

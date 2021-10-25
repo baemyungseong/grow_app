@@ -6,7 +6,5 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 //general
 const outlineClose = 'assets/icons/general/outline_close.svg';
-
-//onboarding icons
-const obRectangledot = 'assets/icons/onboarding/rectangle_dot.svg';
-const obCircledot = 'assets/icons/onboarding/circle_dot.svg';
+const googleLogoIcon = 'assets/icons/authentication/google.png';
+const facebookLogoIcon = 'assets/icons/authentication/facebook.png';

@@ -13,13 +13,6 @@ const obDocumentFile = 'assets/images/onboarding/document_file.png';
 
 //authentication images
 const atCheckPerspective = 'assets/images/authentication/check_perspective.png';
-
-const siSaly = 'assets/images/login/saly.png';
-const siGoogle = 'assets/images/login/Google.png';
-const siFacebook = 'assets/images/login/Facebook.png';
-
-const suGoogle = 'assets/images/signup/Google.png';
-const suFacebook = 'assets/images/signup/Facebook.png';
-const suExciting = 'assets/images/signup/Exciting.png';
-
-const rpSaly38 = 'assets/images/repassword/Saly38.png';
+const atSalySayhi = 'assets/images/authentication/saly_sayhi.png';
+const atSalyWorking = 'assets/images/authentication/saly_working.png';
+const atPhoneExciting = 'assets/images/authentication/phone_exciting.png';

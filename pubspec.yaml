@@ -71,14 +71,11 @@ flutter:
     - assets/images/
     - assets/images/authentication/
     - assets/images/background/
-    - assets/images/login/
     - assets/images/logo/
     - assets/images/onboarding/
-    - assets/images/repassword/
-    - assets/images/signup/
     
     - assets/icons/
-    - assets/icons/onboarding/
+    - assets/icons/authentication/
     - assets/icons/general/
 
   fonts:

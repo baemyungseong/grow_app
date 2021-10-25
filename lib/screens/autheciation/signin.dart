@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+
+//import constants
+import 'package:grow_app/constants/colors.dart';
+import 'package:grow_app/constants/fonts.dart';
+import 'package:grow_app/constants/images.dart';
+import 'package:grow_app/constants/icons.dart';
+import 'package:grow_app/constants/others.dart';
+
+//import screens
+import 'package:grow_app/screens/autheciation/signup.dart';
+import 'package:grow_app/screens/autheciation/recoveryPassword.dart';
+
+//import others
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:grow_app/constants/images.dart';
-import 'signup.dart';
-import 'recoverypassword.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:blur/blur.dart';
 
 class signinScreen extends StatefulWidget {
   _SignInPageState createState() => _SignInPageState();
@@ -24,9 +35,6 @@ class _SignInPageState extends State<signinScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
-    resizeToAvoidBottomInset:
-    false;
-
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
@@ -44,7 +52,7 @@ class _SignInPageState extends State<signinScreen> {
             children: [
               Container(
                 alignment: Alignment.topCenter,
-                child: Image(image: AssetImage(siSaly)),
+                child: Image(image: AssetImage(atSalySayhi)),
               ),
               Expanded(
                 child: Container(
@@ -174,8 +182,10 @@ class _SignInPageState extends State<signinScreen> {
                                       color: Colors.white,
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 18),
-                                )),
+                                      fontSize: 18
+                                  ),
+                                )
+                            ),
                           ),
                         ),
                         SizedBox(height: 35),
@@ -203,8 +213,8 @@ class _SignInPageState extends State<signinScreen> {
                                   width: 50,
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
-                                          image: AssetImage(siGoogle)),
-                                      borderRadius: BorderRadius.circular(35)),
+                                          image: AssetImage(googleLogoIcon)),
+                                  ),
                                 ),
                               ),
                             ),
@@ -218,7 +228,7 @@ class _SignInPageState extends State<signinScreen> {
                                   width: 50,
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
-                                          image: AssetImage(siFacebook)),
+                                          image: AssetImage(facebookLogoIcon)),
                                       borderRadius: BorderRadius.circular(35)),
                                 ),
                               ),
@@ -245,7 +255,8 @@ class _SignInPageState extends State<signinScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => SignUpScreen()),
+                                        builder: (context) => SignupScreen(),
+                                      ),
                                     );
                                   },
                                   child: Text(
@@ -259,15 +270,9 @@ class _SignInPageState extends State<signinScreen> {
                             )
                           ],
                         ),
-                        SizedBox(height: 20),
-                        Container(
-                            width: 134,
-                            height: 5,
-                            decoration: BoxDecoration(
-                                color: Color(0xffACB8C2),
-                                borderRadius: BorderRadius.circular(100)))
                       ],
-                    )),
+                    )
+                ),
               ),
             ],
           ),
@@ -294,6 +299,7 @@ class _SignInPageState extends State<signinScreen> {
     }
   }
 
+  //Create function
   controlSignInWithFacebook() {}
   controlSignInWithGoogle() {}
 }

@@ -10,12 +10,13 @@ import 'package:grow_app/constants/others.dart';
 
 //import screens
 import 'package:grow_app/screens/autheciation/signin.dart';
+import 'package:grow_app/screens/autheciation/recoverypassword.dart';
 
 //import others
 import 'package:blur/blur.dart';
 
-class checkinEmail extends StatelessWidget {
-  const checkinEmail({Key? key}) : super(key: key);
+class checkinEmailScreen extends StatelessWidget {
+  const checkinEmailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -163,10 +164,10 @@ class checkinEmail extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pop(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => signinScreen(),
+                          builder: (context) => recoveryScreen(),
                         ),
                       );
                     },
