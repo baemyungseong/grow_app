@@ -4,9 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 //images used in this app
 
-const background = 'assets/images/background/background.png';
+const backgroundOnboarding = 'assets/images/background/background_onboarding.png';
+const backgroundAuthentication = 'assets/images/background/background_authentication.png';
 
 //onboarding images
-const obHandcalendar = 'assets/images/onboarding/hand_calendar.png';
-const obTargetdynamic = 'assets/images/onboarding/target_dynamic.png';
-const obDocumentfile = 'assets/images/onboarding/document_file.png';
+const obHandCalendar = 'assets/images/onboarding/hand_calendar.png';
+const obTargetDynamic = 'assets/images/onboarding/target_dynamic.png';
+const obDocumentFile = 'assets/images/onboarding/document_file.png';
+
+//authentication images
+const atCheckPerspective = 'assets/images/authentication/check_perspective.png';

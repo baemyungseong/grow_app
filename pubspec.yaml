@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.0.8
   flutter_svg: ^0.23.0+1
+  blur: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -43,11 +44,11 @@ flutter_native_splash:
   web: true
 
   # color: "#888888"
-  background_image: "assets/images/background/background.png"
+  background_image: "assets/images/background/background_onboarding.png"
   image: "assets/images/logo/logo_white.png"
 
   # color_dark: "#888888"
-  background_image_dark: "assets/images/background/background.png"
+  background_image_dark: "assets/images/background/background_onboarding.png"
   image_dark: "assets/images/logo/logo_white.png"
 
   android_gravity: center
@@ -70,6 +71,7 @@ flutter:
     - assets/images/background/
     - assets/images/logo/
     - assets/images/onboarding/
+    - assets/images/authentication/
     
     - assets/icons/
     - assets/icons/onboarding/

@@ -27,14 +27,14 @@ class onboardingScreen1 extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(background), fit: BoxFit.cover),
+                image: AssetImage(backgroundOnboarding), fit: BoxFit.cover),
           ),
           child: Column(
             children: [
               SizedBox(height: 60),
               Container(
                 alignment: Alignment.topRight,
-                child: Image.asset(obHandcalendar, scale: 1),
+                child: Image.asset(obHandCalendar, scale: 1),
               ),
               SizedBox(height: 47),
               Container(
