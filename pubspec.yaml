@@ -70,6 +70,9 @@ flutter:
     - assets/images/background/
     - assets/images/logo/
     - assets/images/onboarding/
+    - assets/images/login/
+    - assets/images/signup/
+    - assets/images/repassword/
     
     - assets/icons/
     - assets/icons/onboarding/

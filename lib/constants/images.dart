@@ -10,3 +10,13 @@ const background = 'assets/images/background/background.png';
 const obHandcalendar = 'assets/images/onboarding/hand_calendar.png';
 const obTargetdynamic = 'assets/images/onboarding/target_dynamic.png';
 const obDocumentfile = 'assets/images/onboarding/document_file.png';
+
+const siSaly = 'assets/images/login/saly.png';
+const siGoogle = 'assets/images/login/Google.png';
+const siFacebook = 'assets/images/login/Facebook.png';
+
+const suGoogle = 'assets/images/signup/Google.png';
+const suFacebook = 'assets/images/signup/Facebook.png';
+const suExciting = 'assets/images/signup/Exciting.png';
+
+const rpSaly38 = 'assets/images/repassword/Saly38.png';
