@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 //images used in this app
-
 const backgroundOnboarding = 'assets/images/background/background_onboarding.png';
 const backgroundAuthentication = 'assets/images/background/background_authentication.png';
 
@@ -14,3 +13,13 @@ const obDocumentFile = 'assets/images/onboarding/document_file.png';
 
 //authentication images
 const atCheckPerspective = 'assets/images/authentication/check_perspective.png';
+
+const siSaly = 'assets/images/login/saly.png';
+const siGoogle = 'assets/images/login/Google.png';
+const siFacebook = 'assets/images/login/Facebook.png';
+
+const suGoogle = 'assets/images/signup/Google.png';
+const suFacebook = 'assets/images/signup/Facebook.png';
+const suExciting = 'assets/images/signup/Exciting.png';
+
+const rpSaly38 = 'assets/images/repassword/Saly38.png';
