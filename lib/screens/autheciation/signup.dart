@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:grow_app/constants/images.dart';
+import 'signin.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -255,15 +256,23 @@ class _SignUpPageState extends State<SignUpScreen> {
                                       fontSize: 12),
                                 )),
                             Container(
-                                alignment: Alignment.topCenter,
-                                child: Text(
-                                  "Login here!",
-                                  style: TextStyle(
-                                      color: Color(0xff9857CB),
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Poppins',
-                                      fontSize: 12),
-                                )),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => signinScreen()),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Login here!",
+                                    style: TextStyle(
+                                        color: Color(0xff9857CB),
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                        fontSize: 12),
+                                  )),
+                            )
                           ],
                         ),
                         SizedBox(height: 20),

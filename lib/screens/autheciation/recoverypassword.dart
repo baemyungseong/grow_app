@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:grow_app/constants/images.dart';
+import 'signin.dart';
 
 class recoveryScreen extends StatefulWidget {
   _RePasswordPageState createState() => _RePasswordPageState();
@@ -123,31 +124,40 @@ class _RePasswordPageState extends State<recoveryScreen> {
                     child: GestureDetector(
                       onTap: () => controlRePassword(),
                       child: AnimatedContainer(
-                          alignment: Alignment.center,
-                          duration: Duration(milliseconds: 300),
-                          height: 60,
-                          width: 305,
-                          decoration: BoxDecoration(
-                              // color: Colors.white,
-                              border: Border(
-                                top: BorderSide(
-                                    width: 3, color: Color(0xff9857CB)),
-                                left: BorderSide(
-                                    width: 3, color: Color(0xff9857CB)),
-                                right: BorderSide(
-                                    width: 3, color: Color(0xff9857CB)),
-                                bottom: BorderSide(
-                                    width: 3, color: Color(0xff9857CB)),
-                              ),
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(
-                                color: Color(0xff9857CB),
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 18),
-                          )),
+                        alignment: Alignment.center,
+                        duration: Duration(milliseconds: 300),
+                        height: 60,
+                        width: 305,
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => signinScreen()),
+                              );
+                            },
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                  color: Color(0xff9857CB),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18),
+                            )),
+                        decoration: BoxDecoration(
+                            // color: Colors.white,
+                            border: Border(
+                              top: BorderSide(
+                                  width: 3, color: Color(0xff9857CB)),
+                              left: BorderSide(
+                                  width: 3, color: Color(0xff9857CB)),
+                              right: BorderSide(
+                                  width: 3, color: Color(0xff9857CB)),
+                              bottom: BorderSide(
+                                  width: 3, color: Color(0xff9857CB)),
+                            ),
+                            borderRadius: BorderRadius.circular(15)),
+                      ),
                     ),
                   ),
                 ],

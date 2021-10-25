@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:grow_app/constants/images.dart';
+import 'signup.dart';
+import 'recoverypassword.dart';
+import 'package:email_validator/email_validator.dart';
 
-class signinScreen extends StatelessWidget {
+class signinScreen extends StatefulWidget {
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<signinScreen> {
   bool isHiddenPassword = true;
+
+  final formKey = new GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+
+  late String email, password;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double widthTextField = MediaQuery.of(context).size.width - 60;
+
     resizeToAvoidBottomInset:
     false;
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
@@ -52,27 +68,37 @@ class signinScreen extends StatelessWidget {
                               )),
                         ),
                         SizedBox(height: 20),
-                        Container(
-                          width: 300,
-                          height: 50,
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xffF1E9F6)),
-                          alignment: Alignment.topLeft,
-                          // padding: EdgeInsets.only(left: 34),
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintStyle: TextStyle(
-                                fontStyle: FontStyle.normal,
-                                fontSize: 14,
-                                color: Colors.grey,
-                                fontFamily: 'Poppins'),
-                            hintText: "Enter your email",
-                          )),
+                        Form(
+                          key: formKey,
+                          child: Container(
+                            width: 300,
+                            height: 50,
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 20),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Color(0xffF1E9F6)),
+                            alignment: Alignment.topLeft,
+                            // padding: EdgeInsets.only(left: 34),
+                            child: TextFormField(
+                                controller: emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                autofillHints: [AutofillHints.email],
+                                validator: (email) => email != null &&
+                                        !EmailValidator.validate(email)
+                                    ? 'Enter a vaid email'
+                                    : null,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintStyle: TextStyle(
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                      fontFamily: 'Poppins'),
+                                  hintText: "Enter your email",
+                                )),
+                          ),
                         ),
                         SizedBox(height: 10),
                         Container(
@@ -92,7 +118,9 @@ class signinScreen extends StatelessWidget {
                                 fillColor: Colors.black,
                                 suffixIcon: InkWell(
                                     onTap: _togglePasswordView,
-                                    child: Icon(Icons.visibility)),
+                                    child: Icon(isHiddenPassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off)),
                                 border: InputBorder.none,
                                 hintText: "Enter your password",
                                 hintStyle: TextStyle(
@@ -102,15 +130,23 @@ class signinScreen extends StatelessWidget {
                               )),
                         ),
                         Container(
-                          alignment: Alignment.topRight,
-                          padding: EdgeInsets.only(top: 10, right: 50),
-                          child: Text('Recovery password',
-                              style: TextStyle(
-                                color: Color(0xff6F7175),
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              )),
-                        ),
+                            alignment: Alignment.topRight,
+                            padding: EdgeInsets.only(top: 10, right: 50),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => recoveryScreen()),
+                                );
+                              },
+                              child: Text('Recovery password',
+                                  style: TextStyle(
+                                    color: Color(0xff6F7175),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            )),
                         SizedBox(height: 30),
                         Container(
                           height: 50,
@@ -204,15 +240,23 @@ class signinScreen extends StatelessWidget {
                                       fontSize: 12),
                                 )),
                             Container(
-                                alignment: Alignment.topCenter,
-                                child: Text(
-                                  "Register here!",
-                                  style: TextStyle(
-                                      color: Color(0xff9857CB),
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Poppins',
-                                      fontSize: 12),
-                                )),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SignUpScreen()),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Register here!",
+                                    style: TextStyle(
+                                        color: Color(0xff9857CB),
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'Poppins',
+                                        fontSize: 12),
+                                  )),
+                            )
                           ],
                         ),
                         SizedBox(height: 20),
@@ -232,11 +276,24 @@ class signinScreen extends StatelessWidget {
     );
   }
 
-  void _togglePasswordView() {}
+  void _togglePasswordView() {
+    setState(() {
+      isHiddenPassword = !isHiddenPassword;
+    });
+  }
+
+  controlSignIn() {
+    final form = formKey.currentState!;
+    if (form.validate()) {
+      final email = emailController.text;
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text("Your email is $email"),
+        ));
+    }
+  }
+
+  controlSignInWithFacebook() {}
+  controlSignInWithGoogle() {}
 }
-
-controlSignInWithFacebook() {}
-
-controlSignInWithGoogle() {}
-
-controlSignIn() {}
