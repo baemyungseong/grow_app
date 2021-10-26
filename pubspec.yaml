@@ -26,11 +26,9 @@ dependencies:
   shared_preferences: ^2.0.8
   flutter_svg: ^0.23.0+1
   blur: ^3.0.0
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   email_validator: ^2.0.1
+  custom_check_box: ^0.0.4
 
 dev_dependencies:
   flutter_test:

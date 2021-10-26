@@ -116,7 +116,7 @@ class checkinEmailScreen extends StatelessWidget {
                         alignment: Alignment.center,
                         duration: Duration(milliseconds: 300),
                         height: 54,
-                        width: 268,
+                        width: 260,
                         decoration: BoxDecoration(
                           color: purpleDark,
                           borderRadius: BorderRadius.circular(15),

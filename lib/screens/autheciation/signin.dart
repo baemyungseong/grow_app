@@ -14,9 +14,9 @@ import 'package:grow_app/screens/autheciation/recoveryPassword.dart';
 
 //import others
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:blur/blur.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class signinScreen extends StatefulWidget {
   _SignInPageState createState() => _SignInPageState();
@@ -56,6 +56,7 @@ class _SignInPageState extends State<signinScreen> {
               ),
               Expanded(
                 child: Container(
+                  padding: EdgeInsets.only(left: 39, right: 39),
                     width: width,
                     decoration: BoxDecoration(
                       color: Color(0xffF5F5F5),
@@ -67,79 +68,104 @@ class _SignInPageState extends State<signinScreen> {
                       children: [
                         Container(
                           alignment: Alignment.topLeft,
-                          padding: EdgeInsets.only(top: 26, left: 34),
+                          padding: EdgeInsets.only(top: 26),
                           child: Text('Sign In to' + '\n' + 'Govern Together!',
                               style: TextStyle(
-                                fontSize: 28,
                                 fontFamily: 'Poppins',
+                                color: black,
+                                fontSize: title28,
                                 fontWeight: FontWeight.w600,
-                              )),
+                              )
+                          ),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 13),
                         Form(
                           key: formKey,
                           child: Container(
                             width: 300,
                             height: 50,
-                            margin: EdgeInsets.symmetric(vertical: 10),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
+                            margin: EdgeInsets.symmetric(vertical: 13),
+                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Color(0xffF1E9F6)),
+                                color: purpleLight
+                            ),
                             alignment: Alignment.topLeft,
-                            // padding: EdgeInsets.only(left: 34),
                             child: TextFormField(
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 autofillHints: [AutofillHints.email],
                                 validator: (email) => email != null &&
                                         !EmailValidator.validate(email)
-                                    ? 'Enter a vaid email'
+                                    ? 'Enter a valid email'
                                     : null,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintStyle: TextStyle(
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                      fontFamily: 'Poppins'),
+                                      fontFamily: 'Poppins',
+                                      fontSize: content14,
+                                      color: greyDark,
+                                  ),
                                   hintText: "Enter your email",
-                                )),
+                                )
+                            ),
                           ),
                         ),
-                        SizedBox(height: 10),
-                        Container(
-                          width: 300,
-                          height: 50,
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xffF1E9F6)),
-                          alignment: Alignment.topLeft,
-                          // padding: EdgeInsets.only(left: 34),
-                          child: TextFormField(
-                              obscureText: isHiddenPassword,
-                              decoration: InputDecoration(
-                                fillColor: Colors.black,
-                                suffixIcon: InkWell(
+                        Form(
+                          // key: formKey,
+                          child: Container(
+                            width: 300,
+                            height: 50,
+                            margin: EdgeInsets.symmetric(vertical: 13),
+                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: purpleLight
+                            ),
+                            alignment: Alignment.topLeft,
+                            child: TextFormField(
+                                obscureText: isHiddenPassword,
+                                decoration: InputDecoration(
+                                  suffixIcon: InkWell(
                                     onTap: _togglePasswordView,
-                                    child: Icon(isHiddenPassword
-                                        ? Icons.visibility
-                                        : Icons.visibility_off)),
-                                border: InputBorder.none,
-                                hintText: "Enter your password",
-                                hintStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                    fontFamily: 'Poppins'),
-                              )),
+                                    child: isHiddenPassword
+                                          ? Stack(
+                                            alignment: Alignment.centerRight,
+                                            children:[ 
+                                              SvgPicture.asset(
+                                                eyeVisibility, 
+                                                color: greyDark, 
+                                                height: 24, 
+                                                width: 24
+                                              )
+                                            ]
+                                          ) 
+                                          : Stack(
+                                            alignment: Alignment.centerRight,
+                                            children: [
+                                              SvgPicture.asset(
+                                                eyeInvisibility,
+                                                color: greyDark,
+                                                height: 24,
+                                                width: 24
+                                              )
+                                            ]
+                                          ) 
+                                  ),
+                                  border: InputBorder.none,
+                                  hintText: "Enter your password",
+                                  hintStyle: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: content14,
+                                      color: greyDark
+                                  ),
+                                )
+                            ),
+                          ),
                         ),
                         Container(
                             alignment: Alignment.topRight,
-                            padding: EdgeInsets.only(top: 10, right: 50),
+                            padding: EdgeInsets.only(top: 4),
                             child: GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -148,60 +174,112 @@ class _SignInPageState extends State<signinScreen> {
                                       builder: (context) => recoveryScreen()),
                                 );
                               },
-                              child: Text('Recovery password',
-                                  style: TextStyle(
-                                    color: Color(0xff6F7175),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                            )),
-                        SizedBox(height: 30),
-                        Container(
-                          height: 50,
-                          width: 260,
-                          alignment: Alignment.topCenter,
-                          child: GestureDetector(
-                            onTap: () => controlSignIn(),
-                            child: AnimatedContainer(
-                                alignment: Alignment.center,
-                                duration: Duration(milliseconds: 300),
-                                height: 60,
-                                width: 305,
-                                decoration: BoxDecoration(
+                              child: Text(
+                                'Recovery password',
+                                style: TextStyle(
+                                  color: greyDark,
+                                  fontSize: suggestion12,
+                                  fontWeight: FontWeight.w600,
+                                )
+                              ),
+                            )
+                        ),
+                        Stack(children: [
+                          Container(
+                            padding: EdgeInsets.only(top: 28, right: 16),
+                            child: Stack(
+                              alignment: Alignment.topCenter,
+                              children: [
+                                Container(
+                                  height: 54,
+                                  width: 260,
+                                  decoration: BoxDecoration(
+                                    color: purpleDark.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
-                                          color: Color(0xffCBB2DF),
-                                          blurRadius: 15,
-                                          offset: Offset(-5, 10))
+                                        color: black.withOpacity(0.25),
+                                        spreadRadius: 0,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                      ),
+                                      BoxShadow(
+                                        color: black.withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 60,
+                                        offset: Offset(10, 10),
+                                      ),
                                     ],
-                                    color: Color(0xff9857CB),
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Text(
-                                  "Sign In",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18
                                   ),
-                                )
+                                ),
+                                Blur(
+                                  blur: 10,
+                                  blurColor: whiteLight.withOpacity(0.3),
+                                  child: Container(
+                                    height: 64,
+                                    width: 278,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                          Container(
+                              padding: EdgeInsets.only(top: 24),
+                              alignment: Alignment.center,
+                              child: GestureDetector(
+                                onTap: () => controlSignIn(),
+                                child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 54,
+                                  width: 260,
+                                  decoration: BoxDecoration(
+                                    color: purpleDark,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: black.withOpacity(0.25),
+                                        spreadRadius: 0,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                      ),
+                                      BoxShadow(
+                                        color: black.withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 60,
+                                        offset: Offset(10, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "Sign In",
+                                    style: TextStyle(
+                                        color: white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: textButton
+                                    ),
+                                  ),
+                                ),
+                              )
+                          )
+                        ]
                         ),
-                        SizedBox(height: 35),
+                        SizedBox(height: 28),
                         Container(
                             alignment: Alignment.topCenter,
                             child: Text(
-                              "Or continute with",
+                              "or continue with",
                               style: TextStyle(
-                                  color: Color(0xffAAAAAA),
                                   fontFamily: 'Poppins',
-                                  fontSize: 12),
-                            )),
-                        SizedBox(height: 15),
+                                  color: greyLight,
+                                  fontSize: suggestion12
+                              ),
+                            )
+                        ),
+                        SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          // crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Container(
                               alignment: Alignment.center,
@@ -218,6 +296,7 @@ class _SignInPageState extends State<signinScreen> {
                                 ),
                               ),
                             ),
+                            SizedBox(width: 16),
                             Container(
                               alignment: Alignment.center,
                               child: GestureDetector(
@@ -229,13 +308,13 @@ class _SignInPageState extends State<signinScreen> {
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
                                           image: AssetImage(facebookLogoIcon)),
-                                      borderRadius: BorderRadius.circular(35)),
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 7),
+                        SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -244,10 +323,10 @@ class _SignInPageState extends State<signinScreen> {
                                 child: Text(
                                   "Don't have an account? ",
                                   style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600,
                                       fontFamily: 'Poppins',
-                                      fontSize: 12),
+                                      color: black,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: suggestion12),
                                 )),
                             Container(
                               child: GestureDetector(
@@ -255,18 +334,20 @@ class _SignInPageState extends State<signinScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => SignupScreen(),
+                                        builder: (context) => signupScreen(),
                                       ),
                                     );
                                   },
                                   child: Text(
                                     "Register here!",
                                     style: TextStyle(
-                                        color: Color(0xff9857CB),
-                                        fontWeight: FontWeight.w600,
                                         fontFamily: 'Poppins',
-                                        fontSize: 12),
-                                  )),
+                                        color: purpleDark,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: suggestion12
+                                    ),
+                                  )
+                              ),
                             )
                           ],
                         ),
@@ -281,6 +362,7 @@ class _SignInPageState extends State<signinScreen> {
     );
   }
 
+  //Create function
   void _togglePasswordView() {
     setState(() {
       isHiddenPassword = !isHiddenPassword;
@@ -299,7 +381,6 @@ class _SignInPageState extends State<signinScreen> {
     }
   }
 
-  //Create function
   controlSignInWithFacebook() {}
   controlSignInWithGoogle() {}
 }

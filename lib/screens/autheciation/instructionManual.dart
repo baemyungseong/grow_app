@@ -13,7 +13,6 @@ import 'package:grow_app/screens/autheciation/recoveryPassword.dart';
 
 //import others
 import 'package:blur/blur.dart';
-import 'package:flutter/services.dart';
 
 class instructionScreen extends StatelessWidget {
   const instructionScreen({Key? key}) : super(key: key);
@@ -267,7 +266,7 @@ class instructionScreen extends StatelessWidget {
                             alignment: Alignment.center,
                             duration: Duration(milliseconds: 300),
                             height: 54,
-                            width: 268,
+                            width: 260,
                             decoration: BoxDecoration(
                               color: purpleDark,
                               borderRadius: BorderRadius.circular(15),

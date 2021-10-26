@@ -51,17 +51,15 @@ class _RePasswordPageState extends State<recoveryScreen> {
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
-                        fontSize: 28,
-                        color: Colors.black,
+                        fontSize: title28,
+                        color: black,
                       ),
                     ),
                   ),
                   SizedBox(height: 8),
                   Container(
                     child: Text(
-                      ' Just enter the email address you’ve used to' +
-                          '\n' +
-                          'register with us and we’ll send you a reset link!',
+                      ' Just enter the email address you’ve used to' + '\n' + 'register with us and we’ll send you a reset link!',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: content14,
@@ -75,24 +73,24 @@ class _RePasswordPageState extends State<recoveryScreen> {
                     width: 300,
                     height: 50,
                     margin: EdgeInsets.symmetric(vertical: 12),
-                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 24),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: purpleLight
                     ),
                     alignment: Alignment.topLeft,
-                    // padding: EdgeInsets.only(left: 34),
                     child: TextFormField(
                         decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: content14,
-                          color: greyDark,
-                          fontWeight: FontWeight.w500
-                      ),
-                      hintText: "Enter your email",
-                    )),
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: content14,
+                              color: greyDark,
+                              fontWeight: FontWeight.w500
+                          ),
+                          hintText: "Enter your email",
+                        )
+                    ),
                   ),
                   Container(
                     padding: EdgeInsets.only(right: 19),
@@ -113,11 +111,12 @@ class _RePasswordPageState extends State<recoveryScreen> {
                             fontSize: suggestion12,
                             color: greyDark,
                             fontWeight: FontWeight.w500,
-                            height: 1.6),
+                            height: 1.6
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 2),
+                  SizedBox(height: 4),
                   Stack(
                     children: [
                     Container(
@@ -223,7 +222,7 @@ class _RePasswordPageState extends State<recoveryScreen> {
                           alignment: Alignment.center,
                           duration: Duration(milliseconds: 300),
                           height: 54,
-                          width: 268,
+                          width: 260,
                           decoration: BoxDecoration(
                             color: whiteLight.withOpacity(0.9),
                             border: Border(

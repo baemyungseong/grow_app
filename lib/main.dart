@@ -14,7 +14,7 @@ int initScreen = 0;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  initScreen = (preferences.getInt('initScreen') ?? 1);
+  initScreen = (preferences.getInt('initScreen') ?? 0);
   await preferences.setInt('initScreen', 1);
   runApp(GrowApp());
 }
