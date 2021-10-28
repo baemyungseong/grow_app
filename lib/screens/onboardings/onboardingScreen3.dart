@@ -28,14 +28,14 @@ class onboardingScreen3 extends StatelessWidget {
           padding: EdgeInsets.all(38),
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(background), fit: BoxFit.cover),
+                image: AssetImage(backgroundOnboarding), fit: BoxFit.cover),
           ),
           child: Column(
             children: [
               SizedBox(height: 48),
               Container(
                 alignment: Alignment.center,
-                child: Image.asset(obDocumentfile, scale: 1),
+                child: Image.asset(obDocumentFile, scale: 1),
               ),
               SizedBox(height: 32),
               Container(

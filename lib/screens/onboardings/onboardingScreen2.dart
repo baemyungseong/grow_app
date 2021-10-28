@@ -28,7 +28,7 @@ class onboardingScreen2 extends StatelessWidget {
           padding: EdgeInsets.all(38),
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(background), fit: BoxFit.cover),
+                image: AssetImage(backgroundOnboarding), fit: BoxFit.cover),
           ),
           child: Column(
             children: [
@@ -101,7 +101,7 @@ class onboardingScreen2 extends StatelessWidget {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    child: Image.asset(obTargetdynamic, scale: 1),
+                    child: Image.asset(obTargetDynamic, scale: 1),
                   ),
                 ],
               ),

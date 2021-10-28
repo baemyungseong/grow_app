@@ -7,6 +7,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 //general
 const outlineClose = 'assets/icons/general/outline_close.svg';
 
-//onboarding icons
-const obRectangledot = 'assets/icons/onboarding/rectangle_dot.svg';
-const obCircledot = 'assets/icons/onboarding/circle_dot.svg';
+//authentication icons
+const googleLogoIcon = 'assets/icons/authentication/google.png';
+const facebookLogoIcon = 'assets/icons/authentication/facebook.png';
+const eyeVisibility = 'assets/icons/authentication/eye_visibility.svg';
+const eyeInvisibility = 'assets/icons/authentication/eye_invisibility.svg';
+const checkSuccessfully = 'assets/icons/authentication/check_successfully.svg';
