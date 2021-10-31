@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "46328400276",
+    "project_id": "grow-app-a7bf1",
+    "storage_bucket": "grow-app-a7bf1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46328400276:android:b4a0fbf8864883e34ba781",
+        "android_client_info": {
+          "package_name": "com.example.project_management_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "46328400276-5gq7pcco5m75qn9blisbo9hj4qgavvs2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_management_app",
+            "certificate_hash": "25011cd2d067fede020b198e9ab98edb3e6e3d3b"
+          }
+        },
+        {
+          "client_id": "46328400276-doevet6q7m54nslllukg2ik640m4anc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD66pvExNDe7i1bnn0sbKD25VOomgkID2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "46328400276-doevet6q7m54nslllukg2ik640m4anc9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
