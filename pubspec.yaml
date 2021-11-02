@@ -30,32 +30,12 @@ dependencies:
   email_validator: ^2.0.1
   custom_check_box: ^0.0.4
 
+  firebase_core: ^1.8.0
+  cloud_firestore: ^2.5.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_native_splash: ^1.2.4
-
-  # Splash Screen.
-flutter_native_splash:
-
-  android: true
-  ios: true
-  web: true
-
-  # color: "#888888"
-  background_image: "assets/images/background/background_onboarding.png"
-  image: "assets/images/logo/logo_white.png"
-
-  # color_dark: "#888888"
-  background_image_dark: "assets/images/background/background_onboarding.png"
-  image_dark: "assets/images/logo/logo_white.png"
-
-  android_gravity: center
-  ios_content_mode: center
-  web_image_mode: center
-
-  fullscreen: true
-  android12: true
 
 
 flutter:

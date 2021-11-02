@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "46328400276-2u8cp47gqfotvnfonb9ktf54fj1q2bcg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_management_app",
+            "certificate_hash": "b74bedf2f0d669cd5403bb6758d0b9f4e8ea2d5d"
+          }
+        },
+        {
           "client_id": "46328400276-5gq7pcco5m75qn9blisbo9hj4qgavvs2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -37,6 +45,14 @@
             {
               "client_id": "46328400276-doevet6q7m54nslllukg2ik640m4anc9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "46328400276-oqa49sn8c4040dgjq7ehcso5ict3mktu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.projectManagementApp",
+                "app_store_id": "01112021"
+              }
             }
           ]
         }
