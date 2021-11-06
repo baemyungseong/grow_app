@@ -31,8 +31,12 @@ ENV['COCOAPODS_DISABLE_STATS'] = 'true'
    use_frameworks!
    use_modular_headers!
 
+   pod 'BoringSSL-GRPC'
+   pod 'gRPC-Core'
    pod 'Firebase/Core'
    pod 'Firebase/Firestore'
+   pod 'Firebase/Auth'
+   
 
    flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
  end
