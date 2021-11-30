@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+//import views
+import 'package:grow_app/views/authentication/signUp.dart';
+import 'package:grow_app/views/authentication/recoveryPassword.dart';
+
+//import controllers
+import 'package:grow_app/controllers/authController.dart';
+
+//import firebase
+import 'package:firebase_auth/firebase_auth.dart';
+
+//import provider - state management
+import 'package:provider/provider.dart';
+
 //import constants
 import 'package:grow_app/constants/colors.dart';
 import 'package:grow_app/constants/fonts.dart';
@@ -8,15 +21,11 @@ import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
-//import screens
-import 'package:grow_app/screens/autheciation/signup.dart';
-import 'package:grow_app/screens/autheciation/recoveryPassword.dart';
-
 //import others
 import 'package:flutter/services.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:blur/blur.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 class signinScreen extends StatefulWidget {
   _SignInPageState createState() => _SignInPageState();
@@ -25,11 +34,36 @@ class signinScreen extends StatefulWidget {
 class _SignInPageState extends State<signinScreen> {
   bool isHiddenPassword = true;
 
-  final formKey = new GlobalKey<FormState>();
+  // final formKey = new GlobalKey<FormState>();
 
-  final emailController = TextEditingController();
+  // final emailController = TextEditingController();
 
-  late String email, password;
+  // final passwordController = TextEditingController();
+
+  // // final authService = Provider.of<AuthService>(context);
+
+  // late String email, password;
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  late String email, password, userid;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  // void login() {
+  //   if (formKey.currentState!.validate()) {
+  //     formKey.currentState!.save();
+  //     signin(email, password, context).then((value) {
+  //       if (value != null) {
+  //         Navigator.pushReplacement(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => TasksPage(required, uid: value.uid),
+  //             ));
+  //       }
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +90,7 @@ class _SignInPageState extends State<signinScreen> {
               ),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(left: 39, right: 39),
+                    padding: EdgeInsets.only(left: 39, right: 39),
                     width: width,
                     decoration: BoxDecoration(
                       color: Color(0xffF5F5F5),
@@ -75,8 +109,7 @@ class _SignInPageState extends State<signinScreen> {
                                 color: black,
                                 fontSize: title28,
                                 fontWeight: FontWeight.w600,
-                              )
-                          ),
+                              )),
                         ),
                         SizedBox(height: 13),
                         Form(
@@ -85,30 +118,38 @@ class _SignInPageState extends State<signinScreen> {
                             width: 300,
                             height: 50,
                             margin: EdgeInsets.symmetric(vertical: 13),
-                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 20),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: purpleLight
-                            ),
+                                color: purpleLight),
                             alignment: Alignment.topLeft,
                             child: TextFormField(
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 autofillHints: [AutofillHints.email],
-                                validator: (email) => email != null &&
-                                        !EmailValidator.validate(email)
-                                    ? 'Enter a valid email'
-                                    : null,
+                                // validator: (email) => email != null &&
+                                //         !EmailValidator.validate(email)
+                                //     ? 'Enter a valid email'
+                                //     : null,
+                                validator: MultiValidator([
+                                  RequiredValidator(
+                                      errorText: "This Field Is Required"),
+                                  EmailValidator(
+                                      errorText: "Invalid Email Address"),
+                                ]),
+                                onChanged: (val) {
+                                  email = val;
+                                },
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintStyle: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: content14,
-                                      color: greyDark,
+                                    fontFamily: 'Poppins',
+                                    fontSize: content14,
+                                    color: greyDark,
                                   ),
                                   hintText: "Enter your email",
-                                )
-                            ),
+                                )),
                           ),
                         ),
                         Form(
@@ -117,50 +158,62 @@ class _SignInPageState extends State<signinScreen> {
                             width: 300,
                             height: 50,
                             margin: EdgeInsets.symmetric(vertical: 13),
-                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 20),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: purpleLight
-                            ),
+                                color: purpleLight),
                             alignment: Alignment.topLeft,
                             child: TextFormField(
+                                controller: passwordController,
+                                keyboardType: TextInputType.visiblePassword,
+                                autofillHints: [AutofillHints.password],
+                                // onChanged: (value) {
+                                //   this.password = value;
+                                // },
+                                // validator: (value) => value.isEmpty
+                                //     ? 'Password is required'
+                                //     : null,
+                                // validator: MultiValidator([
+                                //   RequiredValidator(
+                                //       errorText: "Password Is Required"),
+                                //   MinLengthValidator(6,
+                                //       errorText:
+                                //           "Minimum 6 Characters Required"),
+                                // ]),
+                                onChanged: (val) {
+                                  password = val;
+                                },
                                 obscureText: isHiddenPassword,
                                 decoration: InputDecoration(
                                   suffixIcon: InkWell(
-                                    onTap: _togglePasswordView,
-                                    child: isHiddenPassword
+                                      onTap: _togglePasswordView,
+                                      child: isHiddenPassword
                                           ? Stack(
-                                            alignment: Alignment.centerRight,
-                                            children:[ 
-                                              SvgPicture.asset(
-                                                eyeVisibility, 
-                                                color: greyDark, 
-                                                height: 24, 
-                                                width: 24
-                                              )
-                                            ]
-                                          ) 
+                                              alignment: Alignment.centerRight,
+                                              children: [
+                                                  SvgPicture.asset(
+                                                      eyeVisibility,
+                                                      color: greyDark,
+                                                      height: 24,
+                                                      width: 24)
+                                                ])
                                           : Stack(
-                                            alignment: Alignment.centerRight,
-                                            children: [
-                                              SvgPicture.asset(
-                                                eyeInvisibility,
-                                                color: greyDark,
-                                                height: 24,
-                                                width: 24
-                                              )
-                                            ]
-                                          ) 
-                                  ),
+                                              alignment: Alignment.centerRight,
+                                              children: [
+                                                  SvgPicture.asset(
+                                                      eyeInvisibility,
+                                                      color: greyDark,
+                                                      height: 24,
+                                                      width: 24)
+                                                ])),
                                   border: InputBorder.none,
                                   hintText: "Enter your password",
                                   hintStyle: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: content14,
-                                      color: greyDark
-                                  ),
-                                )
-                            ),
+                                      color: greyDark),
+                                )),
                           ),
                         ),
                         Container(
@@ -174,16 +227,13 @@ class _SignInPageState extends State<signinScreen> {
                                       builder: (context) => recoveryScreen()),
                                 );
                               },
-                              child: Text(
-                                'Recovery password',
-                                style: TextStyle(
-                                  color: greyDark,
-                                  fontSize: suggestion12,
-                                  fontWeight: FontWeight.w600,
-                                )
-                              ),
-                            )
-                        ),
+                              child: Text('Recovery password',
+                                  style: TextStyle(
+                                    color: greyDark,
+                                    fontSize: suggestion12,
+                                    fontWeight: FontWeight.w600,
+                                  )),
+                            )),
                         Stack(children: [
                           Container(
                             padding: EdgeInsets.only(top: 28, right: 16),
@@ -227,7 +277,8 @@ class _SignInPageState extends State<signinScreen> {
                               padding: EdgeInsets.only(top: 24),
                               alignment: Alignment.center,
                               child: GestureDetector(
-                                onTap: () => controlSignIn(),
+                                onTap: () => loginUser(emailController.text, passwordController.text, context),
+                                // onTap: () => login(),
                                 child: AnimatedContainer(
                                   alignment: Alignment.center,
                                   duration: Duration(milliseconds: 300),
@@ -257,14 +308,11 @@ class _SignInPageState extends State<signinScreen> {
                                         color: white,
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w600,
-                                        fontSize: textButton
-                                    ),
+                                        fontSize: textButton),
                                   ),
                                 ),
-                              )
-                          )
-                        ]
-                        ),
+                              ))
+                        ]),
                         SizedBox(height: 28),
                         Container(
                             alignment: Alignment.topCenter,
@@ -273,10 +321,8 @@ class _SignInPageState extends State<signinScreen> {
                               style: TextStyle(
                                   fontFamily: 'Poppins',
                                   color: greyLight,
-                                  fontSize: suggestion12
-                              ),
-                            )
-                        ),
+                                  fontSize: suggestion12),
+                            )),
                         SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -284,14 +330,14 @@ class _SignInPageState extends State<signinScreen> {
                             Container(
                               alignment: Alignment.center,
                               child: GestureDetector(
-                                onTap: () => controlSignInWithGoogle(),
+                                onTap: () => googleSignIn(context),
                                 child: Container(
                                   alignment: Alignment.center,
                                   height: 50,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(googleLogoIcon)),
+                                    image: DecorationImage(
+                                        image: AssetImage(googleLogoIcon)),
                                   ),
                                 ),
                               ),
@@ -306,8 +352,8 @@ class _SignInPageState extends State<signinScreen> {
                                   height: 50,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(facebookLogoIcon)),
+                                    image: DecorationImage(
+                                        image: AssetImage(facebookLogoIcon)),
                                   ),
                                 ),
                               ),
@@ -344,16 +390,13 @@ class _SignInPageState extends State<signinScreen> {
                                         fontFamily: 'Poppins',
                                         color: purpleDark,
                                         fontWeight: FontWeight.w600,
-                                        fontSize: suggestion12
-                                    ),
-                                  )
-                              ),
+                                        fontSize: suggestion12),
+                                  )),
                             )
                           ],
                         ),
                       ],
-                    )
-                ),
+                    )),
               ),
             ],
           ),
@@ -369,18 +412,5 @@ class _SignInPageState extends State<signinScreen> {
     });
   }
 
-  controlSignIn() {
-    final form = formKey.currentState!;
-    if (form.validate()) {
-      final email = emailController.text;
-      ScaffoldMessenger.of(context)
-        ..removeCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text("Your email is $email"),
-        ));
-    }
-  }
-
   controlSignInWithFacebook() {}
-  controlSignInWithGoogle() {}
 }
