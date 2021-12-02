@@ -3,6 +3,10 @@ import 'package:flutter/cupertino.dart';
 
 //import views
 import 'package:grow_app/views/taskScreen.dart';
+import 'package:grow_app/views/authentication/checkinEmail.dart';
+
+//import widgets
+import 'package:grow_app/views/widget/snackBarWidget.dart';
 
 //import firebase
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,13 +14,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //import login method
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
+//import others
+import 'dart:math';
 
 FirebaseAuth auth = FirebaseAuth.instance;
-final google = GoogleSignIn();
-GoogleSignInAccount? user;
+// int randomNumber = Random().nextInt(9000) + 1000; 
 
-Future registerUser(String email, String password, String name,
-    String phonenumber, context) async {
+Future registerUser(String email, String password, String name, String phoneNumber, context) async {
   try {
     await auth
         .createUserWithEmailAndPassword(email: email, password: password)
@@ -25,23 +31,74 @@ Future registerUser(String email, String password, String name,
       final uid = user?.uid;
       // print("Your current id is $uid");
       //store user data to firestore
-      FirebaseFirestore.instance.collection("Users").doc(uid).set({
+      FirebaseFirestore.instance.collection("users").doc(uid).set({
         'name': name,
         'email': email,
-        'phonenumber': phonenumber,
+        'phonenumber': phoneNumber,
+        'dob': null,
+        'avatar': "https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.6435-9/244757120_1044097059677456_7375002768478113579_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=x0f0jeOG0QQAX-QcSU6&_nc_ht=scontent.fsgn2-4.fna&oh=f91f17830e1c787d524be872271ece9c&oe=61AAA7D5",
       }).then((signedInUser) => {
             print("successfully registered!"),
           });
       loginUser(email, password, context);
     });
-  } catch (e) {
-    print("error");
+  } on FirebaseAuthException catch (e) {
+    print(e.code);
+    switch (e.code) {
+      case "operation-not-allowed":
+        showErrorSnackBar(context, "Anonymous accounts are not enabled!");
+        break;
+      case "weak-password":
+        showErrorSnackBar(context, "Your password is too weak!");
+        break;
+      case "invalid-email":
+        showErrorSnackBar(context, "Your email is invalid, please check!");
+        break;
+      case "email-already-in-use":
+        showErrorSnackBar(context, "Email is used on different account!");
+        break;
+      case "invalid-credential":
+        showErrorSnackBar(context, "Your email is invalid, please check!");
+        break;
+
+      default:
+        showErrorSnackBar(context, "An undefined Error happened.");
+    }
+  }
+}
+
+Future resetPasswordUser(String email, context) async {
+  try{
+    await auth
+      .sendPasswordResetEmail(email: email)
+      .then((value) => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => checkinEmailScreen(),
+              ),
+            )
+          }
+      );
+  } on FirebaseAuthException catch (e) {
+    print(e.code);
+    switch (e.code) {
+      case "invalid-email":
+        showErrorSnackBar(context, "Your email is invalid, please check!");
+        break;
+      case "user-not-found":
+        showErrorSnackBar(context, "Your email is not found, please check!");
+        break;
+
+      default:
+        showErrorSnackBar(context, "An undefined Error happened.");
+    }
   }
 }
 
 Future loginUser(String email, String password, context) async {
   try {
-    auth
+    await auth
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       print("successfully login!");
@@ -55,8 +112,35 @@ Future loginUser(String email, String password, context) async {
                 builder: (context) => TasksPage(required, uid: uid)));
       }
     });
-  } catch (e) {
-    print("error");
+  } on FirebaseAuthException catch (e) {
+    print(e.code);
+    switch (e.code) {
+      case "user-not-found":
+        showErrorSnackBar(context, "Your email is not found, please check!");
+        break;
+      case "wrong-password":
+        showErrorSnackBar(context, "Your password is wrong, please check!");
+        break;
+      case "invalid-email":
+        showErrorSnackBar(context, "Your email is invalid, please check!");
+        break;
+      case "user-disabled":
+        showErrorSnackBar(context, "The user account has been disabled!");
+        break;
+      case "too-many-requests":
+        showErrorSnackBar(context, "There was too many attempts to sign in!");
+        break;
+      case "operation-not-allowed":
+        showErrorSnackBar(context, "The user account are not enabled!");
+        break;
+      // // Preventing user from entering email already provided by other login method
+      // case "account-exists-with-different-credential":
+      //   showErrorSnackBar(context, "This account exists with a different sign in provider!");
+      //   break;
+
+      default:
+        showErrorSnackBar(context, "An undefined Error happened.");
+    }
   }
 }
 
@@ -64,6 +148,7 @@ Future signOutUser() async {
   await FirebaseAuth.instance
       .signOut()
       .then((value) => {print("successfully signout!")});
+  await FacebookAuth.instance.logOut();
   final User? user = await auth.currentUser;
   final uid = user?.uid;
   // print("Your current id is $uid");
@@ -71,27 +156,31 @@ Future signOutUser() async {
 
 Future googleSignIn(context) async {
   try {
-    final googleMethod = await google.signIn();
-    user = googleMethod;
+    final googleMethod = await GoogleSignIn().signIn();
     final auth = await googleMethod!.authentication;
     final cred = GoogleAuthProvider.credential(
         idToken: auth.idToken, accessToken: auth.accessToken);
-    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(cred).whenComplete(() {});
-    
-    User? googleuser = userCredential.user;
-    final uid = googleuser?.uid;
+    final UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithCredential(cred)
+        .whenComplete(() {});
+
+    final User? googleUser = userCredential.user;
+    final uid = googleUser?.uid;
+    final GoogleSignInAccount? userData = googleMethod;
 
     print("Your current id is $uid");
-    print("Your current email is " + user!.email.toString());
-    print("Your current photoUrl is " + user!.photoUrl.toString());
-    // print("Your current displayName is " + user!.displayName.toString());
-    // print("Your current id is " + user!.id.toString());
-    
+    print("Your current email is " + userData!.email.toString());
+    print("Your current photoUrl is " + userData.photoUrl.toString());
+    print("Your current displayName is " + userData.displayName.toString());
+    // print("Your current id is " + userData.id.toString());
+
     if (userCredential.additionalUserInfo!.isNewUser) {
-      FirebaseFirestore.instance.collection("Users").doc(uid).set({
-        'name': user!.displayName,
-        'email': user!.email,
+      FirebaseFirestore.instance.collection("users").doc(uid).set({
+        'name': userData.displayName,
+        'email': userData.email,
         'phonenumber': null,
+        'dob': null,
+        'avatar': userData.photoUrl,
       }).then((signedInUser) => {
             print("successfully registered!"),
           });
@@ -106,6 +195,108 @@ Future googleSignIn(context) async {
     print("error");
   }
 }
+
+Future facebookSignIn(context) async {
+  try {
+    final facebookMethod = await FacebookAuth.instance.login(permissions: ['public_profile', 'email']);
+    if (facebookMethod.status == LoginStatus.success) {
+      final cred = FacebookAuthProvider.credential(facebookMethod.accessToken!.token);
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(cred)
+          .whenComplete(() {});
+
+      final User? facebookUser = userCredential.user;
+      final uid = facebookUser?.uid;
+      final userData = await FacebookAuth.instance.getUserData();
+
+      print("Your current id is $uid");
+      print("Your current userData is $userData");
+      print("Your current email is " + userData['email'].toString());
+      print("Your current photoUrl is " + userData['picture']['data']['url'].toString());
+      print("Your current displayName is " + userData['name'].toString());
+      // print("Your current id is " + userData['id'].toString());
+    
+      if (userCredential.additionalUserInfo!.isNewUser) {
+        FirebaseFirestore.instance.collection("users").doc(uid).set({
+          'name': userData['name'],
+          'email': userData['email'],
+          'phonenumber': null,
+          'dob': null,
+          'avatar': userData['picture']['data']['url'],
+        }).then((signedInUser) => {
+              print("successfully registered!"),
+            });
+      }
+      if (uid != null) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TasksPage(required, uid: uid)));
+      }
+    }
+  } catch (e) {
+    print("error");
+  }
+}
+
+
+// Future<UserCredential> signInWithFacebook() async {
+//   final LoginResult result =
+//       await FacebookAuth.instance.login(permissions: ['email']);
+
+//   if (result.status == LoginStatus.success) {
+//     final userData = await FacebookAuth.instance.getUserData();
+//   } else {
+//     print(result.message);
+//   }
+
+//   final OAuthCredential facebookAuthCredential =
+//       FacebookAuthProvider.credential(result.accessToken!.token);
+
+//   return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+// }
+
+
+
+// Future facebookSignInn(context) async {
+//   try {
+//     final facebookMethod = await FacebookAuth.instance.login();
+//     // final facebookuser = await FacebookAuth.instance.getUserData();
+
+//     final cred =
+//         FacebookAuthProvider.credential(facebookMethod.accessToken!.token);
+//     final UserCredential userCredential =
+//         await FirebaseAuth.instance.signInWithCredential(cred);
+
+//     User? facebookUser = userCredential.user;
+//     final uid = facebookUser?.uid;
+
+//     print("Your current id is $uid");
+//     print("Your current email is " + user!.email.toString());
+//     print("Your current photoUrl is " + user!.photoUrl.toString());
+//     print("Your current displayName is " + user!.displayName.toString());
+//     // print("Your current id is " + user!.id.toString());
+
+//     if (userCredential.additionalUserInfo!.isNewUser) {
+//       FirebaseFirestore.instance.collection("Users").doc(uid).set({
+//         'name': user!.displayName,
+//         'email': user!.email,
+//         'phonenumber': null,
+//       }).then((signedInUser) => {
+//             print("successfully registered!"),
+//           });
+//     }
+//     if (uid != null) {
+//       Navigator.pushReplacement(
+//           context,
+//           MaterialPageRoute(
+//               builder: (context) => TasksPage(required, uid: uid)));
+//     }
+//   } catch (e) {
+//     print("error");
+//   }
+// }
+
+
 
 // Future<UserCredential> signInWithGoogle() async {
 //   // Trigger the authentication flow

@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 
 //import views
 import 'package:grow_app/views/wrapper/authenticationWrapper.dart';
+
+//import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
 
 //import controllers
@@ -41,7 +43,7 @@ class _TasksPageState extends State<TasksPage> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  var taskcollections = FirebaseFirestore.instance.collection('Users');
+  var taskcollections = FirebaseFirestore.instance.collection('users');
   late String task;
 
   void initState() {

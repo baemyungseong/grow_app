@@ -6,6 +6,9 @@ import 'package:grow_app/views/authentication/signIn.dart';
 import 'package:grow_app/views/authentication/instructionManual.dart';
 import 'package:grow_app/views/authentication/checkinEmail.dart';
 
+//import controllers
+import 'package:grow_app/controllers/authController.dart';
+
 //import constants
 import 'package:grow_app/constants/colors.dart';
 import 'package:grow_app/constants/fonts.dart';
@@ -22,6 +25,9 @@ class recoveryScreen extends StatefulWidget {
 }
 
 class _RePasswordPageState extends State<recoveryScreen> {
+
+  TextEditingController emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
@@ -80,16 +86,17 @@ class _RePasswordPageState extends State<recoveryScreen> {
                     ),
                     alignment: Alignment.topLeft,
                     child: TextFormField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: content14,
-                              color: greyDark,
-                              fontWeight: FontWeight.w500
-                          ),
-                          hintText: "Enter your email",
-                        )
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: content14,
+                          color: greyDark,
+                          fontWeight: FontWeight.w500
+                        ),
+                        hintText: "Enter your email",
+                      )
                     ),
                   ),
                   Container(
@@ -163,12 +170,7 @@ class _RePasswordPageState extends State<recoveryScreen> {
                         child: GestureDetector(
                           // onTap: () => controlRePassword(),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => checkinEmailScreen(),
-                              ),
-                            );
+                            resetPasswordUser(emailController.text, context);
                           },
                           child: AnimatedContainer(
                             alignment: Alignment.center,

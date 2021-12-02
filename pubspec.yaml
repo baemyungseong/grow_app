@@ -29,7 +29,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   email_validator: ^2.0.1
   custom_check_box: ^0.0.4
-  form_field_validator: ^1.1.0
   
   # firebase
   firebase_core: ^1.8.0

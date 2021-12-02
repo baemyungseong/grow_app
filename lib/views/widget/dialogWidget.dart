@@ -7,6 +7,13 @@ import 'package:grow_app/views/wrapper/authenticationWrapper.dart';
 //import controllers
 import 'package:grow_app/controllers/authController.dart';
 
+//import constants
+import 'package:grow_app/constants/colors.dart';
+import 'package:grow_app/constants/fonts.dart';
+import 'package:grow_app/constants/images.dart';
+import 'package:grow_app/constants/icons.dart';
+import 'package:grow_app/constants/others.dart';
+
 logoutDialog(BuildContext mContext) {
   return showDialog(
       context: mContext,
@@ -28,11 +35,11 @@ logoutDialog(BuildContext mContext) {
                     child: Column(
                       children: [
                         Text(
-                          "Do you want to sign out Favoury?",
+                          "Do you want to sign out Grow?",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,
-                              fontFamily: 'MontserratBold',
+                              fontFamily: 'Poppins',
                               fontSize: 23),
                         ),
                         SizedBox(height: 30),
@@ -57,7 +64,7 @@ logoutDialog(BuildContext mContext) {
                                   "Sign Out",
                                   style: TextStyle(
                                       color: Color(0xff607dd9),
-                                      fontFamily: 'MontserratBold',
+                                      fontFamily: 'Poppins',
                                       fontSize: 15),
                                 )
                             ),
@@ -82,7 +89,7 @@ logoutDialog(BuildContext mContext) {
                                   "Cancel",
                                   style: TextStyle(
                                       color: Color(0xff607dd9),
-                                      fontFamily: 'MontserratBold',
+                                      fontFamily: 'Poppins',
                                       fontSize: 15),
                                 )
                             ),

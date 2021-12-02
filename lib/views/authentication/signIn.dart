@@ -11,8 +11,8 @@ import 'package:grow_app/controllers/authController.dart';
 //import firebase
 import 'package:firebase_auth/firebase_auth.dart';
 
-//import provider - state management
-import 'package:provider/provider.dart';
+// //import provider - state management
+// import 'package:provider/provider.dart';
 
 //import constants
 import 'package:grow_app/constants/colors.dart';
@@ -25,7 +25,6 @@ import 'package:grow_app/constants/others.dart';
 import 'package:flutter/services.dart';
 import 'package:blur/blur.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 
 class signinScreen extends StatefulWidget {
   _SignInPageState createState() => _SignInPageState();
@@ -132,15 +131,15 @@ class _SignInPageState extends State<signinScreen> {
                                 //         !EmailValidator.validate(email)
                                 //     ? 'Enter a valid email'
                                 //     : null,
-                                validator: MultiValidator([
-                                  RequiredValidator(
-                                      errorText: "This Field Is Required"),
-                                  EmailValidator(
-                                      errorText: "Invalid Email Address"),
-                                ]),
-                                onChanged: (val) {
-                                  email = val;
-                                },
+                                // validator: MultiValidator([
+                                //   RequiredValidator(
+                                //       errorText: "This Field Is Required"),
+                                //   EmailValidator(
+                                //       errorText: "Invalid Email Address"),
+                                // ]),
+                                // onChanged: (val) {
+                                //   email = val;
+                                // },
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintStyle: TextStyle(
@@ -168,9 +167,6 @@ class _SignInPageState extends State<signinScreen> {
                                 controller: passwordController,
                                 keyboardType: TextInputType.visiblePassword,
                                 autofillHints: [AutofillHints.password],
-                                // onChanged: (value) {
-                                //   this.password = value;
-                                // },
                                 // validator: (value) => value.isEmpty
                                 //     ? 'Password is required'
                                 //     : null,
@@ -181,9 +177,9 @@ class _SignInPageState extends State<signinScreen> {
                                 //       errorText:
                                 //           "Minimum 6 Characters Required"),
                                 // ]),
-                                onChanged: (val) {
-                                  password = val;
-                                },
+                                // onChanged: (val) {
+                                //   password = val;
+                                // },
                                 obscureText: isHiddenPassword,
                                 decoration: InputDecoration(
                                   suffixIcon: InkWell(
@@ -313,7 +309,7 @@ class _SignInPageState extends State<signinScreen> {
                                 ),
                               ))
                         ]),
-                        SizedBox(height: 28),
+                        SizedBox(height: 16),
                         Container(
                             alignment: Alignment.topCenter,
                             child: Text(
@@ -321,8 +317,10 @@ class _SignInPageState extends State<signinScreen> {
                               style: TextStyle(
                                   fontFamily: 'Poppins',
                                   color: greyLight,
-                                  fontSize: suggestion12),
-                            )),
+                                  fontSize: suggestion12
+                              ),
+                            )
+                        ),
                         SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -346,7 +344,7 @@ class _SignInPageState extends State<signinScreen> {
                             Container(
                               alignment: Alignment.center,
                               child: GestureDetector(
-                                onTap: () => controlSignInWithFacebook(),
+                                onTap: () => facebookSignIn(context),
                                 child: Container(
                                   alignment: Alignment.center,
                                   height: 50,
@@ -411,6 +409,4 @@ class _SignInPageState extends State<signinScreen> {
       isHiddenPassword = !isHiddenPassword;
     });
   }
-
-  controlSignInWithFacebook() {}
 }
