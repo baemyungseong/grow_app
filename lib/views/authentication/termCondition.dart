@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+//import views
+import 'package:grow_app/views/authentication/signUp.dart';
+
 //import constants
 import 'package:grow_app/constants/colors.dart';
 import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
-
-//import screens
-import 'package:grow_app/screens/autheciation/signup.dart';
 
 //import others
 import 'package:flutter/services.dart';

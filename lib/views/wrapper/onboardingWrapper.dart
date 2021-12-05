@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+//import views
+import 'package:grow_app/views/onboardings/onboardingScreen1.dart';
+import 'package:grow_app/views/onboardings/onboardingScreen2.dart';
+import 'package:grow_app/views/onboardings/onboardingScreen3.dart';
+import 'package:grow_app/views/authentication/signIn.dart';
+
 //import constants
 import 'package:grow_app/constants/colors.dart';
 import 'package:grow_app/constants/fonts.dart';
@@ -8,21 +14,15 @@ import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
-//import screens
-import 'package:grow_app/screens/onboardings/onboardingScreen1.dart';
-import 'package:grow_app/screens/onboardings/onboardingScreen2.dart';
-import 'package:grow_app/screens/onboardings/onboardingScreen3.dart';
-import 'package:grow_app/screens/autheciation/signin.dart';
-
 //import others
 import 'package:flutter_svg/flutter_svg.dart';
 
-class onboardingScreen extends StatefulWidget {
+class onboardingWrapper extends StatefulWidget {
   @override
-  _OnboardingState createState() => _OnboardingState();
+  _onboardingWrapperState createState() => _onboardingWrapperState();
 }
 
-class _OnboardingState extends State<onboardingScreen> {
+class _onboardingWrapperState extends State<onboardingWrapper> {
   int _currentPage = 0;
   PageController _controller = PageController();
 

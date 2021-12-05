@@ -1,5 +1,5 @@
 name: grow_app
-description: A Flutter project used for project management.
+description: A friend will collaborate and help us manage projects, tasks, time,...
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -29,33 +29,22 @@ dependencies:
   cupertino_icons: ^1.0.2
   email_validator: ^2.0.1
   custom_check_box: ^0.0.4
+  
+  # firebase
+  firebase_core: ^1.8.0
+  cloud_firestore: ^2.5.4
+  firebase_auth: ^3.1.4
+
+  # sign in
+  google_sign_in: ^5.2.1
+  flutter_facebook_auth: ^3.5.6
+
+  # state management
+  provider: ^6.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_native_splash: ^1.2.4
-
-  # Splash Screen.
-flutter_native_splash:
-
-  android: true
-  ios: true
-  web: true
-
-  # color: "#888888"
-  background_image: "assets/images/background/background_onboarding.png"
-  image: "assets/images/logo/logo_white.png"
-
-  # color_dark: "#888888"
-  background_image_dark: "assets/images/background/background_onboarding.png"
-  image_dark: "assets/images/logo/logo_white.png"
-
-  android_gravity: center
-  ios_content_mode: center
-  web_image_mode: center
-
-  fullscreen: true
-  android12: true
 
 
 flutter:
