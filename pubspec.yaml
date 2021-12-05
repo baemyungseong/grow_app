@@ -60,10 +60,12 @@ flutter:
     - assets/images/background/
     - assets/images/logo/
     - assets/images/onboarding/
+    - assets/images/timeline/
     
     - assets/icons/
     - assets/icons/authentication/
     - assets/icons/general/
+    - assets/icons/timeline/
 
   fonts:
     # - family: NavBarIcons

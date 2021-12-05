@@ -13,3 +13,7 @@ const facebookLogoIcon = 'assets/icons/authentication/facebook.png';
 const eyeVisibility = 'assets/icons/authentication/eye_visibility.svg';
 const eyeInvisibility = 'assets/icons/authentication/eye_invisibility.svg';
 const checkSuccessfully = 'assets/icons/authentication/check_successfully.svg';
+
+//timeline
+const calendarIcon = 'assets/icons/timeline/calendar.png';
+const notificationActiveIcon = 'assets/icons/timeline/notification_active.png';
