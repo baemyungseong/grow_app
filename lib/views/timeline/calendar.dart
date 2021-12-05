@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:iconsax/iconsax.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
@@ -102,16 +103,47 @@ class _CalendarPageState extends State<CalendarPage> {
                         ],
                       ),
                       Container(
-                        alignment: Alignment.centerRight,
-                        height: 32,
-                        width: 32,
-                        decoration: BoxDecoration(
-                          color: purpleDark,
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          image: DecorationImage(
-                              image: AssetImage(notificationActiveIcon)),
-                        ),
-                      )
+                          padding: EdgeInsets.only(right: 28),
+                          alignment: Alignment.center,
+                          child: GestureDetector(
+                            // onTap: () {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           notificationCenterScreen(required, uid: uid),
+                            //     ),
+                            //   );
+                            // },
+                            child: AnimatedContainer(
+                              alignment: Alignment.center,
+                              duration: Duration(milliseconds: 300),
+                              height: 32,
+                              width: 32,
+                              decoration: BoxDecoration(
+                                color: purpleDark,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: black.withOpacity(0.25),
+                                      spreadRadius: 0,
+                                      blurRadius: 64,
+                                      offset: Offset(8, 8)),
+                                  BoxShadow(
+                                    color: black.withOpacity(0.2),
+                                    spreadRadius: 0,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Container(
+                                  padding: EdgeInsets.zero,
+                                  alignment: Alignment.center,
+                                  child: Icon(Iconsax.notification,
+                                      size: 18, color: white)),
+                            ),
+                          )),
                     ],
                   ),
                   Container(
