@@ -19,6 +19,10 @@ const Color greyUltralight = Color(0xFFC4C4C4);
 const Color red = Color(0xFFCB356B);
 const Color green = Color(0xFF159957);
 
+const Color orange = Color(0xFFF88868);
+const Color yallow = Color(0xFFFFBF3A);
+const Color blue = Color(0xFF4E3EC8);
+
 final Shader redGradient = LinearGradient(
   colors: <Color>[Color(0xFFCB356B), Color(0xFFBD3F32)],
 ).createShader(

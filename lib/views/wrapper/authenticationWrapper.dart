@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 //import views
 import 'package:grow_app/views/authentication/signIn.dart';
+import 'package:grow_app/views/dashboard/dashboard.dart';
 import 'package:grow_app/views/taskScreen.dart';
 
 //import controllers
@@ -31,7 +32,7 @@ class _authenticationWrapperState extends State<authenticationWrapper> {
           // User? user = snapshot.data;
           final User user = auth.currentUser!;
           final String uid = user.uid;
-          return TasksPage(required, uid: user.uid);
+          return DashboardPage(required, uid: user.uid);
         } else {
           return signinScreen();
         }
