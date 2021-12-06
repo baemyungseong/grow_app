@@ -11,6 +11,8 @@ const Color black = Colors.black;
 // const Color purple_first = Color(0xFFFFFFFF);
 const Color purpleDark = Color(0xFF9857CB);
 const Color purpleLight = Color(0xFFF1E9F6);
+const Color purpleMain = Color(0xFF4E3EC8);
+const Color purpleHide = Color(0xFF6457D2);
 
 const Color greyDark = Color(0xFF6F7175);
 const Color greyLight = Color(0xFFAAAAAA);
@@ -18,6 +20,10 @@ const Color greyUltralight = Color(0xFFC4C4C4);
 
 const Color red = Color(0xFFCB356B);
 const Color green = Color(0xFF159957);
+
+const Color doneColor = Color(0xFFF88868);
+const Color todoColor = Color(0xFFFFBF3A);
+const Color pendingColor = Color(0xFF4E3EC8);
 
 final Shader redGradient = LinearGradient(
   colors: <Color>[Color(0xFFCB356B), Color(0xFFBD3F32)],
