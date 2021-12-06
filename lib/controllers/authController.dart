@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 //import views
-import 'package:grow_app/views/taskScreen.dart';
 import 'package:grow_app/views/authentication/checkinEmail.dart';
+import 'package:grow_app/views/wrapper/navigationBar.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/snackBarWidget.dart';
@@ -20,9 +20,10 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'dart:math';
 
 FirebaseAuth auth = FirebaseAuth.instance;
-// int randomNumber = Random().nextInt(9000) + 1000; 
+// int randomNumber = Random().nextInt(9000) + 1000;
 
-Future registerUser(String email, String password, String name, String phoneNumber, context) async {
+Future registerUser(String email, String password, String name,
+    String phoneNumber, context) async {
   try {
     await auth
         .createUserWithEmailAndPassword(email: email, password: password)
@@ -31,12 +32,15 @@ Future registerUser(String email, String password, String name, String phoneNumb
       final uid = user?.uid;
       // print("Your current id is $uid");
       //store user data to firestore
+
       FirebaseFirestore.instance.collection("users").doc(uid).set({
         'name': name,
         'email': email,
+        "userId": uid,
         'phonenumber': phoneNumber,
         'dob': null,
-        'avatar': "https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.6435-9/244757120_1044097059677456_7375002768478113579_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=x0f0jeOG0QQAX-QcSU6&_nc_ht=scontent.fsgn2-4.fna&oh=f91f17830e1c787d524be872271ece9c&oe=61AAA7D5",
+        'avatar':
+            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.6435-9/244757120_1044097059677456_7375002768478113579_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=x0f0jeOG0QQAX-QcSU6&_nc_ht=scontent.fsgn2-4.fna&oh=f91f17830e1c787d524be872271ece9c&oe=61AAA7D5",
       }).then((signedInUser) => {
             print("successfully registered!"),
           });
@@ -68,18 +72,15 @@ Future registerUser(String email, String password, String name, String phoneNumb
 }
 
 Future resetPasswordUser(String email, context) async {
-  try{
-    await auth
-      .sendPasswordResetEmail(email: email)
-      .then((value) => {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => checkinEmailScreen(),
-              ),
-            )
-          }
-      );
+  try {
+    await auth.sendPasswordResetEmail(email: email).then((value) => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => checkinEmailScreen(),
+            ),
+          )
+        });
   } on FirebaseAuthException catch (e) {
     print(e.code);
     switch (e.code) {
@@ -109,7 +110,7 @@ Future loginUser(String email, String password, context) async {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => TasksPage(required, uid: uid)));
+                builder: (context) => navigationBar(required, uid: uid)));
       }
     });
   } on FirebaseAuthException catch (e) {
@@ -178,6 +179,7 @@ Future googleSignIn(context) async {
       FirebaseFirestore.instance.collection("users").doc(uid).set({
         'name': userData.displayName,
         'email': userData.email,
+        "userId": uid,
         'phonenumber': null,
         'dob': null,
         'avatar': userData.photoUrl,
@@ -189,7 +191,7 @@ Future googleSignIn(context) async {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => TasksPage(required, uid: uid)));
+              builder: (context) => navigationBar(required, uid: uid)));
     }
   } catch (e) {
     print("error");
@@ -198,10 +200,13 @@ Future googleSignIn(context) async {
 
 Future facebookSignIn(context) async {
   try {
-    final facebookMethod = await FacebookAuth.instance.login(permissions: ['public_profile', 'email']);
+    final facebookMethod = await FacebookAuth.instance
+        .login(permissions: ['public_profile', 'email']);
     if (facebookMethod.status == LoginStatus.success) {
-      final cred = FacebookAuthProvider.credential(facebookMethod.accessToken!.token);
-      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(cred)
+      final cred =
+          FacebookAuthProvider.credential(facebookMethod.accessToken!.token);
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCredential(cred)
           .whenComplete(() {});
 
       final User? facebookUser = userCredential.user;
@@ -211,14 +216,16 @@ Future facebookSignIn(context) async {
       print("Your current id is $uid");
       print("Your current userData is $userData");
       print("Your current email is " + userData['email'].toString());
-      print("Your current photoUrl is " + userData['picture']['data']['url'].toString());
+      print("Your current photoUrl is " +
+          userData['picture']['data']['url'].toString());
       print("Your current displayName is " + userData['name'].toString());
       // print("Your current id is " + userData['id'].toString());
-    
+
       if (userCredential.additionalUserInfo!.isNewUser) {
         FirebaseFirestore.instance.collection("users").doc(uid).set({
           'name': userData['name'],
           'email': userData['email'],
+          "userId": uid,
           'phonenumber': null,
           'dob': null,
           'avatar': userData['picture']['data']['url'],
@@ -230,14 +237,13 @@ Future facebookSignIn(context) async {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => TasksPage(required, uid: uid)));
+                builder: (context) => navigationBar(required, uid: uid)));
       }
     }
   } catch (e) {
     print("error");
   }
 }
-
 
 // Future<UserCredential> signInWithFacebook() async {
 //   final LoginResult result =
@@ -254,8 +260,6 @@ Future facebookSignIn(context) async {
 
 //   return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
 // }
-
-
 
 // Future facebookSignInn(context) async {
 //   try {
@@ -295,8 +299,6 @@ Future facebookSignIn(context) async {
 //     print("error");
 //   }
 // }
-
-
 
 // Future<UserCredential> signInWithGoogle() async {
 //   // Trigger the authentication flow

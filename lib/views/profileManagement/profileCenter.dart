@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-//import views
-import 'package:grow_app/views/wrapper/authenticationWrapper.dart';
-
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
-
-//import controllers
-import 'package:grow_app/controllers/authController.dart';
 
 //import constants
 import 'package:grow_app/constants/colors.dart';
@@ -22,24 +16,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 //import others
-import 'package:blur/blur.dart';
 import 'package:meta/meta.dart';
 
-class TasksPage extends StatefulWidget {
+class profileCenterScreen extends StatefulWidget {
   String uid;
 
-  TasksPage(Required required, {Key? key, required this.uid}) : super(key: key);
+  profileCenterScreen(Required required, {Key? key, required this.uid})
+      : super(key: key);
 
   @override
-  _TasksPageState createState() => _TasksPageState(uid);
+  _profileCenterScreenState createState() => _profileCenterScreenState(uid);
 }
 
-class _TasksPageState extends State<TasksPage> {
+class _profileCenterScreenState extends State<profileCenterScreen> {
   // final String? uid = controllers.currentUserId;
 
   String? uid = "";
 
-  _TasksPageState(uid);
+  _profileCenterScreenState(uid);
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -51,6 +45,7 @@ class _TasksPageState extends State<TasksPage> {
     User? user = FirebaseAuth.instance.currentUser;
     final userid = user?.uid.toString();
     uid = userid;
+    print('The current uid is $uid');
   }
 
   void showdialog(bool isUpdate, DocumentSnapshot? ds) {
@@ -118,8 +113,7 @@ class _TasksPageState extends State<TasksPage> {
               ),
             ],
           );
-        }
-    );
+        });
   }
 
   @override
@@ -154,9 +148,9 @@ class _TasksPageState extends State<TasksPage> {
             //       (Route<dynamic> route) => false);
             // }),
             onPressed: () => logoutDialog(context),
-              // Navigator.of(context).pushAndRemoveUntil(
-              //     MaterialPageRoute(builder: (context) => authWrapper()),
-              //     (Route<dynamic> route) => false);
+            // Navigator.of(context).pushAndRemoveUntil(
+            //     MaterialPageRoute(builder: (context) => authWrapper()),
+            //     (Route<dynamic> route) => false);
           ),
         ],
       ),
