@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   email_validator: ^2.0.1
   custom_check_box: ^0.0.4
+  iconsax: ^0.0.8
   
   
   # firebase
@@ -68,12 +69,9 @@ flutter:
     - assets/icons/authentication/
     - assets/icons/general/
     - assets/icons/timeline/
+    - assets/icons/projectManagement/
 
   fonts:
-    # - family: NavBarIcons
-    #   fonts:
-    #     - asset: assets/fonts/nav_bar_icons.ttf
-
     - family: Poppins
       fonts:
         - asset: assets/fonts/poppins/Poppins-Thin.ttf

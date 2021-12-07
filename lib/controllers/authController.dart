@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 //import views
-import 'package:grow_app/views/taskScreen.dart';
 import 'package:grow_app/views/authentication/checkinEmail.dart';
-import 'package:grow_app/views/timeline/calendar.dart';
+import 'package:grow_app/views/wrapper/navigationBar.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/snackBarWidget.dart';
@@ -33,9 +32,11 @@ Future registerUser(String email, String password, String name,
       final uid = user?.uid;
       // print("Your current id is $uid");
       //store user data to firestore
+
       FirebaseFirestore.instance.collection("users").doc(uid).set({
         'name': name,
         'email': email,
+        "userId": uid,
         'phonenumber': phoneNumber,
         'dob': null,
         'avatar':
@@ -109,7 +110,7 @@ Future loginUser(String email, String password, context) async {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => CalendarPage(required, uid: uid)));
+                builder: (context) => navigationBar(required, uid: uid)));
       }
     });
   } on FirebaseAuthException catch (e) {
@@ -178,6 +179,7 @@ Future googleSignIn(context) async {
       FirebaseFirestore.instance.collection("users").doc(uid).set({
         'name': userData.displayName,
         'email': userData.email,
+        "userId": uid,
         'phonenumber': null,
         'dob': null,
         'avatar': userData.photoUrl,
@@ -189,7 +191,7 @@ Future googleSignIn(context) async {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => TasksPage(required, uid: uid)));
+              builder: (context) => navigationBar(required, uid: uid)));
     }
   } catch (e) {
     print("error");
@@ -223,6 +225,7 @@ Future facebookSignIn(context) async {
         FirebaseFirestore.instance.collection("users").doc(uid).set({
           'name': userData['name'],
           'email': userData['email'],
+          "userId": uid,
           'phonenumber': null,
           'dob': null,
           'avatar': userData['picture']['data']['url'],
@@ -234,7 +237,7 @@ Future facebookSignIn(context) async {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => TasksPage(required, uid: uid)));
+                builder: (context) => navigationBar(required, uid: uid)));
       }
     }
   } catch (e) {

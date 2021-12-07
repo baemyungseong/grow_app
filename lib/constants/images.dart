@@ -3,21 +3,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 //images used in this app
-const backgroundOnboarding =
-    'assets/images/background/background_onboarding.png';
-const backgroundAuthentication =
-    'assets/images/background/background_authentication.png';
+const backgroundBasic = 'assets/images/background/backgroundBasic.png';
+const backgroundOnboarding = 'assets/images/background/backgroundOnboarding.png';
+const backgroundAuthentication = 'assets/images/background/backgroundAuthentication.png';
 
 //onboarding images
-const obHandCalendar = 'assets/images/onboarding/hand_calendar.png';
-const obTargetDynamic = 'assets/images/onboarding/target_dynamic.png';
-const obDocumentFile = 'assets/images/onboarding/document_file.png';
+const obHandCalendar = 'assets/images/onboarding/handCalendar.png';
+const obTargetDynamic = 'assets/images/onboarding/targetDynamic.png';
+const obDocumentFile = 'assets/images/onboarding/documentFile.png';
 
 //authentication images
-const atCheckPerspective = 'assets/images/authentication/check_perspective.png';
-const atSalySayhi = 'assets/images/authentication/saly_sayhi.png';
-const atSalyWorking = 'assets/images/authentication/saly_working.png';
-const atPhoneExciting = 'assets/images/authentication/phone_exciting.png';
+const atCheckPerspective = 'assets/images/authentication/checkPerspective.png';
+const atSalySayhi = 'assets/images/authentication/salySayhi.png';
+const atSalyWorking = 'assets/images/authentication/salyWorking.png';
+const atPhoneExciting = 'assets/images/authentication/phoneExciting.png';
 
 //timeline images
 const avatarNhat = 'assets/images/timeline/avatar_nhat.png';

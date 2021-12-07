@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 //set app padding for this app
 
 const double appPadding = 20.0;
+const double appPaddingInApp = 28.0;
 
 const double appFixedPadding = 28.0;
 
