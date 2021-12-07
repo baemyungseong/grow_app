@@ -307,7 +307,8 @@ class _SignInPageState extends State<signinScreen> {
                                         fontSize: textButton),
                                   ),
                                 ),
-                              ))
+                              )
+                          )
                         ]),
                         SizedBox(height: 16),
                         Container(
