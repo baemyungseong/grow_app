@@ -50,67 +50,67 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: white,
-      child: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      body: Stack(
         children: [
-          Text(
-            "Project Creating Screen",
-            style: TextStyle(
-              fontFamily: 'SFProText',
-              fontWeight: FontWeight.w700,
-              color: Colors.blueAccent,
-              fontSize: 20,
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(backgroundBasic), fit: BoxFit.cover),
             ),
           ),
-          GestureDetector(
-            //action navigate to signin screen
-            onTap: () {
-              Navigator.pop(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      projectManagementScreen(required, uid: uid),
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 62),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      padding: EdgeInsets.only(left: 28),
+                      onPressed: () {
+                        Navigator.pop(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                projectManagementScreen(required, uid: uid),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.arrow_back_ios, size: 28, color: black),
+                    ),
+                    Spacer(),
+                    Container(
+                      padding: EdgeInsets.only(right: 28),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => projectManagementScreen(required, uid: uid),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Done",
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: purpleDark,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18
+                            ),
+                          )
+                      ),
+                    )
+                  ],
                 ),
-              );
-            },
-            child: AnimatedContainer(
-              alignment: Alignment.center,
-              duration: Duration(milliseconds: 300),
-              height: 54,
-              width: 260,
-              decoration: BoxDecoration(
-                color: purpleDark,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: white.withOpacity(0.1),
-                    spreadRadius: 0,
-                    blurRadius: 64,
-                    offset: Offset(15, 15), // changes position of shadow
-                  ),
-                  BoxShadow(
-                    color: white.withOpacity(0.2),
-                    spreadRadius: 0,
-                    blurRadius: 20,
-                    offset: Offset(8, 8), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Text(
-                "Close",
-                style: TextStyle(
-                    color: white,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                    fontSize: textButton),
-              ),
+              ],
             ),
           )
         ],
-      )),
+      ),
     );
   }
 }
