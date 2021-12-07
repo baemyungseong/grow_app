@@ -17,3 +17,6 @@ const atCheckPerspective = 'assets/images/authentication/checkPerspective.png';
 const atSalySayhi = 'assets/images/authentication/salySayhi.png';
 const atSalyWorking = 'assets/images/authentication/salyWorking.png';
 const atPhoneExciting = 'assets/images/authentication/phoneExciting.png';
+
+//timeline images
+const avatarNhat = 'assets/images/timeline/avatar_nhat.png';

@@ -21,6 +21,8 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  iconsax: ^0.0.8
+  date_time: ^0.4.5
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.8
@@ -30,6 +32,7 @@ dependencies:
   email_validator: ^2.0.1
   custom_check_box: ^0.0.4
   iconsax: ^0.0.8
+  
   
   # firebase
   firebase_core: ^1.8.0
@@ -61,10 +64,14 @@ flutter:
     - assets/images/background/
     - assets/images/logo/
     - assets/images/onboarding/
+    - assets/images/dashboard/
+    - assets/images/timeline/
     
     - assets/icons/
     - assets/icons/authentication/
     - assets/icons/general/
+    - assets/icons/dashboard/
+    - assets/icons/timeline/
     - assets/icons/projectManagement/
 
   fonts:
