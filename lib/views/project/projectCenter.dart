@@ -9,9 +9,9 @@ import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
 //import views
-import 'package:grow_app/views/profileManagement/notificationCenter.dart';
-import 'package:grow_app/views/projectManagement/dailyTaskEditing.dart';
-import 'package:grow_app/views/projectManagement/projectManagement.dart';
+import 'package:grow_app/views/profile/notificationCenter.dart';
+import 'package:grow_app/views/project/dailyTaskEditing.dart';
+import 'package:grow_app/views/project/projectManagement.dart';
 
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -96,7 +96,7 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                SizedBox(height: 72),
+                SizedBox(height: 64),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -203,11 +203,10 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 14,
-                              color: Color(0xFF666666),
+                              color: black,
                               fontWeight: FontWeight.w400),
                           controller: searchController,
-                          keyboardType: TextInputType.visiblePassword,
-                          autofillHints: [AutofillHints.password],
+                          keyboardType: TextInputType.text,
                           // validator: (value) => value.isEmpty
                           //     ? 'Password is required'
                           //     : null,
@@ -561,7 +560,6 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                                 child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        SizedBox(height: 16),
                                         Container(
                                           width: 245,
                                           child: Text(

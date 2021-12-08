@@ -18,22 +18,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 //import others
 import 'package:meta/meta.dart';
 
-class profileCenterScreen extends StatefulWidget {
+class taskModelScreen extends StatefulWidget {
   String uid;
 
-  profileCenterScreen(Required required, {Key? key, required this.uid})
+  taskModelScreen(Required required, {Key? key, required this.uid})
       : super(key: key);
 
   @override
-  _profileCenterScreenState createState() => _profileCenterScreenState(uid);
+  _taskModelScreenState createState() => _taskModelScreenState(uid);
 }
 
-class _profileCenterScreenState extends State<profileCenterScreen> {
+class _taskModelScreenState extends State<taskModelScreen> {
   // final String? uid = controllers.currentUserId;
 
   String? uid = "";
 
-  _profileCenterScreenState(uid);
+  _taskModelScreenState(uid);
 
   FirebaseAuth auth = FirebaseAuth.instance;
 

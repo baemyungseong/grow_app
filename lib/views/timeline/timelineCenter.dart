@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:grow_app/views/profile/notificationCenter.dart';
 import 'package:iconsax/iconsax.dart';
 
 //import widgets
@@ -18,46 +19,52 @@ import 'package:grow_app/constants/others.dart';
 //import others
 import 'package:blur/blur.dart';
 import 'package:meta/meta.dart';
+import 'package:custom_check_box/custom_check_box.dart';
 
-class CalendarPage extends StatefulWidget {
+class timelineCenterScreen extends StatefulWidget {
   String uid;
 
-  CalendarPage(Required required, {Key? key, required this.uid})
+  timelineCenterScreen(Required required, {Key? key, required this.uid})
       : super(key: key);
 
   @override
-  _CalendarPageState createState() => _CalendarPageState(uid);
+  _timelineCenterScreenState createState() => _timelineCenterScreenState(uid);
 }
 
-class _CalendarPageState extends State<CalendarPage> {
-  String? uid = "";
+class _timelineCenterScreenState extends State<timelineCenterScreen> {
+  String uid = "";
 
-  _CalendarPageState(String uid);
+  bool checkBoxValue = false;
+
+  _timelineCenterScreenState(String uid);
   void initState() {
     super.initState();
     User? user = FirebaseAuth.instance.currentUser;
     final userid = user?.uid.toString();
-    uid = userid;
+    uid = userid!;
   }
 
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
-          statusBarBrightness: Brightness.dark,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
           statusBarColor: Colors.transparent),
       child: Scaffold(
         body: SingleChildScrollView(
-            padding: EdgeInsets.all(appFixedPadding),
+            padding: EdgeInsets.all(appPaddingInApp),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: 32),
+                  SizedBox(height: 36),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
                             width: 32,
@@ -73,48 +80,50 @@ class _CalendarPageState extends State<CalendarPage> {
                               shape: BoxShape.rectangle,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: 16),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                    'Pan Cái Chảo',
+                                    'Pan Cái Chaor',
                                     style: TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins',
-                                      color: black,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                        fontSize: 16,
+                                        fontFamily: 'Poppins',
+                                        color: black,
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.2),
                                   )),
-                              // SizedBox(width: 4),
+                              SizedBox(width: 4),
                               Container(
                                   // alignment: Alignment.topLeft,
                                   child: Text('Project Director',
                                       style: TextStyle(
                                         fontSize: 10,
                                         fontFamily: 'Poppins',
-                                        color: black,
+                                        color: greyDark,
                                         fontWeight: FontWeight.w400,
                                       ))),
                             ],
                           ),
                         ],
                       ),
+                      Spacer(),
                       Container(
-                          padding: EdgeInsets.only(right: 28),
+                          // padding: EdgeInsets.only(right: 28),
                           alignment: Alignment.center,
                           child: GestureDetector(
-                            // onTap: () {
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) =>
-                            //           notificationCenterScreen(required, uid: uid),
-                            //     ),
-                            //   );
-                            // },
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      notificationCenterScreen(required,
+                                          uid: uid),
+                                ),
+                              );
+                            },
                             child: AnimatedContainer(
                               alignment: Alignment.center,
                               duration: Duration(milliseconds: 300),
@@ -146,8 +155,19 @@ class _CalendarPageState extends State<CalendarPage> {
                           )),
                     ],
                   ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Timeline',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontFamily: 'Poppins',
+                      color: black,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  // SizedBox(height: 24),
                   Container(
-                    margin: EdgeInsets.only(top: 32, bottom: 32),
+                    margin: EdgeInsets.only(top: 24, bottom: 8),
                     // padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -190,12 +210,12 @@ class _CalendarPageState extends State<CalendarPage> {
                   decoration: BoxDecoration(
                       color: purpleDark,
                       borderRadius:
-                          BorderRadius.horizontal(right: Radius.circular(5)))),
+                          BorderRadius.horizontal(right: Radius.circular(4)))),
               SizedBox(width: 16),
               Text(
                 hour,
                 style: TextStyle(
-                  fontSize: suggestion12,
+                  fontSize: 16,
                   fontFamily: 'Poppins',
                   color: black,
                   fontWeight: FontWeight.w600,
@@ -203,6 +223,7 @@ class _CalendarPageState extends State<CalendarPage> {
               )
             ],
           ),
+          SizedBox(height: 8),
           Container(
               decoration: BoxDecoration(
                 color: white,
@@ -215,12 +236,11 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 ],
               ),
-              margin: EdgeInsets.only(top: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   buildTask('Morning standup I Routine'),
-                  buildTask('Organizing Trello board '),
+                  buildTask('Organizing Trello board and build folder structure on my github'),
                   buildTask('Organizing Notion board '),
                   buildTask('Choosing logo color for Fresh'),
                 ],
@@ -234,53 +254,80 @@ class _CalendarPageState extends State<CalendarPage> {
     return Container(
         margin: EdgeInsets.only(top: 8),
         height: 48,
-        width: 319,
         decoration: BoxDecoration(
-          color: purpleLight,
+          color: yellowLight,
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            SizedBox(width: 16),
             Container(
+              width: 245,
               alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(left: 16),
               child: Text(
                 taskName,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 12,
                   fontFamily: 'Poppins',
-                  color: greyDark,
-                  fontWeight: FontWeight.w600,
+                  color: black,
+                  fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.left,
               ),
             ),
+            Spacer(),
             Container(
-                width: 18,
-                height: 18,
-                decoration: BoxDecoration(
-                  color: white,
-                  // borderRadius: BorderRadius.all(Radius.circular(4))
-                  border: Border(
-                    top: BorderSide(
-                        width: 2.0, color: yallow, style: BorderStyle.solid),
-                    left: BorderSide(
-                        width: 2.0, color: yallow, style: BorderStyle.solid),
-                    right: BorderSide(
-                        width: 2.0, color: yallow, style: BorderStyle.solid),
-                    bottom: BorderSide(
-                        width: 2.0, color: yallow, style: BorderStyle.solid),
-                  ),
-                ))
+              padding: const EdgeInsets.only(right: 4.0),
+              alignment: Alignment.topRight,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
+              child: new CustomCheckBox(
+                  value: checkBoxValue,
+                  shouldShowBorder: true,
+                  borderColor: Color(0xFFFABB18),
+                  checkedFillColor: Color(0xFFFABB18),
+                  checkedIconColor: white,
+                  borderRadius: 4,
+                  borderWidth: 1.5,
+                  checkBoxSize: 16,
+                  // onChanged: _activeCheckAccept,
+                  onChanged: (bool newValue) {
+                    setState(() {
+                      checkBoxValue = newValue;
+                    });
+                  }
+              ),
+            ),
+            // Container(
+            //     width: 18,
+            //     height: 18,
+            //     decoration: BoxDecoration(
+            //       color: white,
+            //       // borderRadius: BorderRadius.all(Radius.circular(4))
+            //       border: Border(
+            //         top: BorderSide(
+            //             width: 2.0, color: todoColor, style: BorderStyle.solid),
+            //         left: BorderSide(
+            //             width: 2.0, color: todoColor, style: BorderStyle.solid),
+            //         right: BorderSide(
+            //             width: 2.0, color: todoColor, style: BorderStyle.solid),
+            //         bottom: BorderSide(
+            //             width: 2.0, color: todoColor, style: BorderStyle.solid),
+            //       ),
+            //     )
+            // ),
           ],
-        ));
+        )
+    );
   }
 
   Container buildDateColumn(String weekDay, int date, bool isActive) {
     return Container(
-      height: 48,
-      width: 32,
+      height: 52,
+      width: 36,
       decoration: isActive
           ? BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -289,18 +336,19 @@ class _CalendarPageState extends State<CalendarPage> {
           : BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8)), color: white),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(weekDay,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 12,
                 fontFamily: 'Poppins',
                 color: isActive ? white : greyDark,
                 fontWeight: FontWeight.w400,
               )),
+          SizedBox(height: 2),
           Text(date.toString(),
               style: TextStyle(
-                // fontSize: 11,
+                fontSize: 16,
                 fontFamily: 'Poppins',
                 color: isActive ? white : black,
                 fontWeight: FontWeight.w600,

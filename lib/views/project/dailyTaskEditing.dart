@@ -8,30 +8,32 @@ import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
+//import views
+import 'package:grow_app/views/project/projectManagement.dart';
+
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:grow_app/views/projectManagement/projectManagement.dart';
 
 //import others
 import 'package:meta/meta.dart';
 
-class notificationCenterScreen extends StatefulWidget {
+class dailyTaskEditingScreen extends StatefulWidget {
   String uid;
 
-  notificationCenterScreen(Required required, {Key? key, required this.uid})
+ dailyTaskEditingScreen(Required required, {Key? key, required this.uid})
       : super(key: key);
 
   @override
-  _notificationCenterScreenState createState() => _notificationCenterScreenState(uid);
+   dailyTaskEditingScreenState createState() =>  dailyTaskEditingScreenState(uid);
 }
 
-class _notificationCenterScreenState extends State<notificationCenterScreen> {
+class  dailyTaskEditingScreenState extends State<dailyTaskEditingScreen> {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
 
-  _notificationCenterScreenState(uid);
+   dailyTaskEditingScreenState(uid);
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -55,7 +57,7 @@ class _notificationCenterScreenState extends State<notificationCenterScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Notification Center Screen",
+            "Daily Task Editing Screen",
             style: TextStyle(
               fontFamily: 'SFProText',
               fontWeight: FontWeight.w700,

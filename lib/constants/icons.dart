@@ -5,19 +5,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 //icons used in this app
 
 //general
-const outlineClose = 'assets/icons/general/outline_close.svg';
+const outlineClose = 'assets/icons/general/outlineClose.svg';
 
 //authentication icons
 const googleLogoIcon = 'assets/icons/authentication/google.png';
 const facebookLogoIcon = 'assets/icons/authentication/facebook.png';
-const eyeVisibility = 'assets/icons/authentication/eye_visibility.svg';
-const eyeInvisibility = 'assets/icons/authentication/eye_invisibility.svg';
-const checkSuccessfully = 'assets/icons/authentication/check_successfully.svg';
-
-//timeline icons
-const calendarIcon = 'assets/icons/timeline/calendar.png';
-const notificationActiveIcon = 'assets/icons/timeline/notification_active.png';
+const eyeVisibility = 'assets/icons/authentication/eyeVisibility.svg';
+const eyeInvisibility = 'assets/icons/authentication/eyeInvisibility.svg';
+const checkSuccessfully = 'assets/icons/authentication/checkSuccessfully.svg';
 
 //projectManagement icons
-const clockProject = 'assets/icons/projectManagement/clock.png';
-const taskProject = 'assets/icons/projectManagement/task.png';
+const clockProject = 'assets/icons/project/clock.png';
+const taskProject = 'assets/icons/project/task.png';

@@ -10,7 +10,7 @@ class CircleProgress extends CustomPainter {
     // TODO: implement paint
     Paint paint = Paint()
       ..strokeWidth = 12
-      ..color = orange
+      ..color = doneColor
       ..style = PaintingStyle.stroke;
     Offset center = Offset(size.width / 2, size.height / 2);
     double radius = 80;
@@ -18,17 +18,17 @@ class CircleProgress extends CustomPainter {
     //draw animation with paint
     Paint paintAnimationArcDone = Paint()
       ..strokeWidth = 15
-      ..color = orange
+      ..color = doneColor
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
     Paint paintAnimationArcTodo = Paint()
       ..strokeWidth = 15
-      ..color = yallow
+      ..color = todoColor
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
     Paint paintAnimationArcPending = Paint()
       ..strokeWidth = 15
-      ..color = blue
+      ..color = pendingColor
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 

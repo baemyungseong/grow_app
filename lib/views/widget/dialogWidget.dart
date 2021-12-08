@@ -13,6 +13,7 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
+import 'package:iconsax/iconsax.dart';
 
 logoutDialog(BuildContext mContext) {
   return showDialog(
@@ -20,94 +21,136 @@ logoutDialog(BuildContext mContext) {
       builder: (context) {
         return AlertDialog(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
+              borderRadius: BorderRadius.circular(16.0),
             ),
-            backgroundColor: Color(0xff607dd9),
+            backgroundColor: purpleDark,
             content: Stack(
               overflow: Overflow.visible,
               alignment: Alignment.topCenter,
               children: [
                 Container(
-                  height: 300,
-                  width: 300,
+                  height: 264,
+                  width: 240,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
+                    padding: const EdgeInsets.fromLTRB(16, 40, 16, 0),
                     child: Column(
                       children: [
                         Text(
-                          "Do you want to sign out Grow?",
+                          "Do you want to log" + '\n' + "out Grow?",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'Poppins',
-                              fontSize: 23),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              height: 1.6
+                          ),
                         ),
-                        SizedBox(height: 30),
+                        SizedBox(height: 24),
                         Container(
-                          alignment: Alignment.topCenter,
+                          alignment: Alignment.center,
                           child: GestureDetector(
-                            // onTap: () => controlLogOut(context),
                             onTap: () => signOutUser().then((value) {
                               Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(builder: (context) => authenticationWrapper()),
                                   (Route<dynamic> route) => false);
                             }),
                             child: AnimatedContainer(
-                                alignment: Alignment.center,
-                                duration: Duration(milliseconds: 300),
-                                height: 45,
-                                width: 260,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(35)),
-                                child: Text(
-                                  "Sign Out",
+                              alignment: Alignment.center,
+                              duration: Duration(milliseconds: 300),
+                              height: 54,
+                              width: 260,
+                              decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                    BoxShadow(
+                                      color: black.withOpacity(0.25),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                    ),
+                                    BoxShadow(
+                                      color: black.withOpacity(0.1),
+                                      spreadRadius: 0,
+                                      blurRadius: 60,
+                                      offset: Offset(10, 10),
+                                    ),
+                                  ],
+                              ),
+                              child: Text(
+                                  "Log out",
                                   style: TextStyle(
-                                      color: Color(0xff607dd9),
+                                      color: purpleDark,
                                       fontFamily: 'Poppins',
-                                      fontSize: 15),
-                                )
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                              )
                             ),
-                          ),
+                          )
                         ),
-                        SizedBox(height: 15),
+                        SizedBox(height: 16),
                         Container(
-                          alignment: Alignment.topCenter,
+                          alignment: Alignment.center,
                           child: GestureDetector(
                             onTap: () {
                               Navigator.pop(context);
                             },
                             child: AnimatedContainer(
-                                alignment: Alignment.center,
-                                duration: Duration(milliseconds: 300),
-                                height: 45,
-                                width: 260,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(35)),
-                                child: Text(
+                              alignment: Alignment.center,
+                              duration: Duration(milliseconds: 300),
+                              height: 54,
+                              width: 260,
+                              decoration: BoxDecoration(
+                                color: purpleDark,
+                                border: Border(
+                                  top: BorderSide(width: 3, color: Color(0xff9857CB)),
+                                  left: BorderSide(width: 3, color: Color(0xff9857CB)),
+                                  right: BorderSide(width: 3, color: Color(0xff9857CB)),
+                                  bottom: BorderSide(width: 3, color: Color(0xff9857CB)),
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                    BoxShadow(
+                                      color: black.withOpacity(0.10),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                    ),
+                                    BoxShadow(
+                                      color: black.withOpacity(0.1),
+                                      spreadRadius: 0,
+                                      blurRadius: 60,
+                                      offset: Offset(10, 10),
+                                    ),
+                                  ],
+                              ),
+                              child: Text(
                                   "Cancel",
                                   style: TextStyle(
-                                      color: Color(0xff607dd9),
+                                      color: white,
                                       fontFamily: 'Poppins',
-                                      fontSize: 15),
-                                )
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                              )
                             ),
-                          ),
-                        ),
+                          )
+                        )
                       ],
                     ),
                   ),
                 ),
                 Positioned(
-                    top: -40,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.blue,
-                      radius: 40,
-                      child: Icon(
-                        Icons.logout,
-                        color: Colors.white,
-                        size: 50,
+                    top: -56,
+                    child: Container(
+                      child: CircleAvatar(
+                        backgroundColor: purpleMain,
+                        radius: 40,
+                        child: Icon(
+                          Iconsax.logout,
+                          color: Colors.white,
+                          size: 40,
+                        ),
                       ),
                     )
                 ),
