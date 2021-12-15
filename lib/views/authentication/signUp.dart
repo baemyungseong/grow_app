@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 //import views
 import 'package:grow_app/views/authentication/signIn.dart';
-import 'package:grow_app/views/authentication/termCondition.dart';
+import 'package:grow_app/views/profile/termCondition.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/snackBarWidget.dart';

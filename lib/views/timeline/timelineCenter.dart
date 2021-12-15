@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:grow_app/views/profile/notificationCenter.dart';
+import 'package:grow_app/views/profile/profileCenter.dart';
 import 'package:iconsax/iconsax.dart';
 
 //import widgets
@@ -67,17 +68,59 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                            width: 32,
-                            height: 32,
-                            decoration: new BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                              image: DecorationImage(
-                                  image: NetworkImage(
-                                      // '${projects[index]!["background"]}'),
-                                      'https://scontent.fvca1-4.fna.fbcdn.net/v/t39.30808-1/p480x480/259507941_1162683510806374_690586520604516558_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=7206a8&_nc_ohc=FtBeikuPI4cAX_rzDg2&_nc_ht=scontent.fvca1-4.fna&oh=8b217f922b39fac368818444711a410a&oe=61B1EDC7'),
-                                  fit: BoxFit.cover),
-                              shape: BoxShape.rectangle,
+                            // width: 32,
+                            // height: 32,
+                            // decoration: new BoxDecoration(
+                            //   borderRadius:
+                            //       BorderRadius.all(Radius.circular(8)),
+                            //   image: DecorationImage(
+                            //       image: NetworkImage(
+                            //           // '${projects[index]!["background"]}'),
+                            //           'https://scontent.fvca1-4.fna.fbcdn.net/v/t39.30808-1/p480x480/259507941_1162683510806374_690586520604516558_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=7206a8&_nc_ohc=FtBeikuPI4cAX_rzDg2&_nc_ht=scontent.fvca1-4.fna&oh=8b217f922b39fac368818444711a410a&oe=61B1EDC7'),
+                            //       fit: BoxFit.cover),
+                            //   shape: BoxShape.rectangle,
+                            // ),
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        profileCenterScreen(required, uid: uid),
+                                  ),
+                                ).then((value) {});
+                              },
+                              child: AnimatedContainer(
+                                alignment: Alignment.center,
+                                duration: Duration(milliseconds: 300),
+                                height: 32,
+                                width: 32,
+                                decoration: BoxDecoration(
+                                  color: purpleDark,
+                                  borderRadius: BorderRadius.circular(8),
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                          // '${projects[index]!["background"]}'),
+                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                      fit: BoxFit.cover),
+                                  shape: BoxShape.rectangle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: black.withOpacity(0.25),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                    ),
+                                    BoxShadow(
+                                      color: black.withOpacity(0.1),
+                                      spreadRadius: 0,
+                                      blurRadius: 60,
+                                      offset: Offset(10, 10),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                           SizedBox(width: 16),
@@ -130,7 +173,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                               height: 32,
                               width: 32,
                               decoration: BoxDecoration(
-                                color: purpleDark,
+                                color: purpleMain,
                                 borderRadius: BorderRadius.circular(8),
                                 boxShadow: [
                                   BoxShadow(
@@ -255,7 +298,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
         margin: EdgeInsets.only(top: 8),
         height: 48,
         decoration: BoxDecoration(
-          color: yellowLight,
+          color: purpleLight,
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
         ),
         child: Row(
@@ -287,8 +330,8 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
               child: new CustomCheckBox(
                   value: checkBoxValue,
                   shouldShowBorder: true,
-                  borderColor: Color(0xFFFABB18),
-                  checkedFillColor: Color(0xFFFABB18),
+                  borderColor: purpleHide,
+                  checkedFillColor: purpleHide,
                   checkedIconColor: white,
                   borderRadius: 4,
                   borderWidth: 1.5,

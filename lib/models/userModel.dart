@@ -1,33 +1,38 @@
 // import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:ffi';
 
 class User {
-  final String uid;
-  final String? email;
-  // final String profileName;
-  // final String username;
-  // final String url;
-  // final String bio;
+  final String userId;
+  final String email;
+  final String name;
+  final String job;
+  final String dob;
+  final String avatar;
+  final String phonenumber;
+  final Array projectsList;
 
-  User(this.uid, this.email);
+  User({
+    required this.userId,
+    required this.email,
+    required this.name,
+    required this.job,
+    required this.dob,
+    required this.avatar,
+    required this.phonenumber,
+    required this.projectsList,
+  });
 
-  // User({
-  //   required this.uid,
-  //   required this.email,
-  //   // required this.profileName,
-  //   // required this.username,
-  //   // required this.url,
-  //   // required this.bio,
-  // });
-
-  // factory User.fromDocument(DocumentSnapshot doc) {
-  //   return User(
-  //     id: doc.documentID,
-  //     email: doc['email'],
-  //     username: doc['username'],
-  //     url: doc['url'],
-  //     profileName: doc['profileName'],
-  //     bio: doc['bio'],
-  //   );
-  // }
+  factory User.fromDocument(Map<String, dynamic> doc) {
+    return User(
+      userId: doc['userId'],
+      email: doc['email'],
+      name: doc['name'],
+      job: doc['job'],
+      dob: doc['dob'],
+      avatar: doc['avatar'],
+      phonenumber: doc['phonenumber'],
+      projectsList: doc['projectsList'],
+    );
+  }
 }

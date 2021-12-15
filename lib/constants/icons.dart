@@ -17,3 +17,4 @@ const checkSuccessfully = 'assets/icons/authentication/checkSuccessfully.svg';
 //projectManagement icons
 const clockProject = 'assets/icons/project/clock.png';
 const taskProject = 'assets/icons/project/task.png';
+const leaderStar = 'assets/icons/project/star.png';

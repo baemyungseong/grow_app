@@ -7,10 +7,11 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
+import 'package:grow_app/models/projectModel.dart';
 
 //import views
 import 'package:grow_app/views/profile/notificationCenter.dart';
-import 'package:grow_app/views/project/dailyTaskEditing.dart';
+import 'package:grow_app/views/profile/profileCenter.dart';
 import 'package:grow_app/views/project/projectManagement.dart';
 
 //import firebase
@@ -49,6 +50,8 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
 
   bool checkBoxValue = false;
 
+  // late Project project;
+  // List projectIds = [];
 
   TextEditingController searchController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -57,6 +60,29 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
 
   var taskcollections = FirebaseFirestore.instance.collection('users');
   late String task;
+
+  // getProjectsDataList() async {
+  //   FirebaseFirestore.instance
+  //     .collection("projects")
+  //     .where("background", isEqualTo: "https://i.imgur.com/h59jgEn.png")
+  //     .snapshots()
+  //     .listen((value) {
+  //       project = Project.fromDocument(value.docs.first.data());
+  //       print(project.name);
+  //     });
+  // }
+
+  // getProjectsIdList() async {
+  //   FirebaseFirestore.instance
+  //       .collection("users")
+  //       .doc(uid)
+  //       .snapshots()
+  //       .listen((value) {
+  //         projectIds = value.data()!["projectsList"];
+  //         print(projectIds);
+  //   });
+  //   FirebaseFirestore.instance.collection("projects").
+  // }
 
   void initState() {
     super.initState();
@@ -72,6 +98,8 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
       _selectedIndex = _tabController!.index;
       print(_selectedIndex);
     });
+    // getProjectsDataList();
+    // getProjectsIdList();
   }
 
   @override
@@ -79,7 +107,6 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
     super.dispose();
     _tabController?.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -102,17 +129,61 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(left: 28),
-                      width: 32,
-                      height: 32,
-                      decoration: new BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                                // '${projects[index]!["background"]}'),
-                                'https://lh3.googleusercontent.com/a-/AOh14GhaZE3tqUxagut4wGtdcGM8MXueJWinnDVLejhO=s1337'),
-                            fit: BoxFit.cover,
+                      // width: 32,
+                      // height: 32,
+                      // decoration: new BoxDecoration(
+                      //   borderRadius:
+                      //       BorderRadius.all(Radius.circular(8)),
+                      //   image: DecorationImage(
+                      //       image: NetworkImage(
+                      //           // '${projects[index]!["background"]}'),
+                      //           'https://scontent.fvca1-4.fna.fbcdn.net/v/t39.30808-1/p480x480/259507941_1162683510806374_690586520604516558_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=7206a8&_nc_ohc=FtBeikuPI4cAX_rzDg2&_nc_ht=scontent.fvca1-4.fna&oh=8b217f922b39fac368818444711a410a&oe=61B1EDC7'),
+                      //       fit: BoxFit.cover),
+                      //   shape: BoxShape.rectangle,
+                      // ),
+                      padding: EdgeInsets.only(left: 28),
+                      alignment: Alignment.center,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  profileCenterScreen(required, uid: uid),
+                            ),
+                          ).then((value) {});
+                        },
+                        child: AnimatedContainer(
+                          alignment: Alignment.center,
+                          duration: Duration(milliseconds: 300),
+                          height: 32,
+                          width: 32,
+                          decoration: BoxDecoration(
+                            color: purpleDark,
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    // '${projects[index]!["background"]}'),
+                                    'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                fit: BoxFit.cover),
+                            shape: BoxShape.rectangle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: black.withOpacity(0.25),
+                                spreadRadius: 0,
+                                blurRadius: 4,
+                                offset: Offset(0, 4),
+                              ),
+                              BoxShadow(
+                                color: black.withOpacity(0.1),
+                                spreadRadius: 0,
+                                blurRadius: 60,
+                                offset: Offset(10, 10),
+                              ),
+                            ],
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                        ),
+                      ),
                     ),
                     SizedBox(width: 16),
                     Column(
@@ -393,7 +464,7 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                           decoration: BoxDecoration(color: Colors.transparent),
                           child: PageView.builder(
                               controller: PageController(
-                                  initialPage: 1,
+                                  initialPage: 0,
                                   keepPage: true,
                                   viewportFraction: 0.6),
                               itemCount: _listImageInprogress.length,
@@ -428,7 +499,7 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                           decoration: BoxDecoration(color: Colors.transparent),
                           child: PageView.builder(
                               controller: PageController(
-                                  initialPage: 1,
+                                  initialPage: 0,
                                   keepPage: true,
                                   viewportFraction: 0.6),
                               itemCount: _listImageTodo.length,
@@ -464,7 +535,7 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                           decoration: BoxDecoration(color: Colors.transparent),
                           child: PageView.builder(
                               controller: PageController(
-                                  initialPage: 1,
+                                  initialPage: 0,
                                   keepPage: true,
                                   viewportFraction: 0.6),
                               itemCount: _listImageDone.length,
@@ -500,40 +571,14 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 28, right: 28),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Daily task",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 24.0,
-                          color: black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Spacer(),
-                      Container(
-                        padding: EdgeInsets.only(bottom: 2),
-                        child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => dailyTaskEditingScreen(required, uid: uid),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "Edit",
-                              style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  color: greyDark,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
-                            )),
-                      )
-                    ],
+                  child: Text(
+                    "Daily task",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 24.0,
+                      color: black,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 SizedBox(height: 12),
@@ -551,7 +596,7 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                             width: 319,
                             height: 40,
                             decoration: BoxDecoration(
-                                color: Color(0xFFFFF8E8),
+                                color: purpleLight,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8))),
                             margin: EdgeInsets.only(top: 8, bottom: 8.0),
@@ -582,8 +627,8 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                                           child: new CustomCheckBox(
                                               value: checkBoxValue,
                                               shouldShowBorder: true,
-                                              borderColor: Color(0xFFFABB18),
-                                              checkedFillColor: Color(0xFFFABB18),
+                                              borderColor: purpleHide,
+                                              checkedFillColor: purpleHide,
                                               checkedIconColor: white,
                                               borderRadius: 4,
                                               borderWidth: 1.5,

@@ -84,28 +84,28 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                   },
                   icon: Icon(Icons.arrow_back_ios, size: 28, color: black),
                 ),
-                Spacer(),
-                Container(
-                  padding: EdgeInsets.only(bottom: 6, right: 28),
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                loginDetailScreen(required, uid: uid),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Save",
-                        style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: purpleMain,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16),
-                      )),
-                )
+                // Spacer(),
+                // Container(
+                //   padding: EdgeInsets.only(bottom: 6, right: 28),
+                //   child: GestureDetector(
+                //       onTap: () {
+                //         Navigator.pop(
+                //           context,
+                //           MaterialPageRoute(
+                //             builder: (context) =>
+                //                 loginDetailScreen(required, uid: uid),
+                //           ),
+                //         );
+                //       },
+                //       child: Text(
+                //         "Save",
+                //         style: TextStyle(
+                //             fontFamily: 'Poppins',
+                //             color: purpleMain,
+                //             fontWeight: FontWeight.w600,
+                //             fontSize: 16),
+                //       )),
+                // )
               ]),
               SizedBox(height: 10),
               Container(

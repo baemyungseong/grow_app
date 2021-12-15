@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:grow_app/constants/colors.dart';
 import 'dart:math';
 
-class CircleProgress extends CustomPainter {
+class circleProgressDashboard extends CustomPainter {
   double currentProgress;
-  CircleProgress(this.currentProgress);
+  circleProgressDashboard(this.currentProgress);
   @override
   void paint(Canvas canvas, Size size) {
     // TODO: implement paint

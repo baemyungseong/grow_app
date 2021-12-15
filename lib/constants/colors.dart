@@ -27,6 +27,7 @@ const Color todoColor = Color(0xFFFFBF3A);
 const Color pendingColor = Color(0xFF4E3EC8);
 
 const Color yellowLight = Color(0xFFFFF8E8);
+const Color yellowDark = Color(0xFFFABB18);
 
 final Shader redGradient = LinearGradient(
   colors: <Color>[Color(0xFFCB356B), Color(0xFFBD3F32)],
