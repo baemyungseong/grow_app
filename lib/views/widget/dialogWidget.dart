@@ -26,7 +26,7 @@ logoutDialog(BuildContext mContext) {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.0),
             ),
-            backgroundColor: purpleDark,
+            backgroundColor: white,
             content: Stack(
               overflow: Overflow.visible,
               alignment: Alignment.topCenter,
@@ -42,7 +42,7 @@ logoutDialog(BuildContext mContext) {
                           "Do you want to log" + '\n' + "out Grow?",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: Colors.white,
+                              color: purpleMain,
                               fontFamily: 'Poppins',
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -65,7 +65,7 @@ logoutDialog(BuildContext mContext) {
                                   height: 54,
                                   width: 260,
                                   decoration: BoxDecoration(
-                                    color: white,
+                                    color: purpleDark,
                                     borderRadius: BorderRadius.circular(8),
                                     boxShadow: [
                                       BoxShadow(
@@ -85,7 +85,7 @@ logoutDialog(BuildContext mContext) {
                                   child: Text(
                                     "Log out",
                                     style: TextStyle(
-                                        color: purpleDark,
+                                        color: white,
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w600,
                                         fontSize: 18),
@@ -104,16 +104,16 @@ logoutDialog(BuildContext mContext) {
                                   height: 54,
                                   width: 260,
                                   decoration: BoxDecoration(
-                                    color: purpleDark,
+                                    color: white,
                                     border: Border(
                                       top: BorderSide(
-                                          width: 3, color: Color(0xff9857CB)),
+                                          width: 3, color: white),
                                       left: BorderSide(
-                                          width: 3, color: Color(0xff9857CB)),
+                                          width: 3, color: white),
                                       right: BorderSide(
-                                          width: 3, color: Color(0xff9857CB)),
+                                          width: 3, color: white),
                                       bottom: BorderSide(
-                                          width: 3, color: Color(0xff9857CB)),
+                                          width: 3, color: white),
                                     ),
                                     borderRadius: BorderRadius.circular(8),
                                     boxShadow: [
@@ -134,7 +134,7 @@ logoutDialog(BuildContext mContext) {
                                   child: Text(
                                     "Cancel",
                                     style: TextStyle(
-                                        color: white,
+                                        color: purpleDark,
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w600,
                                         fontSize: 18),
@@ -145,15 +145,15 @@ logoutDialog(BuildContext mContext) {
                   ),
                 ),
                 Positioned(
-                    top: -56,
+                    top: -64,
                     child: Container(
                       child: CircleAvatar(
                         backgroundColor: purpleMain,
                         radius: 40,
                         child: Icon(
                           Iconsax.logout,
-                          color: Colors.white,
-                          size: 40,
+                          color: white,
+                          size: 32,
                         ),
                       ),
                     )),
@@ -559,6 +559,279 @@ datePickerDialog(BuildContext context, selectDate, category) {
       backgroundPicker: Colors.deepPurple[400],
     )
   ); 
+}
+
+removeProjectDialog(BuildContext mContext) {
+  return showDialog(
+      context: mContext,
+      builder: (context) {
+        return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            backgroundColor: white,
+            content: Stack(
+              overflow: Overflow.visible,
+              alignment: Alignment.topCenter,
+              children: [
+                Container(
+                  height: 264,
+                  width: 240,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Do you want to" + '\n' + "remove this Project?",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: black,
+                              fontFamily: 'Poppins',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              height: 1.6),
+                        ),
+                        SizedBox(height: 32),
+                        Container(
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              // onTap: () => signOutUser().then((value) {
+                              //   Navigator.of(context).pushAndRemoveUntil(
+                              //       MaterialPageRoute(
+                              //           builder: (context) =>
+                              //               authenticationWrapper()),
+                              //       (Route<dynamic> route) => false);
+                              // }),
+                              child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 54,
+                                  width: 260,
+                                  decoration: BoxDecoration(
+                                    color: red,
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: black.withOpacity(0.25),
+                                        spreadRadius: 0,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                      ),
+                                      BoxShadow(
+                                        color: black.withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 60,
+                                        offset: Offset(10, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "Remove",
+                                    style: TextStyle(
+                                        color: white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18),
+                                  )),
+                            )),
+                        SizedBox(height: 16),
+                        Container(
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 54,
+                                  width: 260,
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    border: Border(
+                                      top: BorderSide(
+                                          width: 3, color: white),
+                                      left: BorderSide(
+                                          width: 3, color: white),
+                                      right: BorderSide(
+                                          width: 3, color: white),
+                                      bottom: BorderSide(
+                                          width: 3, color: white),
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: black.withOpacity(0.10),
+                                        spreadRadius: 0,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                      ),
+                                      BoxShadow(
+                                        color: black.withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 60,
+                                        offset: Offset(10, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        color: black,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18),
+                                  )),
+                            ))
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ));
+      });
+}
+
+removeTaskDialog(BuildContext mContext) {
+  return showDialog(
+      context: mContext,
+      builder: (context) {
+        return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            backgroundColor: white,
+            content: Stack(
+              overflow: Overflow.visible,
+              alignment: Alignment.topCenter,
+              children: [
+                Container(
+                  height: 264,
+                  width: 240,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Do you want to" + '\n' + "remove this Task?",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: black,
+                              fontFamily: 'Poppins',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              height: 1.6),
+                        ),
+                        SizedBox(height: 32),
+                        Container(
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              // onTap: () => signOutUser().then((value) {
+                              //   Navigator.of(context).pushAndRemoveUntil(
+                              //       MaterialPageRoute(
+                              //           builder: (context) =>
+                              //               authenticationWrapper()),
+                              //       (Route<dynamic> route) => false);
+                              // }),
+                              child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 54,
+                                  width: 260,
+                                  decoration: BoxDecoration(
+                                    color: red,
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: black.withOpacity(0.25),
+                                        spreadRadius: 0,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                      ),
+                                      BoxShadow(
+                                        color: black.withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 60,
+                                        offset: Offset(10, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "Remove",
+                                    style: TextStyle(
+                                        color: white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18),
+                                  )),
+                            )),
+                        SizedBox(height: 16),
+                        Container(
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 54,
+                                  width: 260,
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    border: Border(
+                                      top: BorderSide(
+                                          width: 3, color: white),
+                                      left: BorderSide(
+                                          width: 3, color: white),
+                                      right: BorderSide(
+                                          width: 3, color: white),
+                                      bottom: BorderSide(
+                                          width: 3, color: white),
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: black.withOpacity(0.10),
+                                        spreadRadius: 0,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                      ),
+                                      BoxShadow(
+                                        color: black.withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 60,
+                                        offset: Offset(10, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        color: black,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18),
+                                  )),
+                            ))
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ));
+      });
+}
+
+MaterialStateProperty<Color> getColor(Color color, Color colorPressed) {
+  final getColor = (Set<MaterialState> states) {
+    if(states.contains(MaterialState.pressed)) {
+      return colorPressed;
+    } else {
+      return color;
+    }
+  };
+  return MaterialStateProperty.resolveWith(getColor);
 }
 
 // dialog(BuildContext Context) {

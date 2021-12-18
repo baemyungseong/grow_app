@@ -540,6 +540,7 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                             height: 48,
                             width: 200,
                             decoration: BoxDecoration(
+                              // color: getColor(purpleDark, purpleDark.withOpacity(0.3)),
                               color: purpleDark,
                               borderRadius: BorderRadius.circular(15),
                               boxShadow: [

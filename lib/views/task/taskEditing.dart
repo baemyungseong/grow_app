@@ -579,6 +579,65 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
                         ],
                       ),
                       SizedBox(height: 24),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start, 
+                        children: [
+                          Container(
+                            child: Text(
+                              "Remove",
+                              style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 20.0,
+                                  color: black,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: GestureDetector(
+                              onTap: () => removeTaskDialog(context),
+                              child: AnimatedContainer(
+                                alignment: Alignment.center,
+                                duration: Duration(milliseconds: 300),
+                                height: 48,
+                                width: 180,
+                                decoration: BoxDecoration(
+                                  color: red,
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: black.withOpacity(0.25),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                    ),
+                                    BoxShadow(
+                                      color: black.withOpacity(0.1),
+                                      spreadRadius: 0,
+                                      blurRadius: 64,
+                                      offset: Offset(15, 15),
+                                    ),
+                                  ],
+                                ),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                      "Remove this task",
+                                      style: TextStyle(
+                                        color: white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                )
+                              ),
+                            )
+                          )
+                        ]
+                      ),
+                      SizedBox(height: 56),
                     ]),
               ),
             ]),

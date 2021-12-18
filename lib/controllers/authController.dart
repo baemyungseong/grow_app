@@ -39,7 +39,8 @@ Future registerUser(String email, String password, String name,
         "userId": uid,
         'phonenumber': phoneNumber,
         'dob': null,
-        'avatar': "https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.6435-9/244757120_1044097059677456_7375002768478113579_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=x0f0jeOG0QQAX-QcSU6&_nc_ht=scontent.fsgn2-4.fna&oh=f91f17830e1c787d524be872271ece9c&oe=61AAA7D5",
+        'job': null,
+        'avatar': "https://i.pinimg.com/564x/1c/63/9a/1c639ad0f44e6f450a8559305ca9cb0a.jpg",
       }).then((signedInUser) => {
             print("successfully registered!"),
           });
@@ -182,6 +183,7 @@ Future googleSignIn(context) async {
         'phonenumber': null,
         'dob': null,
         'avatar': userData.photoUrl,
+        'job': null,
       }).then((signedInUser) => {
             print("successfully registered!"),
           });
@@ -227,6 +229,7 @@ Future facebookSignIn(context) async {
           "userId": uid,
           'phonenumber': null,
           'dob': null,
+          'job': null,
           'avatar': userData['picture']['data']['url'],
         }).then((signedInUser) => {
               print("successfully registered!"),
