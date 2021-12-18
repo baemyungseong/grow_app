@@ -32,6 +32,10 @@ dependencies:
   iconsax: ^0.0.8
   flutter_image: ^4.1.0
   dotted_border: ^2.0.0+1
+  flutter_rounded_date_picker: ^2.0.2
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
   
   # firebase
   firebase_core: ^1.8.0

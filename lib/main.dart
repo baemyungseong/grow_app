@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 //import others
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 int initScreen = 0;
 
@@ -32,6 +33,14 @@ class GrowApp extends StatelessWidget {
     return  MaterialApp(
         title: 'Grow',
         debugShowCheckedModeBanner: false,
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', 'US'), // English
+          // const Locale('vn', 'VN'), // VietNam
+        ],
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
           dialogBackgroundColor: Colors.white,

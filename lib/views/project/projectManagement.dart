@@ -9,8 +9,10 @@ import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
 //import views
+import 'package:grow_app/views/wrapper/navigationBar.dart';
 import 'package:grow_app/views/project/projectCenter.dart';
 import 'package:grow_app/views/project/projectCreating.dart';
+import 'package:grow_app/views/project/projectDetail.dart';
 import 'package:grow_app/views/project/projectSearching.dart';
 import 'package:grow_app/views/profile/notificationCenter.dart';
 
@@ -20,7 +22,6 @@ import 'package:grow_app/controllers/projectController.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:grow_app/views/wrapper/navigationBar.dart';
 
 //import others
 import 'package:meta/meta.dart';
@@ -141,13 +142,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                   IconButton(
                     padding: EdgeInsets.only(left: 28),
                     onPressed: () {
-                      Navigator.pop(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              navigationBar(required, uid: uid),
-                        ),
-                      );
+                      Navigator.pop(context);
                     },
                     icon: Icon(Icons.arrow_back_ios, size: 28, color: black),
                   ),
@@ -258,16 +253,28 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
               ),
               SizedBox(height: 12),
               Container(
-                padding: EdgeInsets.only(
-                    left: appPaddingInApp, right: appPaddingInApp),
+                padding: EdgeInsets.only(left: appPaddingInApp, right: appPaddingInApp),
                 child: ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero,
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   itemCount: projects.length,
                   itemBuilder: (context, index) {
-                    return Container(
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                projectDetailScreen(required, uid: uid),
+                          ),
+                        ).then((value) {
+                          getProjectsDataList();
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
                         height: 169,
                         decoration: BoxDecoration(
                             image: DecorationImage(
@@ -500,10 +507,12 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                               ],
                             )
                         )
+                      ),
                     );
                   },
                 ),
               ),
+              SizedBox(height: 120)
             ],
           ),
         ),

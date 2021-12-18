@@ -196,7 +196,8 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                               fontSize: 16.0,
                               color: black,
                               fontWeight: FontWeight.w600,
-                              height: 1.0),
+                              height: 1.0
+                          ),
                         ),
                         SizedBox(height: 4),
                         Text(
@@ -304,7 +305,7 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                             hintStyle: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 14,
-                                color: Color(0xFF666666),
+                                color: greyDark,
                                 fontWeight: FontWeight.w400),
                           )),
                     ),

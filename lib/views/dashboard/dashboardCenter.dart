@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:grow_app/views/task/taskDetail.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
@@ -16,6 +15,8 @@ import 'package:grow_app/constants/others.dart';
 import 'package:grow_app/views/profile/notificationCenter.dart';
 import 'package:grow_app/views/dashboard/circleProgressDashboard.dart';
 import 'package:grow_app/views/project/projectManagement.dart';
+import 'package:grow_app/views/project/projectDetail.dart';
+import 'package:grow_app/views/profile/profileCenter.dart';
 // import 'package:grow_app/views/dashboard/projecrCard.dart';
 
 //import firebase
@@ -117,7 +118,7 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => taskDetailScreen(required, uid: uid),
+                                        builder: (context) => profileCenterScreen(required, uid: uid),
                                       ),
                                     ).then((value) {
                                     });
@@ -483,492 +484,552 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
                       Column(
                         children: [
                           Container(
-                              child: Row(children: [
-                            Container(
-                                width: 150,
-                                height: 160,
-                                padding: EdgeInsets.only(
-                                    top: 16, left: 16, right: 12, bottom: 12),
-                                decoration: BoxDecoration(
-                                    color: purpleLight,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(12))),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      child: Text(
-                                        'Oct 25,2021',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontFamily: 'Poppins',
-                                          color: black,
-                                          fontWeight: FontWeight.w400,
-                                        ),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            projectDetailScreen(required, uid: uid),
                                       ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    Container(
-                                      width: 86,
-                                      child: Text(
-                                        'Design Logo Foody',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: 'Poppins',
-                                          color: black,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    Container(
-                                      width: 119,
-                                      child: Text(
-                                        'Design logo shoe shop which name is...',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          fontSize: 8,
-                                          fontFamily: 'Poppins',
-                                          color: black,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 12),
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          width: 86,
-                                          height: 7,
-                                          decoration: BoxDecoration(
-                                              color: white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10))),
-                                        ),
-                                        Container(
-                                          width: (86 * 0.01 * 100),
-                                          height: 7,
-                                          decoration: BoxDecoration(
-                                              color: doneColor,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10))),
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    Container(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                    ).then((value) {
+                                      // getProjectsDataList();
+                                    });
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: Duration(milliseconds: 300),
+                                      width: 150,
+                                      height: 160,
+                                      padding: EdgeInsets.only(
+                                          top: 16, left: 16, right: 12, bottom: 12),
+                                      decoration: BoxDecoration(
+                                          color: purpleLight,
+                                          borderRadius:
+                                              BorderRadius.all(Radius.circular(12))),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
+                                          Container(
+                                            child: Text(
+                                              'Oct 25,2021',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 8),
+                                          Container(
+                                            width: 86,
+                                            child: Text(
+                                              'Design Logo Foody',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 8),
+                                          Container(
+                                            width: 119,
+                                            child: Text(
+                                              'Design logo shoe shop which name is...',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 8,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 12),
                                           Stack(
                                             children: [
                                               Container(
-                                                width: 20,
-                                                height: 20,
-                                                decoration: new BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          // '${projects[index]!["background"]}'),
-                                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                      fit: BoxFit.cover),
-                                                  shape: BoxShape.circle,
-                                                ),
+                                                width: 86,
+                                                height: 7,
+                                                decoration: BoxDecoration(
+                                                    color: white,
+                                                    borderRadius: BorderRadius.all(
+                                                        Radius.circular(10))),
                                               ),
                                               Container(
-                                                margin:
-                                                    EdgeInsets.only(left: 12),
-                                                width: 20,
-                                                height: 20,
-                                                decoration: new BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          // '${projects[index]!["background"]}'),
-                                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                      fit: BoxFit.cover),
-                                                  shape: BoxShape.circle,
-                                                ),
+                                                width: (86 * 0.01 * 100),
+                                                height: 7,
+                                                decoration: BoxDecoration(
+                                                    color: doneColor,
+                                                    borderRadius: BorderRadius.all(
+                                                        Radius.circular(10))),
                                               ),
                                             ],
                                           ),
+                                          Spacer(),
+                                          Container(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration: new BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                // '${projects[index]!["background"]}'),
+                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                            fit: BoxFit.cover),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      margin:
+                                                          EdgeInsets.only(left: 12),
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration: new BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                // '${projects[index]!["background"]}'),
+                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                            fit: BoxFit.cover),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ],
+                                      )
+                                  ),
+                                ),
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            projectDetailScreen(required, uid: uid),
                                       ),
-                                    ),
-                                  ],
-                                )),
-                            Spacer(),
-                            Container(
-                                width: 150,
-                                height: 160,
-                                padding: EdgeInsets.only(
-                                    top: 16, left: 16, right: 12, bottom: 12),
-                                decoration: BoxDecoration(
-                                    color: purpleLight,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(12))),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      child: Text(
-                                        'Oct 25,2021',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontFamily: 'Poppins',
-                                          color: black,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    Container(
-                                      width: 86,
-                                      child: Text(
-                                        'Design Logo Fresh',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: 'Poppins',
-                                          color: black,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    Container(
-                                      width: 119,
-                                      child: Text(
-                                        'Design logo beverage store which name is...',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          fontSize: 8,
-                                          fontFamily: 'Poppins',
-                                          color: black,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 12),
-                                    Stack(
+                                    ).then((value) {
+                                      // getProjectsDataList();
+                                    });
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: Duration(milliseconds: 300),
+                                    width: 150,
+                                    height: 160,
+                                    padding: EdgeInsets.only(
+                                        top: 16, left: 16, right: 12, bottom: 12),
+                                    decoration: BoxDecoration(
+                                        color: purpleLight,
+                                        borderRadius:
+                                            BorderRadius.all(Radius.circular(12))),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                          width: 86,
-                                          height: 7,
-                                          decoration: BoxDecoration(
-                                              color: white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10))),
+                                          child: Text(
+                                            'Oct 25,2021',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontFamily: 'Poppins',
+                                              color: black,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
                                         ),
+                                        SizedBox(height: 8),
                                         Container(
-                                          width: (86 * 0.01 * 35),
-                                          height: 7,
-                                          decoration: BoxDecoration(
-                                              color: todoColor,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10))),
+                                          width: 86,
+                                          child: Text(
+                                            'Design Logo Fresh',
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'Poppins',
+                                              color: black,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    Container(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Stack(
+                                        SizedBox(height: 8),
+                                        Container(
+                                          width: 119,
+                                          child: Text(
+                                            'Design logo beverage store which name is...',
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                              fontSize: 8,
+                                              fontFamily: 'Poppins',
+                                              color: black,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 12),
+                                        Stack(
+                                          children: [
+                                            Container(
+                                              width: 86,
+                                              height: 7,
+                                              decoration: BoxDecoration(
+                                                  color: white,
+                                                  borderRadius: BorderRadius.all(
+                                                      Radius.circular(10))),
+                                            ),
+                                            Container(
+                                              width: (86 * 0.01 * 35),
+                                              height: 7,
+                                              decoration: BoxDecoration(
+                                                  color: todoColor,
+                                                  borderRadius: BorderRadius.all(
+                                                      Radius.circular(10))),
+                                            ),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        Container(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
                                             children: [
-                                              Container(
-                                                width: 20,
-                                                height: 20,
-                                                decoration: new BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          // '${projects[index]!["background"]}'),
-                                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                      fit: BoxFit.cover),
-                                                  shape: BoxShape.circle,
-                                                ),
-                                              ),
-                                              Container(
-                                                margin:
-                                                    EdgeInsets.only(left: 12),
-                                                width: 20,
-                                                height: 20,
-                                                decoration: new BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          // '${projects[index]!["background"]}'),
-                                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                      fit: BoxFit.cover),
-                                                  shape: BoxShape.circle,
-                                                ),
+                                              Stack(
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    decoration: new BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              // '${projects[index]!["background"]}'),
+                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                          fit: BoxFit.cover),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    margin:
+                                                        EdgeInsets.only(left: 12),
+                                                    width: 20,
+                                                    height: 20,
+                                                    decoration: new BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              // '${projects[index]!["background"]}'),
+                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                          fit: BoxFit.cover),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )),
+                                        ),
+                                      ],
+                                    )
+                                  ),
+                                ),
                           ])),
                           SizedBox(height: 16),
                           Container(
                               child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                Container(
-                                    width: 150,
-                                    height: 160,
-                                    padding: EdgeInsets.only(
-                                        top: 16,
-                                        left: 16,
-                                        right: 12,
-                                        bottom: 12),
-                                    decoration: BoxDecoration(
-                                        color: purpleLight,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12))),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          child: Text(
-                                            'Oct 26,2021',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontFamily: 'Poppins',
-                                              color: black,
-                                              fontWeight: FontWeight.w400,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              projectDetailScreen(required, uid: uid),
+                                        ),
+                                      ).then((value) {
+                                        // getProjectsDataList();
+                                      });
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: Duration(milliseconds: 300),
+                                      width: 150,
+                                      height: 160,
+                                      padding: EdgeInsets.only(
+                                          top: 16,
+                                          left: 16,
+                                          right: 12,
+                                          bottom: 12),
+                                      decoration: BoxDecoration(
+                                          color: purpleLight,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12))),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Oct 26,2021',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Container(
-                                          width: 86,
-                                          child: Text(
-                                            'Design Logo Hahaha',
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontFamily: 'Poppins',
-                                              color: black,
-                                              fontWeight: FontWeight.w600,
+                                          SizedBox(height: 8),
+                                          Container(
+                                            width: 86,
+                                            child: Text(
+                                              'Design Logo Hahaha',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Container(
-                                          width: 119,
-                                          child: Text(
-                                            'Design logo food shop which name is...',
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                              fontSize: 8,
-                                              fontFamily: 'Poppins',
-                                              color: black,
-                                              fontWeight: FontWeight.w400,
+                                          SizedBox(height: 8),
+                                          Container(
+                                            width: 119,
+                                            child: Text(
+                                              'Design logo food shop which name is...',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 8,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(height: 12),
-                                        Stack(
-                                          children: [
-                                            Container(
-                                              width: 86,
-                                              height: 7,
-                                              decoration: BoxDecoration(
-                                                  color: white,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(10))),
-                                            ),
-                                            Container(
-                                              width: (86 * 0.01 * 65),
-                                              height: 7,
-                                              decoration: BoxDecoration(
-                                                  color: todoColor,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(10))),
-                                            ),
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                          SizedBox(height: 12),
+                                          Stack(
                                             children: [
-                                              Stack(
-                                                children: [
-                                                  Container(
-                                                    width: 20,
-                                                    height: 20,
-                                                    decoration:
-                                                        new BoxDecoration(
-                                                      image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              // '${projects[index]!["background"]}'),
-                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                          fit: BoxFit.cover),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                        left: 12),
-                                                    width: 20,
-                                                    height: 20,
-                                                    decoration:
-                                                        new BoxDecoration(
-                                                      image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              // '${projects[index]!["background"]}'),
-                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                          fit: BoxFit.cover),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                  ),
-                                                ],
+                                              Container(
+                                                width: 86,
+                                                height: 7,
+                                                decoration: BoxDecoration(
+                                                    color: white,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(10))),
+                                              ),
+                                              Container(
+                                                width: (86 * 0.01 * 65),
+                                                height: 7,
+                                                decoration: BoxDecoration(
+                                                    color: todoColor,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(10))),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ],
-                                    )),
-                                Spacer(),
-                                Container(
-                                    width: 150,
-                                    height: 160,
-                                    padding: EdgeInsets.only(
-                                        top: 16,
-                                        left: 16,
-                                        right: 12,
-                                        bottom: 12),
-                                    decoration: BoxDecoration(
-                                        color: purpleLight,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12))),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          child: Text(
-                                            'Oct 26,2021',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontFamily: 'Poppins',
-                                              color: black,
-                                              fontWeight: FontWeight.w400,
+                                          Spacer(),
+                                          Container(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration:
+                                                          new BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                // '${projects[index]!["background"]}'),
+                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                            fit: BoxFit.cover),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      margin: EdgeInsets.only(
+                                                          left: 12),
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration:
+                                                          new BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                // '${projects[index]!["background"]}'),
+                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                            fit: BoxFit.cover),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
+                                        ],
+                                      )
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              projectDetailScreen(required, uid: uid),
                                         ),
-                                        SizedBox(height: 8),
-                                        Container(
-                                          width: 119,
-                                          child: Text(
-                                            'Design Logo Techi',
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontFamily: 'Poppins',
-                                              color: black,
-                                              fontWeight: FontWeight.w600,
+                                      ).then((value) {
+                                        // getProjectsDataList();
+                                      });
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: Duration(milliseconds: 300),
+                                      width: 150,
+                                      height: 160,
+                                      padding: EdgeInsets.only(
+                                          top: 16,
+                                          left: 16,
+                                          right: 12,
+                                          bottom: 12),
+                                      decoration: BoxDecoration(
+                                          color: purpleLight,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12))),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            child: Text(
+                                              'Oct 26,2021',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Container(
-                                          width: 119,
-                                          child: Text(
-                                            'Design logo technology store which name is...',
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                              fontSize: 8,
-                                              fontFamily: 'Poppins',
-                                              color: black,
-                                              fontWeight: FontWeight.w400,
+                                          SizedBox(height: 8),
+                                          Container(
+                                            width: 119,
+                                            child: Text(
+                                              'Design Logo Techi',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(height: 12),
-                                        Stack(
-                                          children: [
-                                            Container(
-                                              width: 86,
-                                              height: 7,
-                                              decoration: BoxDecoration(
-                                                  color: white,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(10))),
+                                          SizedBox(height: 8),
+                                          Container(
+                                            width: 119,
+                                            child: Text(
+                                              'Design logo technology store which name is...',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 8,
+                                                fontFamily: 'Poppins',
+                                                color: black,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
-                                            Container(
-                                              width: (86 * 0.01 * 0),
-                                              height: 7,
-                                              decoration: BoxDecoration(
-                                                  color: pendingColor,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(10))),
-                                            ),
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
+                                          ),
+                                          SizedBox(height: 12),
+                                          Stack(
                                             children: [
-                                              Stack(
-                                                children: [
-                                                  Container(
-                                                    width: 20,
-                                                    height: 20,
-                                                    decoration:
-                                                        new BoxDecoration(
-                                                      image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              // '${projects[index]!["background"]}'),
-                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                          fit: BoxFit.cover),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                        left: 12),
-                                                    width: 20,
-                                                    height: 20,
-                                                    decoration:
-                                                      new BoxDecoration(
-                                                      image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              // '${projects[index]!["background"]}'),
-                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                          fit: BoxFit.cover),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                  ),
-                                                ],
+                                              Container(
+                                                width: 86,
+                                                height: 7,
+                                                decoration: BoxDecoration(
+                                                    color: white,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(10))),
+                                              ),
+                                              Container(
+                                                width: (86 * 0.01 * 0),
+                                                height: 7,
+                                                decoration: BoxDecoration(
+                                                    color: pendingColor,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(10))),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ],
-                                    )),
+                                          Spacer(),
+                                          Container(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration:
+                                                          new BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                // '${projects[index]!["background"]}'),
+                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                            fit: BoxFit.cover),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      margin: EdgeInsets.only(
+                                                          left: 12),
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration:
+                                                        new BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                // '${projects[index]!["background"]}'),
+                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                            fit: BoxFit.cover),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ),
+                                  )
                               ])),
                           SizedBox(height: 96),
                         ],

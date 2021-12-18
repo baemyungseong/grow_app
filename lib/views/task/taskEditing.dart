@@ -21,6 +21,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 //import others
 import 'package:meta/meta.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 
 class taskEditingScreen extends StatefulWidget {
   String uid;
@@ -38,6 +39,10 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
   String uid = "";
 
   int selected = 0;
+
+  bool? haveDeadline = true;
+
+  late DateTime selectDate = DateTime.now();
 
   _taskEditingScreenState(uid);
 
@@ -261,8 +266,116 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
                                   ),
                                 ),
                                 SizedBox(height: 12),
-                                Row()
-                              ]),
+                                Row(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          String category = "task";
+                                          DateTime? dt = await datePickerDialog(context, selectDate, category);
+                                          if (dt != null) {
+                                            selectDate = dt;
+                                            setState(() {
+                                              haveDeadline = true;
+                                              haveDeadline != haveDeadline;
+                                              selectDate != selectDate;
+                                            });
+                                          }
+                                          print(haveDeadline);
+                                          print(selectDate);
+                                        },
+                                        child: AnimatedContainer(
+                                          alignment: Alignment.center,
+                                          duration: Duration(milliseconds: 300),
+                                          height: 48,
+                                          width: 180,
+                                          decoration: BoxDecoration(
+                                            color: (haveDeadline == true) ? purpleLight : white,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              SizedBox(width: 12),
+                                              Container(
+                                                padding: EdgeInsets.zero,
+                                                alignment: Alignment.center,
+                                                child: Icon(Iconsax.calendar_1,
+                                                  size: 16, color: greyDark
+                                                )
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                // "12 November, 2021",
+                                                "${DateFormat('yMMMMd').format(selectDate)}",
+                                                // "${selectDate.day} ${selectDate.month}, ${selectDate.year}",
+                                                style: TextStyle(
+                                                  color: greyDark,
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              SizedBox(width: 4)
+                                            ],
+                                          )
+                                        ),
+                                      )
+                                    ),
+                                    Spacer(),
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: GestureDetector(
+                                        onTap: ()  {
+                                          setState(() {
+                                            haveDeadline = false;
+                                            haveDeadline != haveDeadline;
+                                          });
+                                          print(haveDeadline);
+                                          print(selectDate);
+                                        },
+                                        child: AnimatedContainer(
+                                          alignment: Alignment.center,
+                                          duration: Duration(milliseconds: 300),
+                                          height: 48,
+                                          width: 130,
+                                          decoration: BoxDecoration(
+                                            color: (haveDeadline == true) ? white : purpleLight,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(width: 8),
+                                              Container(
+                                                padding: EdgeInsets.zero,
+                                                alignment: Alignment.center,
+                                                child: Icon(
+                                                  (haveDeadline == true) ? Iconsax.cd : Iconsax.tick_circle,
+                                                  size: 16, color: greyDark
+                                                )
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                "No Deadline",
+                                                style: TextStyle(
+                                                  color: greyDark,
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              SizedBox(width: 4),
+                                            ],
+                                          )
+                                        ),
+                                      )
+                                    ),
+                                  ]
+                                )
+                              ]
+                          ),
                         ],
                       ),
                       SizedBox(height: 24),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+//import widgets
+import 'package:grow_app/views/widget/dialogWidget.dart';
+
 //import constants
 import 'package:grow_app/constants/colors.dart';
 import 'package:grow_app/constants/fonts.dart';
@@ -20,6 +23,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 //import others
 import 'package:meta/meta.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:intl/intl.dart';
 
 class loginDetailScreen extends StatefulWidget {
   String uid;
@@ -35,6 +40,8 @@ class loginDetailScreenState extends State<loginDetailScreen> {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
+
+  late DateTime selectDate = DateTime.now();
 
   loginDetailScreenState(uid);
 
@@ -177,7 +184,7 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                                     hintStyle: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 14,
-                                        color: Color(0xFF666666),
+                                        color: greyDark,
                                         fontWeight: FontWeight.w400
                                     ),
                                   )
@@ -202,7 +209,58 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                             ),
                           ),
                           SizedBox(height: 12),
-                          
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: GestureDetector(
+                              onTap: () async {
+                                String category = "dob";
+                                DateTime? dt = await datePickerDialog(context, selectDate, category);
+                                if (dt != null) {
+                                  selectDate = dt;
+                                  setState(() {
+                                    selectDate != selectDate;
+                                  });
+                                }
+                                print(selectDate);
+                              },
+                              child: AnimatedContainer(
+                                alignment: Alignment.center,
+                                duration: Duration(milliseconds: 300),
+                                height: 48,
+                                width: 180,
+                                decoration: BoxDecoration(
+                                  color: purpleLight,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(width: 12),
+                                    Container(
+                                      padding: EdgeInsets.zero,
+                                      alignment: Alignment.center,
+                                      child: Icon(Iconsax.calendar_1,
+                                        size: 16, color: greyDark
+                                      )
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      // "12 November, 2021",
+                                      "${DateFormat('yMMMMd').format(selectDate)}",
+                                      // "${selectDate.day} ${selectDate.month}, ${selectDate.year}",
+                                      style: TextStyle(
+                                        color: greyDark,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    SizedBox(width: 4)
+                                  ],
+                                )
+                              ),
+                            )
+                          )
                         ]
                       ),
                       SizedBox(height: 24),
@@ -259,7 +317,7 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                                     hintStyle: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 14,
-                                        color: Color(0xFF666666),
+                                        color: greyDark,
                                         fontWeight: FontWeight.w400
                                     ),
                                   )
@@ -323,7 +381,7 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                                     hintStyle: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 14,
-                                        color: Color(0xFF666666),
+                                        color: greyDark,
                                         fontWeight: FontWeight.w400
                                     ),
                                   )

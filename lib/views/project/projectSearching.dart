@@ -11,6 +11,7 @@ import 'package:grow_app/constants/others.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_app/views/project/projectDetail.dart';
 import 'package:grow_app/views/project/projectManagement.dart';
 
 //import others
@@ -117,7 +118,7 @@ class _projectSearchingScreenState extends State<projectSearchingScreen> {
                                 hintStyle: TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 14,
-                                    color: Color(0xFF666666),
+                                    color: greyDark,
                                     fontWeight: FontWeight.w400),
                               )),
                         ),
@@ -185,33 +186,44 @@ class _projectSearchingScreenState extends State<projectSearchingScreen> {
                 Container(
                   padding: EdgeInsets.only(left: appPaddingInApp, right: appPaddingInApp),
                   child: ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.zero,
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: 6,
                     // itemCount: projects.length,
                     itemBuilder: (context, index) {
-                      return Container(
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  projectDetailScreen(required, uid: uid),
+                            ),
+                          ).then((value) {
+                            // getProjectsDataList();
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
                           height: 169,
                           decoration: BoxDecoration(
-                            // image: DecorationImage(
-                            //     image: NetworkImage(
-                            //         '${projects[index]!["background"]}'),
-                            //     fit: BoxFit.cover),
-                            image: DecorationImage(
-                              image: NetworkImage('https://i.imgur.com/h59jgEn.png'),
-                              fit: BoxFit.cover),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: purpleHShadow.withOpacity(0.6),
-                                spreadRadius: -16,
-                                blurRadius: 24,
-                                offset: Offset(0, 28),
+                              image: DecorationImage(
+                                // image: NetworkImage(
+                                //     '${projects[index]!["background"]}'),
+                                image: NetworkImage('https://i.imgur.com/h59jgEn.png'),
+                                fit: BoxFit.cover
                               ),
-                            ],
+                              borderRadius: BorderRadius.all(Radius.circular(16)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: purpleHShadow.withOpacity(0.6),
+                                  spreadRadius: -16,
+                                  blurRadius: 24,
+                                  offset: Offset(0, 28),
+                                ),
+                              ],
                           ),
                           margin: EdgeInsets.only(top: 16, bottom: 16.0),
                           child: Container(
@@ -433,10 +445,14 @@ class _projectSearchingScreenState extends State<projectSearchingScreen> {
                                     ),
                                   ])
                                 ],
-                              )));
+                              )
+                          )
+                        ),
+                      );
                     },
                   ),
                 ),
+                SizedBox(height: 32)
               ],
             ),
           ),

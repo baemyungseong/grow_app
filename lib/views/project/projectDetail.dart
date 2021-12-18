@@ -7,15 +7,16 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
-import 'package:grow_app/views/project/circleProgressProject.dart';
-import 'package:grow_app/views/project/projectEditing.dart';
-import 'package:grow_app/views/task/taskCreating.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
 
 //import views
 import 'package:grow_app/views/project/projectManagement.dart';
+import 'package:grow_app/views/project/circleProgressProject.dart';
+import 'package:grow_app/views/project/projectEditing.dart';
+import 'package:grow_app/views/task/taskCreating.dart';
+import 'package:grow_app/views/task/taskDetail.dart';
 
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -486,7 +487,19 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                           itemCount: 4,
                           // itemCount: projects.length,
                           itemBuilder: (context, index) {
-                            return Container(
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        taskDetailScreen(required, uid: uid),
+                                  ),
+                                ).then((value) {
+                                  // getProjectsDataList();
+                                });
+                              },
+                              child: AnimatedContainer(
                                 width: 319,
                                 height: 80,
                                 decoration: BoxDecoration(
@@ -494,6 +507,7 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8))),
                                 margin: EdgeInsets.only(top: 8, bottom: 8.0, left: appPaddingInApp, right: appPaddingInApp),
+                                duration: Duration(milliseconds: 300),
                                 child: Container(
                                   padding: EdgeInsets.only(left: 24, top: 12, bottom: 12, right: 24),
                                   child: Row(
@@ -614,7 +628,8 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                       ),
                                     ],
                                   ),
-                                )
+                                ),
+                              ),
                             );
                           },
                         ),
@@ -626,10 +641,22 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                           padding: EdgeInsets.zero,
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
-                          itemCount: 4,
+                          itemCount: 5,
                           // itemCount: projects.length,
                           itemBuilder: (context, index) {
-                            return Container(
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        taskDetailScreen(required, uid: uid),
+                                  ),
+                                ).then((value) {
+                                  // getProjectsDataList();
+                                });
+                              },
+                              child: AnimatedContainer(
                                 width: 319,
                                 height: 80,
                                 decoration: BoxDecoration(
@@ -641,6 +668,7 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                     bottom: 8.0,
                                     left: appPaddingInApp,
                                     right: appPaddingInApp),
+                                duration: Duration(milliseconds: 300),
                                 child: Container(
                                   padding: EdgeInsets.only(
                                       left: 24, top: 12, bottom: 12, right: 24),
@@ -657,7 +685,7 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                             Container(
                                                 width: 213,
                                                 child: Text(
-                                                  "Confirm Project with founder",
+                                                  "Confirm Project with Boss",
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   style: TextStyle(
@@ -684,7 +712,7 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                                             color: greyDark)),
                                                     SizedBox(width: 8),
                                                     Text(
-                                                      "Till 12 May, 2021",
+                                                      "Till 11 May, 2021",
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       maxLines: 1,
@@ -758,11 +786,11 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                                 ],
                                               ),
                                             ),
-                                          ])
-                                      ),
+                                          ])),
                                     ],
                                   ),
-                                )
+                                ),
+                              ),
                             );
                           },
                         ),
@@ -774,10 +802,22 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                           padding: EdgeInsets.zero,
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
-                          itemCount: 4,
+                          itemCount: 3,
                           // itemCount: projects.length,
                           itemBuilder: (context, index) {
-                            return Container(
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        taskDetailScreen(required, uid: uid),
+                                  ),
+                                ).then((value) {
+                                  // getProjectsDataList();
+                                });
+                              },
+                              child: AnimatedContainer(
                                 width: 319,
                                 height: 80,
                                 decoration: BoxDecoration(
@@ -789,6 +829,7 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                     bottom: 8.0,
                                     left: appPaddingInApp,
                                     right: appPaddingInApp),
+                                duration: Duration(milliseconds: 300),
                                 child: Container(
                                   padding: EdgeInsets.only(
                                       left: 24, top: 12, bottom: 12, right: 24),
@@ -806,6 +847,166 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                                 width: 213,
                                                 child: Text(
                                                   "Prepare for meeting",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 16.0,
+                                                      color: black,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                )),
+                                            SizedBox(height: 8),
+                                            Container(
+                                              width: 168,
+                                              child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                        padding: EdgeInsets.zero,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Icon(
+                                                            Iconsax.calendar_1,
+                                                            size: 16,
+                                                            color: greyDark)),
+                                                    SizedBox(width: 8),
+                                                    Text(
+                                                      "Till 12 May, 2021",
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          fontFamily: "Poppins",
+                                                          fontSize: 12.0,
+                                                          color: greyDark,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ]),
+                                            )
+                                          ])),
+                                      Spacer(),
+                                      Container(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                            SizedBox(height: 8),
+                                            Container(
+                                              width: 10,
+                                              height: 10,
+                                              decoration: new BoxDecoration(
+                                                color: (index == 0)
+                                                    ? doneColor
+                                                    : ((index == 1)
+                                                        ? todoColor
+                                                        : pendingColor),
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            Container(
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Stack(
+                                                    children: [
+                                                      Container(
+                                                        width: 20,
+                                                        height: 20,
+                                                        decoration:
+                                                            new BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  // '${projects[index]!["background"]}'),
+                                                                  'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                              fit: BoxFit.cover),
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        margin: EdgeInsets.only(
+                                                            left: 14),
+                                                        width: 20,
+                                                        height: 20,
+                                                        decoration:
+                                                            new BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  // '${projects[index]!["background"]}'),
+                                                                  'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/74483881_541590829928084_9212411211595907072_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=174925&_nc_ohc=_BcQsQo3ihUAX_iFJNa&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8yxbwpnASSB_vCn5GyqKTnu7aK4_HSbDxGf6MLdvxBYA&oe=61DCB50E'),
+                                                              fit: BoxFit.cover),
+                                                          shape: BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ])),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      //Done Tabbar
+                      Container(
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: 2,
+                          // itemCount: projects.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        taskDetailScreen(required, uid: uid),
+                                  ),
+                                ).then((value) {
+                                  // getProjectsDataList();
+                                });
+                              },
+                              child: AnimatedContainer(
+                                width: 319,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                    color: purpleLight,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8))),
+                                margin: EdgeInsets.only(
+                                    top: 8,
+                                    bottom: 8.0,
+                                    left: appPaddingInApp,
+                                    right: appPaddingInApp),
+                                duration: Duration(milliseconds: 300),
+                                child: Container(
+                                  padding: EdgeInsets.only(
+                                      left: 24, top: 12, bottom: 12, right: 24),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                            Container(
+                                                width: 213,
+                                                child: Text(
+                                                  "Prepare for Project",
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   style: TextStyle(
@@ -906,159 +1107,11 @@ class _projectDetailScreenState extends State<projectDetailScreen> with SingleTi
                                                 ],
                                               ),
                                             ),
-                                          ])
-                                      ),
-                                    ],
-                                  ),
-                                )
-                            );
-                          },
-                        ),
-                      ),
-                      //Done Tabbar
-                      Container(
-                        child: ListView.builder(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: EdgeInsets.zero,
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: 3,
-                          // itemCount: projects.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                                width: 319,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                    color: purpleLight,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8))),
-                                margin: EdgeInsets.only(
-                                    top: 8,
-                                    bottom: 8.0,
-                                    left: appPaddingInApp,
-                                    right: appPaddingInApp),
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                      left: 24, top: 12, bottom: 12, right: 24),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                            Container(
-                                                width: 213,
-                                                child: Text(
-                                                  "Prepare for project",
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  style: TextStyle(
-                                                      fontFamily: "Poppins",
-                                                      fontSize: 16.0,
-                                                      color: black,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                )),
-                                            SizedBox(height: 8),
-                                            Container(
-                                              width: 168,
-                                              child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                        padding: EdgeInsets.zero,
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Icon(
-                                                            Iconsax.calendar_1,
-                                                            size: 16,
-                                                            color: greyDark)),
-                                                    SizedBox(width: 8),
-                                                    Text(
-                                                      "Till 14 May, 2021",
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                          fontFamily: "Poppins",
-                                                          fontSize: 12.0,
-                                                          color: greyDark,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ]),
-                                            )
                                           ])),
-                                      Spacer(),
-                                      Container(
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                            SizedBox(height: 8),
-                                            Container(
-                                              width: 10,
-                                              height: 10,
-                                              decoration: new BoxDecoration(
-                                                color: (index == 0)
-                                                    ? doneColor
-                                                    : ((index == 1)
-                                                        ? todoColor
-                                                        : pendingColor),
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                            Spacer(),
-                                            Container(
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Stack(
-                                                    children: [
-                                                      Container(
-                                                        width: 20,
-                                                        height: 20,
-                                                        decoration:
-                                                            new BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image: NetworkImage(
-                                                                  // '${projects[index]!["background"]}'),
-                                                                  'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                              fit: BoxFit.cover),
-                                                          shape: BoxShape.circle,
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                            left: 14),
-                                                        width: 20,
-                                                        height: 20,
-                                                        decoration:
-                                                            new BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image: NetworkImage(
-                                                                  // '${projects[index]!["background"]}'),
-                                                                  'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/74483881_541590829928084_9212411211595907072_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=174925&_nc_ohc=_BcQsQo3ihUAX_iFJNa&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8yxbwpnASSB_vCn5GyqKTnu7aK4_HSbDxGf6MLdvxBYA&oe=61DCB50E'),
-                                                              fit: BoxFit.cover),
-                                                          shape: BoxShape.circle,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ])
-                                      ),
                                     ],
                                   ),
-                                )
+                                ),
+                              ),
                             );
                           },
                         ),

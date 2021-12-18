@@ -7,15 +7,16 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
-import 'package:grow_app/views/project/circleProgressProject.dart';
-import 'package:grow_app/views/project/projectEditing.dart';
-import 'package:grow_app/views/task/taskCreating.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
 
 //import views
 import 'package:grow_app/views/project/projectManagement.dart';
+import 'package:grow_app/views/project/circleProgressProject.dart';
+import 'package:grow_app/views/project/projectEditing.dart';
+import 'package:grow_app/views/task/taskCreating.dart';
+import 'package:grow_app/views/task/taskEditing.dart';
 
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -108,8 +109,7 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                projectEditingScreen(required, uid: uid),
+                            builder: (context) => taskEditingScreen(required, uid: uid),
                           ),
                         );
                       },
