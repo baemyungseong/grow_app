@@ -7,6 +7,10 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
+import 'package:grow_app/models/projectModel.dart';
+import 'package:grow_app/models/userModel.dart';
+import 'package:grow_app/views/project/userSearching.dart';
+import 'package:grow_app/views/task/assignTasks.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
@@ -17,6 +21,8 @@ import 'package:grow_app/views/project/projectManagement.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_app/views/widget/snackBarWidget.dart';
+import 'package:intl/intl.dart';
 
 //import others
 import 'package:meta/meta.dart';
@@ -24,29 +30,157 @@ import 'package:iconsax/iconsax.dart';
 
 class taskCreatingScreen extends StatefulWidget {
   String uid;
+  String projectId;
 
-  taskCreatingScreen(Required required, {Key? key, required this.uid})
+  taskCreatingScreen(Required required,
+      {Key? key, required this.uid, required this.projectId})
       : super(key: key);
 
   @override
-  _taskCreatingScreenState createState() => _taskCreatingScreenState(uid);
+  _taskCreatingScreenState createState() =>
+      _taskCreatingScreenState(uid, projectId);
 }
 
 class _taskCreatingScreenState extends State<taskCreatingScreen> {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
+  String projectId = "";
 
   int selected = 0;
 
-  _taskCreatingScreenState(uid);
+  _taskCreatingScreenState(uid, this.projectId);
 
   FirebaseAuth auth = FirebaseAuth.instance;
+
+  bool? haveDeadline = true;
+
+  String newDeadline = "";
+
+  String name = '';
+  String description = "";
+  String deadline = '';
+  String background = '';
+  String email = '';
+  String newTaskId = "";
+
+  late DateTime selectDate = DateTime.now();
 
   TextEditingController nameController = TextEditingController();
   GlobalKey<FormState> nameFormKey = GlobalKey<FormState>();
   TextEditingController descriptionController = TextEditingController();
   GlobalKey<FormState> descriptionFormKey = GlobalKey<FormState>();
+
+  late Project project = Project(
+    background: '',
+    deadline: '',
+    description: '',
+    owner: '',
+    progress: '',
+    projectId: '',
+    quantityTask: '',
+    name: '',
+    status: '',
+    assigned: [],
+  );
+  List assigned = [];
+  List<UserModel> userList = [];
+  List<UserModel> userListChoice = [];
+
+  late UserModel users = UserModel(
+      avatar: '',
+      dob: '',
+      email: '',
+      name: '',
+      job: '',
+      phonenumber: '',
+      projectsList: [],
+      tasksList: [],
+      userId: '');
+  Future getProjectsDetail() async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .where("projectId", isEqualTo: projectId)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        project = Project.fromDocument(value.docs.first.data());
+      });
+      print(project.progress);
+    });
+  }
+
+  Future getUserAssigned() async {
+    FirebaseFirestore.instance.collection("users").get().then((value) {
+      setState(() {
+        value.docs.forEach((element) {
+          if (email.contains(element.data()['email'] as String)) {
+            var check =
+                userListChoice.where((element) => element.email == email);
+            assigned.add(element.data()['userId'] as String);
+            if (check.isEmpty) {
+              userListChoice.add(UserModel.fromDocument(element.data()));
+              showErrorSnackBar(
+                  context, "The asignee has been add in your project");
+            } else {
+              showErrorSnackBar(
+                  context, "The asignee has been took part in your project");
+            }
+          }
+        });
+        print("userListChoice");
+        print(userListChoice);
+      });
+      setState(() {});
+    });
+  }
+
+  Future createTask(String newTaskId) async {
+    FirebaseFirestore.instance
+        .collection("tasks")
+        .add({
+          'name': name,
+          'description': description,
+          'deadline': newDeadline,
+          'owner': uid,
+          'projectId': projectId,
+          'progress': "0",
+          'status': "pending",
+          'assigned': FieldValue.arrayUnion(assigned)
+        })
+        .then(
+          (value) => FirebaseFirestore.instance
+              .collection("tasks")
+              .doc(value.id)
+              .update({
+            'taskId': newTaskId = value.id,
+          }),
+        )
+        .whenComplete(() => FirebaseFirestore.instance
+            .collection("users")
+            .get()
+            .then((value) => value.docs.forEach((element) {
+                  if (assigned.contains(element.data()['userId'] as String)) {
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(element.id)
+                        .update({
+                      'tasksList': FieldValue.arrayUnion([newTaskId]),
+                    });
+                  }
+                }))
+            .whenComplete(
+              () => FirebaseFirestore.instance
+                  .collection("projects")
+                  .doc(projectId)
+                  .update({
+                'tasksListId': FieldValue.arrayUnion([newTaskId]),
+                'quantityTask': (double.parse(project.quantityTask) + 1)
+                    .toStringAsFixed(0)
+                    .toString()
+              }),
+            ));
+  }
 
   var taskcollections = FirebaseFirestore.instance.collection('users');
 
@@ -56,6 +190,7 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
     final userid = user?.uid.toString();
     uid = userid!;
     print('The current uid is $uid');
+    getProjectsDetail();
   }
 
   @override
@@ -86,13 +221,13 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                   padding: EdgeInsets.only(bottom: 6, right: 28),
                   child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                projectManagementScreen(required, uid: uid),
-                          ),
-                        );
+                        if (userListChoice.length == 0) {
+                          showErrorSnackBar(context,
+                              "The task must assignee, Please add assignee!");
+                        } else {
+                          createTask(newTaskId);
+                          Navigator.pop(context);
+                        }
                       },
                       child: Text(
                         "Create",
@@ -159,19 +294,9 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: nameController,
                                           keyboardType: TextInputType.text,
-                                          // validator: (value) => value.isEmpty
-                                          //     ? 'Password is required'
-                                          //     : null,
-                                          // validator: MultiValidator([
-                                          //   RequiredValidator(
-                                          //       errorText: "Password Is Required"),
-                                          //   MinLengthValidator(6,
-                                          //       errorText:
-                                          //           "Minimum 6 Characters Required"),
-                                          // ]),
-                                          // onChanged: (val) {
-                                          //   password = val;
-                                          // },
+                                          onChanged: (val) {
+                                            name = val;
+                                          },
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             hintText: "Enter your task name",
@@ -226,19 +351,9 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: descriptionController,
                                           keyboardType: TextInputType.text,
-                                          // validator: (value) => value.isEmpty
-                                          //     ? 'Password is required'
-                                          //     : null,
-                                          // validator: MultiValidator([
-                                          //   RequiredValidator(
-                                          //       errorText: "Password Is Required"),
-                                          //   MinLengthValidator(6,
-                                          //       errorText:
-                                          //           "Minimum 6 Characters Required"),
-                                          // ]),
-                                          // onChanged: (val) {
-                                          //   password = val;
-                                          // },
+                                          onChanged: (val) {
+                                            description = val;
+                                          },
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             hintText:
@@ -272,11 +387,125 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                   ),
                                 ),
                                 SizedBox(height: 12),
-                                Column(
-                                  
-                                )
-                              ]
-                          ),
+                                Row(children: [
+                                  Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          String category = "task";
+                                          DateTime? dt = await datePickerDialog(
+                                              context, selectDate, category);
+                                          if (dt != null) {
+                                            selectDate = dt;
+                                            setState(() {
+                                              haveDeadline = true;
+                                              haveDeadline != haveDeadline;
+                                              selectDate != selectDate;
+                                              newDeadline =
+                                                  "${DateFormat('yMMMMd').format(selectDate)}";
+                                            });
+                                          }
+                                          print(haveDeadline);
+                                          print(selectDate);
+                                        },
+                                        child: AnimatedContainer(
+                                            alignment: Alignment.center,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            height: 48,
+                                            width: 180,
+                                            decoration: BoxDecoration(
+                                              color: (haveDeadline == true)
+                                                  ? purpleLight
+                                                  : white,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                SizedBox(width: 12),
+                                                Container(
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                        Iconsax.calendar_1,
+                                                        size: 16,
+                                                        color: greyDark)),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  // "12 November, 2021",
+                                                  "${DateFormat('yMMMMd').format(selectDate)}",
+                                                  // "${selectDate.day} ${selectDate.month}, ${selectDate.year}",
+                                                  style: TextStyle(
+                                                    color: greyDark,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4)
+                                              ],
+                                            )),
+                                      )),
+                                  Spacer(),
+                                  Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            haveDeadline = false;
+                                            haveDeadline != haveDeadline;
+                                            newDeadline = "";
+                                          });
+                                          print(haveDeadline);
+                                          print(selectDate);
+                                        },
+                                        child: AnimatedContainer(
+                                            alignment: Alignment.center,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            height: 48,
+                                            width: 130,
+                                            decoration: BoxDecoration(
+                                              color: (haveDeadline == true)
+                                                  ? white
+                                                  : purpleLight,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SizedBox(width: 8),
+                                                Container(
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                        (haveDeadline == true)
+                                                            ? Iconsax.cd
+                                                            : Iconsax
+                                                                .tick_circle,
+                                                        size: 16,
+                                                        color: greyDark)),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  "No Deadline",
+                                                  style: TextStyle(
+                                                    color: greyDark,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4),
+                                              ],
+                                            )),
+                                      )),
+                                ])
+                              ]),
                         ],
                       ),
                       SizedBox(height: 24),
@@ -317,7 +546,7 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                             padding: EdgeInsets.zero,
                                             scrollDirection: Axis.vertical,
                                             shrinkWrap: true,
-                                            itemCount: 4,
+                                            itemCount: userListChoice.length,
                                             itemBuilder: (context, index) {
                                               return Container(
                                                 width: 280,
@@ -334,7 +563,10 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                                                   8))
                                                       : BorderRadius.all(
                                                           Radius.circular(0)),
-                                                  border: (index == 2)
+                                                  border: (index <=
+                                                          userListChoice
+                                                                  .length -
+                                                              1)
                                                       ? Border()
                                                       : Border(
                                                           top: BorderSide(
@@ -370,7 +602,9 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                                         image: DecorationImage(
                                                             image: NetworkImage(
                                                                 // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                userListChoice[
+                                                                        index]
+                                                                    .avatar),
                                                             fit: BoxFit.cover),
                                                         shape:
                                                             BoxShape.rectangle,
@@ -389,7 +623,9 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                                             alignment: Alignment
                                                                 .topLeft,
                                                             child: Text(
-                                                              'Pan Cái Chaor',
+                                                              userListChoice[
+                                                                      index]
+                                                                  .name,
                                                               style: TextStyle(
                                                                   fontSize: 12,
                                                                   fontFamily:
@@ -403,7 +639,9 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                                         Container(
                                                             // alignment: Alignment.topLeft,
                                                             child: Text(
-                                                                'Project Director',
+                                                                userListChoice[
+                                                                        index]
+                                                                    .job,
                                                                 style:
                                                                     TextStyle(
                                                                   fontSize: 8,
@@ -425,8 +663,21 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                                           Container(
                                               alignment: Alignment.center,
                                               child: GestureDetector(
-                                                onTap: () =>
-                                                    addAssigneeDialog(context),
+                                                onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        assignTasksScreen(
+                                                            required,
+                                                            uid: uid,
+                                                            projectId:
+                                                                projectId,
+                                                            email: email),
+                                                  ),
+                                                ).then((value) {
+                                                  email = value;
+                                                  getUserAssigned();
+                                                }),
                                                 child: AnimatedContainer(
                                                     alignment:
                                                         Alignment.centerLeft,

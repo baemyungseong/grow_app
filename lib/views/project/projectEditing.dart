@@ -7,6 +7,10 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
+import 'package:grow_app/models/projectModel.dart';
+import 'package:grow_app/models/taskModel.dart';
+import 'package:grow_app/models/userModel.dart';
+import 'package:grow_app/views/project/userSearching.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
@@ -17,6 +21,7 @@ import 'package:grow_app/views/project/projectManagement.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_app/views/widget/snackBarWidget.dart';
 
 //import others
 import 'package:meta/meta.dart';
@@ -25,18 +30,53 @@ import 'package:intl/intl.dart';
 
 class projectEditingScreen extends StatefulWidget {
   String uid;
+  String projectId;
 
-  projectEditingScreen(Required required, {Key? key, required this.uid})
+  projectEditingScreen(Required required,
+      {Key? key, required this.uid, required this.projectId})
       : super(key: key);
 
   @override
-  _projectEditingScreenState createState() => _projectEditingScreenState(uid);
+  _projectEditingScreenState createState() =>
+      _projectEditingScreenState(uid, projectId);
 }
 
 class _projectEditingScreenState extends State<projectEditingScreen> {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
+  String email = "";
+  String projectId = "";
+  String reName = '';
+  String reDescription = "";
+  String reDeadline = '';
+  List assigned = [];
+
+  late Project project = Project(
+    background: '',
+    deadline: '',
+    description: '',
+    owner: '',
+    progress: '',
+    projectId: '',
+    quantityTask: '',
+    name: '',
+    status: '',
+    assigned: [],
+  );
+  late UserModel user = UserModel(
+      avatar: '',
+      dob: '',
+      email: '',
+      name: '',
+      job: '',
+      phonenumber: '',
+      projectsList: [],
+      tasksList: [],
+      userId: '');
+
+  List<UserModel> userList = [];
+  List<UserModel> userListChoice = [];
 
   int selected = 0;
 
@@ -44,7 +84,7 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
 
   late DateTime selectDate = DateTime.now();
 
-  _projectEditingScreenState(uid);
+  _projectEditingScreenState(uid, this.projectId);
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -54,6 +94,133 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
   GlobalKey<FormState> descriptionFormKey = GlobalKey<FormState>();
 
   var taskcollections = FirebaseFirestore.instance.collection('users');
+  Future getAssigned() async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .doc(projectId)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        assigned = value.data()!["assigned"];
+        FirebaseFirestore.instance.collection("users").get().then((value) {
+          setState(() {
+            value.docs.forEach((element) {
+              if (assigned.contains(element.data()['userId'] as String)) {
+                userListChoice.add(UserModel.fromDocument(element.data()));
+              }
+            });
+            print("userListChoice");
+            print(userListChoice.length);
+          });
+          setState(() {});
+        });
+      });
+    });
+  }
+
+  List<Task> taskAllList = [];
+  List taskAllId = [];
+  Future getTaskAllList() async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .doc(projectId)
+        .snapshots()
+        .listen((value) {
+      taskAllId = value.data()!["tasksListId"];
+      FirebaseFirestore.instance
+          .collection("tasks")
+          .snapshots()
+          .listen((value) {
+        setState(() {
+          value.docs.forEach((element) {
+            var check = taskAllList
+                .where((element) => taskAllId.contains(element.taskId));
+            if (check.isEmpty) {
+              if (taskAllId.contains(element.data()['taskId'] as String)) {
+                taskAllList.add(Task.fromDocument(element.data()));
+              }
+            }
+          });
+          print(taskAllList.length);
+        });
+      });
+      setState(() {});
+    });
+  }
+
+  Future getUserAssigned() async {
+    FirebaseFirestore.instance.collection("users").get().then((value) {
+      setState(() {
+        value.docs.forEach((element) {
+          if (email.contains(element.data()['email'] as String)) {
+            var check =
+                userListChoice.where((element) => element.email == email);
+            assigned.add(element.data()['userId'] as String);
+            if (check.isEmpty) {
+              userListChoice.add(UserModel.fromDocument(element.data()));
+              showErrorSnackBar(
+                  context, "The asignee has been add in your project");
+            } else {
+              showErrorSnackBar(
+                  context, "The asignee has been took part in your project");
+            }
+          }
+        });
+        print("userListChoice");
+        print(userListChoice);
+      });
+      setState(() {});
+    });
+  }
+
+  Future getProjectsDetail() async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .where("projectId", isEqualTo: projectId)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        project = Project.fromDocument(value.docs.first.data());
+      });
+      print(project.name);
+    });
+  }
+
+  Future updateProjectsDetail() async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .where("projectId", isEqualTo: projectId)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        project = Project.fromDocument(value.docs.first.data());
+        FirebaseFirestore.instance
+            .collection("projects")
+            .doc(project.projectId)
+            .update({
+          'name': reName,
+          'description': reDescription,
+          'deadline': reDeadline,
+          'assigned': FieldValue.arrayUnion(assigned),
+        }).whenComplete(() => FirebaseFirestore.instance
+                .collection("users")
+                .get()
+                .then((value) => value.docs.forEach((element) {
+                      if (assigned
+                          .contains(element.data()['userId'] as String)) {
+                        FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(element.id)
+                            .update({
+                          'projectsList':
+                              FieldValue.arrayUnion([project.projectId]),
+                        });
+                      }
+                    })));
+      });
+      print(project.name);
+    });
+  }
 
   void initState() {
     super.initState();
@@ -61,6 +228,9 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
     final userid = user?.uid.toString();
     uid = userid!;
     print('The current uid is $uid');
+    getProjectsDetail();
+    getAssigned();
+    getTaskAllList();
   }
 
   @override
@@ -91,13 +261,8 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                   padding: EdgeInsets.only(bottom: 6, right: 28),
                   child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                projectManagementScreen(required, uid: uid),
-                          ),
-                        );
+                        updateProjectsDetail();
+                        Navigator.pop(context);
                       },
                       child: Text(
                         "Save",
@@ -153,22 +318,12 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: nameController,
                                           keyboardType: TextInputType.text,
-                                          // validator: (value) => value.isEmpty
-                                          //     ? 'Password is required'
-                                          //     : null,
-                                          // validator: MultiValidator([
-                                          //   RequiredValidator(
-                                          //       errorText: "Password Is Required"),
-                                          //   MinLengthValidator(6,
-                                          //       errorText:
-                                          //           "Minimum 6 Characters Required"),
-                                          // ]),
-                                          // onChanged: (val) {
-                                          //   password = val;
-                                          // },
+                                          onChanged: (val) {
+                                            reName = val;
+                                          },
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
-                                            hintText: "Design Logo Foody",
+                                            hintText: project.name,
                                             hintStyle: TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontSize: 14,
@@ -220,24 +375,14 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: descriptionController,
                                           keyboardType: TextInputType.text,
-                                          // validator: (value) => value.isEmpty
-                                          //     ? 'Password is required'
-                                          //     : null,
-                                          // validator: MultiValidator([
-                                          //   RequiredValidator(
-                                          //       errorText: "Password Is Required"),
-                                          //   MinLengthValidator(6,
-                                          //       errorText:
-                                          //           "Minimum 6 Characters Required"),
-                                          // ]),
-                                          // onChanged: (val) {
-                                          //   password = val;
-                                          // },
+                                          onChanged: (val) {
+                                            reDescription = val;
+                                          },
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
-                                            hintText:
-                                                "A digital Agency building functional...",
+                                            hintText: project.description,
                                             hintStyle: TextStyle(
+                                                overflow: TextOverflow.ellipsis,
                                                 fontFamily: 'Poppins',
                                                 fontSize: 14,
                                                 color: Color(0xFF666666),
@@ -266,116 +411,125 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                   ),
                                 ),
                                 SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    Container(
+                                Row(children: [
+                                  Container(
                                       alignment: Alignment.centerLeft,
                                       child: GestureDetector(
                                         onTap: () async {
                                           String category = "task";
-                                          DateTime? dt = await datePickerDialog(context, selectDate, category);
+                                          DateTime? dt = await datePickerDialog(
+                                              context, selectDate, category);
                                           if (dt != null) {
                                             selectDate = dt;
                                             setState(() {
                                               haveDeadline = true;
                                               haveDeadline != haveDeadline;
                                               selectDate != selectDate;
+                                              reDeadline =
+                                                  "${DateFormat('yMMMMd').format(selectDate)}";
                                             });
                                           }
                                           print(haveDeadline);
                                           print(selectDate);
                                         },
                                         child: AnimatedContainer(
-                                          alignment: Alignment.center,
-                                          duration: Duration(milliseconds: 300),
-                                          height: 48,
-                                          width: 180,
-                                          decoration: BoxDecoration(
-                                            color: (haveDeadline == true) ? purpleLight : white,
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              SizedBox(width: 12),
-                                              Container(
-                                                padding: EdgeInsets.zero,
-                                                alignment: Alignment.center,
-                                                child: Icon(Iconsax.calendar_1,
-                                                  size: 16, color: greyDark
-                                                )
-                                              ),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                // "12 November, 2021",
-                                                "${DateFormat('yMMMMd').format(selectDate)}",
-                                                // "${selectDate.day} ${selectDate.month}, ${selectDate.year}",
-                                                style: TextStyle(
-                                                  color: greyDark,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
+                                            alignment: Alignment.center,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            height: 48,
+                                            width: 180,
+                                            decoration: BoxDecoration(
+                                              color: (haveDeadline == true)
+                                                  ? purpleLight
+                                                  : white,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                SizedBox(width: 12),
+                                                Container(
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                        Iconsax.calendar_1,
+                                                        size: 16,
+                                                        color: greyDark)),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  // "12 November, 2021",
+                                                  "${DateFormat('yMMMMd').format(selectDate)}",
+                                                  // "${selectDate.day} ${selectDate.month}, ${selectDate.year}",
+                                                  style: TextStyle(
+                                                    color: greyDark,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(width: 4)
-                                            ],
-                                          )
-                                        ),
-                                      )
-                                    ),
-                                    Spacer(),
-                                    Container(
+                                                SizedBox(width: 4)
+                                              ],
+                                            )),
+                                      )),
+                                  Spacer(),
+                                  Container(
                                       alignment: Alignment.centerLeft,
                                       child: GestureDetector(
-                                        onTap: ()  {
+                                        onTap: () {
                                           setState(() {
                                             haveDeadline = false;
                                             haveDeadline != haveDeadline;
+                                            reDeadline = "";
                                           });
                                           print(haveDeadline);
                                           print(selectDate);
                                         },
                                         child: AnimatedContainer(
-                                          alignment: Alignment.center,
-                                          duration: Duration(milliseconds: 300),
-                                          height: 48,
-                                          width: 130,
-                                          decoration: BoxDecoration(
-                                            color: (haveDeadline == true) ? white : purpleLight,
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(width: 8),
-                                              Container(
-                                                padding: EdgeInsets.zero,
-                                                alignment: Alignment.center,
-                                                child: Icon(
-                                                  (haveDeadline == true) ? Iconsax.cd : Iconsax.tick_circle,
-                                                  size: 16, color: greyDark
-                                                )
-                                              ),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                "No Deadline",
-                                                style: TextStyle(
-                                                  color: greyDark,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
+                                            alignment: Alignment.center,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            height: 48,
+                                            width: 130,
+                                            decoration: BoxDecoration(
+                                              color: (haveDeadline == true)
+                                                  ? white
+                                                  : purpleLight,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SizedBox(width: 8),
+                                                Container(
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                        (haveDeadline == true)
+                                                            ? Iconsax.cd
+                                                            : Iconsax
+                                                                .tick_circle,
+                                                        size: 16,
+                                                        color: greyDark)),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  "No Deadline",
+                                                  style: TextStyle(
+                                                    color: greyDark,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(width: 4),
-                                            ],
-                                          )
-                                        ),
-                                      )
-                                    ),
-                                  ]
-                                )
-                              ]
-                          ),
+                                                SizedBox(width: 4),
+                                              ],
+                                            )),
+                                      )),
+                                ])
+                              ]),
                         ],
                       ),
                       SizedBox(height: 24),
@@ -396,10 +550,7 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                             Container(
                                 width: 319,
                                 padding: EdgeInsets.only(
-                                    top: 24,
-                                    left: 20,
-                                    right: 20,
-                                    bottom: 24),
+                                    top: 24, left: 20, right: 20, bottom: 24),
                                 decoration: BoxDecoration(
                                   color: purpleLight,
                                   borderRadius: BorderRadius.circular(12),
@@ -414,7 +565,7 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                         padding: EdgeInsets.zero,
                                         scrollDirection: Axis.vertical,
                                         shrinkWrap: true,
-                                        itemCount: 4,
+                                        itemCount: userListChoice.length,
                                         itemBuilder: (context, index) {
                                           return Container(
                                             width: 280,
@@ -424,11 +575,9 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                               borderRadius: (index == 0)
                                                   ? BorderRadius.only(
                                                       topLeft:
-                                                          Radius.circular(
-                                                              8),
+                                                          Radius.circular(8),
                                                       topRight:
-                                                          Radius.circular(
-                                                              8))
+                                                          Radius.circular(8))
                                                   : BorderRadius.all(
                                                       Radius.circular(0)),
                                               border: (index == 2)
@@ -458,34 +607,34 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                                 Container(
                                                   width: 30,
                                                   height: 30,
-                                                  decoration:
-                                                      new BoxDecoration(
+                                                  decoration: new BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(8)),
                                                     image: DecorationImage(
                                                         image: NetworkImage(
+                                                            userListChoice[
+                                                                    index]
+                                                                .avatar
                                                             // '${projects[index]!["background"]}'),
-                                                            'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                            ),
                                                         fit: BoxFit.cover),
-                                                    shape:
-                                                        BoxShape.rectangle,
+                                                    shape: BoxShape.rectangle,
                                                   ),
                                                 ),
                                                 SizedBox(width: 16),
                                                 Column(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
+                                                      CrossAxisAlignment.start,
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
+                                                      MainAxisAlignment.center,
                                                   children: <Widget>[
                                                     Container(
-                                                        alignment: Alignment
-                                                            .topLeft,
+                                                        alignment:
+                                                            Alignment.topLeft,
                                                         child: Text(
-                                                          'Pan Cái Chaor',
+                                                          userListChoice[index]
+                                                              .name,
                                                           style: TextStyle(
                                                               fontSize: 12,
                                                               fontFamily:
@@ -499,14 +648,14 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                                     Container(
                                                         // alignment: Alignment.topLeft,
                                                         child: Text(
-                                                            'Project Director',
-                                                            style:
-                                                                TextStyle(
+                                                            userListChoice[
+                                                                    index]
+                                                                .job,
+                                                            style: TextStyle(
                                                               fontSize: 8,
                                                               fontFamily:
                                                                   'Poppins',
-                                                              color:
-                                                                  greyDark,
+                                                              color: greyDark,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w400,
@@ -514,15 +663,20 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                                   ],
                                                 ),
                                                 Spacer(),
-                                                (index == 0) ? Container(
-                                                  alignment: Alignment.center,
-                                                  width: 20,
-                                                  height: 20,
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: AssetImage(leaderStar)),
-                                                  ),
-                                                ) : Container(),
+                                                (index == 0)
+                                                    ? Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: 20,
+                                                        height: 20,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: AssetImage(
+                                                                  leaderStar)),
+                                                        ),
+                                                      )
+                                                    : Container(),
                                                 SizedBox(width: 16)
                                               ],
                                             ),
@@ -532,13 +686,22 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                       Container(
                                           alignment: Alignment.center,
                                           child: GestureDetector(
-                                            onTap: () =>
-                                                addAssigneeDialog(context),
+                                            onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    userSearchingScreen(
+                                                        required,
+                                                        email: email),
+                                              ),
+                                            ).then((value) {
+                                              email = value;
+                                              getUserAssigned();
+                                            }),
                                             child: AnimatedContainer(
-                                                alignment:
-                                                    Alignment.centerLeft,
-                                                duration: Duration(
-                                                    milliseconds: 300),
+                                                alignment: Alignment.centerLeft,
+                                                duration:
+                                                    Duration(milliseconds: 300),
                                                 height: 48,
                                                 width: 280,
                                                 decoration: BoxDecoration(
@@ -548,23 +711,20 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                                           bottomLeft: Radius
                                                               .circular(8),
                                                           bottomRight:
-                                                              Radius
-                                                                  .circular(
-                                                                      8)),
+                                                              Radius.circular(
+                                                                  8)),
                                                 ),
                                                 child: Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     SizedBox(width: 21),
                                                     Container(
                                                         padding:
                                                             EdgeInsets.zero,
-                                                        alignment: Alignment
-                                                            .center,
-                                                        child: Icon(
-                                                            Iconsax.add,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Icon(Iconsax.add,
                                                             size: 20,
                                                             color: white)),
                                                     SizedBox(width: 21),
@@ -572,8 +732,7 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                                       "New Assignee",
                                                       style: TextStyle(
                                                         color: white,
-                                                        fontFamily:
-                                                            'Poppins',
+                                                        fontFamily: 'Poppins',
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         fontSize: 12,
@@ -582,73 +741,71 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                                   ],
                                                 )),
                                           ))
-                                    ]
-                                )
-                            )
-                          ]
-                      ),
+                                    ]))
+                          ]),
                       SizedBox(height: 24),
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start, 
-                        children: [
-                          Container(
-                            child: Text(
-                              "Remove",
-                              style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 20.0,
-                                  color: black,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          SizedBox(height: 12),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: GestureDetector(
-                              onTap: () => removeProjectDialog(context),
-                              child: AnimatedContainer(
-                                alignment: Alignment.center,
-                                duration: Duration(milliseconds: 300),
-                                height: 48,
-                                width: 180,
-                                decoration: BoxDecoration(
-                                  color: red,
-                                  borderRadius: BorderRadius.circular(8),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: black.withOpacity(0.25),
-                                      spreadRadius: 0,
-                                      blurRadius: 4,
-                                      offset: Offset(0, 4),
-                                    ),
-                                    BoxShadow(
-                                      color: black.withOpacity(0.1),
-                                      spreadRadius: 0,
-                                      blurRadius: 64,
-                                      offset: Offset(15, 15),
-                                    ),
-                                  ],
-                                ),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                      "Remove this project",
-                                      style: TextStyle(
-                                        color: white,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                )
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(
+                                "Remove",
+                                style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 20.0,
+                                    color: black,
+                                    fontWeight: FontWeight.w600),
                               ),
-                            )
-                          )
-                        ]
-                      ),
+                            ),
+                            SizedBox(height: 12),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: GestureDetector(
+                                  onTap: () => removeProjectDialog(
+                                      context,
+                                      project.projectId,
+                                      uid,
+                                      assigned,
+                                      taskAllId),
+                                  child: AnimatedContainer(
+                                      alignment: Alignment.center,
+                                      duration: Duration(milliseconds: 300),
+                                      height: 48,
+                                      width: 180,
+                                      decoration: BoxDecoration(
+                                        color: red,
+                                        borderRadius: BorderRadius.circular(8),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: black.withOpacity(0.25),
+                                            spreadRadius: 0,
+                                            blurRadius: 4,
+                                            offset: Offset(0, 4),
+                                          ),
+                                          BoxShadow(
+                                            color: black.withOpacity(0.1),
+                                            spreadRadius: 0,
+                                            blurRadius: 64,
+                                            offset: Offset(15, 15),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Remove this project",
+                                          style: TextStyle(
+                                            color: white,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      )),
+                                ))
+                          ]),
                       SizedBox(height: 56),
-                    ]
-                ),
+                    ]),
               ),
             ]),
           ),

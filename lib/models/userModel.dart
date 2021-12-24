@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:ffi';
 
-class User {
+class UserModel {
   final String userId;
   final String email;
   final String name;
@@ -10,9 +10,9 @@ class User {
   final String dob;
   final String avatar;
   final String phonenumber;
-  final Array projectsList;
-
-  User({
+  final List projectsList;
+  final List tasksList;
+  UserModel({
     required this.userId,
     required this.email,
     required this.name,
@@ -21,18 +21,19 @@ class User {
     required this.avatar,
     required this.phonenumber,
     required this.projectsList,
+    required this.tasksList,
   });
 
-  factory User.fromDocument(Map<String, dynamic> doc) {
-    return User(
-      userId: doc['userId'],
-      email: doc['email'],
-      name: doc['name'],
-      job: doc['job'],
-      dob: doc['dob'],
-      avatar: doc['avatar'],
-      phonenumber: doc['phonenumber'],
-      projectsList: doc['projectsList'],
-    );
+  factory UserModel.fromDocument(Map<String, dynamic> doc) {
+    return UserModel(
+        userId: doc['userId'],
+        email: doc['email'],
+        name: doc['name'],
+        job: doc['job'],
+        dob: doc['dob'],
+        avatar: doc['avatar'],
+        phonenumber: doc['phonenumber'],
+        projectsList: doc['projectsList'],
+        tasksList: doc['tasksList']);
   }
 }

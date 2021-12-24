@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:grow_app/models/taskModel.dart';
+import 'package:grow_app/models/userModel.dart';
 import 'package:grow_app/views/profile/notificationCenter.dart';
 import 'package:grow_app/views/profile/profileCenter.dart';
 import 'package:iconsax/iconsax.dart';
@@ -19,6 +22,7 @@ import 'package:grow_app/constants/others.dart';
 
 //import others
 import 'package:blur/blur.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:custom_check_box/custom_check_box.dart';
 
@@ -36,6 +40,64 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
   String uid = "";
 
   bool checkBoxValue = false;
+  late UserModel user = UserModel(
+      avatar: '',
+      dob: '',
+      email: '',
+      name: '',
+      job: '',
+      tasksList: [],
+      phonenumber: '',
+      projectsList: [],
+      userId: '');
+  Future getUserDetail() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .where("userId", isEqualTo: uid)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        user = UserModel.fromDocument(value.docs.first.data());
+      });
+    });
+  }
+
+  List<Task> taskAllList = [];
+  List taskAllId = [];
+  Future getTaskAllList() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .snapshots()
+        .listen((value) {
+      taskAllId = value.data()!["tasksList"];
+      print(taskAllId);
+      FirebaseFirestore.instance
+          .collection("tasks")
+          .where('deadline',
+              isEqualTo: "${DateFormat('yMMMMd').format(DateTime.now())}")
+          .snapshots()
+          .listen((value) {
+        setState(() {
+          print("${DateFormat('yMMMMd').format(DateTime.now())}");
+          value.docs.forEach((element) {
+            // var check = taskAllList
+            //     .where((element) => taskAllId.contains(element.taskId));
+            // if (check.isEmpty) {
+            if (taskAllId.contains(element.data()['taskId'] as String)) {
+              taskAllList.add(Task.fromDocument(element.data()));
+            }
+            // }
+          });
+          print(taskAllList.length);
+        });
+      });
+      setState(() {});
+    });
+  }
+
+  ///time
+  int now = int.parse("${DateFormat('d').format(DateTime.now())}");
 
   _timelineCenterScreenState(String uid);
   void initState() {
@@ -43,6 +105,8 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
     User? user = FirebaseAuth.instance.currentUser;
     final userid = user?.uid.toString();
     uid = userid!;
+    getUserDetail();
+    getTaskAllList();
   }
 
   @override
@@ -99,11 +163,9 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                                 decoration: BoxDecoration(
                                   color: purpleDark,
                                   borderRadius: BorderRadius.circular(8),
-                                  image: DecorationImage(
-                                      image: NetworkImage(
-                                          // '${projects[index]!["background"]}'),
-                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                      fit: BoxFit.cover),
+                                  image: DecorationImage(image: NetworkImage(
+                                      // '${projects[index]!["background"]}'),
+                                      user.avatar), fit: BoxFit.cover),
                                   shape: BoxShape.rectangle,
                                   boxShadow: [
                                     BoxShadow(
@@ -130,7 +192,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                               Container(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                    'Pan Cái Chaor',
+                                    user.name,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontFamily: 'Poppins',
@@ -141,7 +203,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                               SizedBox(width: 4),
                               Container(
                                   // alignment: Alignment.topLeft,
-                                  child: Text('Project Director',
+                                  child: Text(user.job,
                                       style: TextStyle(
                                         fontSize: 10,
                                         fontFamily: 'Poppins',
@@ -215,20 +277,18 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          buildDateColumn('S', 7, false),
-                          buildDateColumn('M', 8, false),
-                          buildDateColumn('T', 9, false),
-                          buildDateColumn('W', 10, true),
-                          buildDateColumn('T', 11, false),
-                          buildDateColumn('F', 12, false),
-                          buildDateColumn('S', 13, false),
+                          buildDateColumn('S', now - 5, false),
+                          buildDateColumn('M', now - 4, false),
+                          buildDateColumn('T', now - 3, false),
+                          buildDateColumn('W', now - 2, false),
+                          buildDateColumn('T', now - 1, false),
+                          buildDateColumn('F', now, true),
+                          buildDateColumn('S', now + 1, false),
                         ]),
                   ),
                   Column(
                     children: [
-                      buildCardTask('08:00 AM'),
-                      buildCardTask('09:00 AM'),
-                      buildCardTask('10:00 AM'),
+                      buildCardTask('Today Task'),
                     ],
                   )
                 ])),
@@ -267,27 +327,84 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
             ],
           ),
           SizedBox(height: 8),
-          Container(
-              decoration: BoxDecoration(
-                color: white,
-                boxShadow: [
-                  BoxShadow(
-                    color: purpleLight,
-                    spreadRadius: -16,
-                    blurRadius: 24,
-                    offset: Offset(0, 28), // changes position of shadow
+          (taskAllList.length != 0)
+              ? Container(
+                  padding: EdgeInsets.only(
+                      left: appPaddingInApp, right: appPaddingInApp),
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: taskAllList.length,
+                    // itemCount: projects.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                          margin: EdgeInsets.only(top: 8),
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: purpleLight,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(width: 16),
+                              Container(
+                                width: 245 - 32 - 8,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  taskAllList[index].name,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: 'Poppins',
+                                    color: black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Spacer(),
+                              Container(
+                                padding: const EdgeInsets.only(right: 4.0),
+                                alignment: Alignment.topRight,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: new CustomCheckBox(
+                                    value: checkBoxValue,
+                                    shouldShowBorder: true,
+                                    borderColor: purpleHide,
+                                    checkedFillColor: purpleHide,
+                                    checkedIconColor: white,
+                                    borderRadius: 4,
+                                    borderWidth: 1.5,
+                                    checkBoxSize: 16,
+                                    // onChanged: _activeCheckAccept,
+                                    onChanged: (bool newValue) {
+                                      setState(() {
+                                        checkBoxValue = newValue;
+                                      });
+                                    }),
+                              ),
+                            ],
+                          ));
+                    },
                   ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  buildTask('Morning standup I Routine'),
-                  buildTask('Organizing Trello board and build folder structure on my github'),
-                  buildTask('Organizing Notion board '),
-                  buildTask('Choosing logo color for Fresh'),
-                ],
-              ))
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "You don't have tasks today!",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 16.0,
+                      color: black,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                )
         ],
       ),
     );
@@ -341,8 +458,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                     setState(() {
                       checkBoxValue = newValue;
                     });
-                  }
-              ),
+                  }),
             ),
             // Container(
             //     width: 18,
@@ -363,8 +479,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
             //     )
             // ),
           ],
-        )
-    );
+        ));
   }
 
   Container buildDateColumn(String weekDay, int date, bool isActive) {

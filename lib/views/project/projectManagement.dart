@@ -7,6 +7,9 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
+import 'package:grow_app/models/projectModel.dart';
+import 'package:grow_app/models/userModel.dart';
+import 'package:grow_app/views/dashboard/dashboardCenter.dart';
 
 //import views
 import 'package:grow_app/views/wrapper/navigationBar.dart';
@@ -43,11 +46,25 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
 
   String uid = "";
 
-  List<String> projectsList = [];
+  // List<String> projectsList = [];
+  List projectIds = [];
   List projectsDataList = [];
   List<Map<String, dynamic>?> projects = [];
-  // bool isChangeProjectData = false;
 
+  late Project project = Project(
+    background: '',
+    deadline: '',
+    description: '',
+    owner: '',
+    progress: '',
+    projectId: '',
+    quantityTask: '',
+    name: '',
+    status: '',
+    assigned: [],
+  );
+  List projectIdAll = [];
+  List<Project> projectAllList = [];
   _projectManagementScreenState(uid);
 
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -66,6 +83,42 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
     super.dispose();
   }
 
+  List assigned = [];
+  late UserModel user = UserModel(
+      avatar: '',
+      dob: '',
+      tasksList: [],
+      email: '',
+      name: '',
+      job: '',
+      phonenumber: '',
+      projectsList: [],
+      userId: '');
+  List<UserModel> userList = [];
+  Future getAssigned(String projectId) async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .doc(projectId)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        assigned = value.data()!["assigned"];
+        FirebaseFirestore.instance.collection("users").get().then((value) {
+          setState(() {
+            value.docs.forEach((element) {
+              if (assigned.contains(element.data()['userId'] as String)) {
+                userList.add(UserModel.fromDocument(element.data()));
+              }
+            });
+            print("userList.length");
+            print(userList.length);
+          });
+          setState(() {});
+        });
+      });
+    });
+  }
+
   getProjectsDataList() async {
     FirebaseFirestore.instance
         .collection("users")
@@ -82,31 +135,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
     });
   }
 
-  // isChangeProjectsData(id) async {
-  //   await FirebaseFirestore.instance
-  //       .collection("projects")
-  //       .doc(id)
-  //       .snapshots()
-  //       .listen((value) {
-  //     isChangeProjectData == true;
-  //     print(isChangeProjectData);
-  //   });
-  //   return isChangeProjectData;
-  // }
-
   Future<Map<String, dynamic>?> getDataProject(id) async {
-    // var data;
-    // await FirebaseFirestore.instance
-    //     .collection('projects')
-    //     .doc(id)
-    //     .snapshots()
-    //     .listen((value) {
-    //   value.data();
-    //   print(data);
-    //   data = value.data();
-    //   if (mounted) setState(() {});
-    // });
-    // return data;
     var data;
     await FirebaseFirestore.instance
         .collection('projects')
@@ -158,7 +187,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                   projectSearchingScreen(required, uid: uid),
                             ),
                           ).then((value) {
-                            getProjectsDataList();
+                            // getProjectsDataList();
                           });
                         },
                         child: AnimatedContainer(
@@ -203,9 +232,10 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                               builder: (context) =>
                                   notificationCenterScreen(required, uid: uid),
                             ),
-                          ).then((value) {
-                            getProjectsDataList();
-                          });
+                          );
+                          // ).then((value) {
+                          //   getProjectsDataList();
+                          // });
                         },
                         child: AnimatedContainer(
                           alignment: Alignment.center,
@@ -253,7 +283,8 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
               ),
               SizedBox(height: 12),
               Container(
-                padding: EdgeInsets.only(left: appPaddingInApp, right: appPaddingInApp),
+                padding: EdgeInsets.only(
+                    left: appPaddingInApp, right: appPaddingInApp),
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero,
@@ -266,22 +297,22 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                projectDetailScreen(required, uid: uid),
+                            builder: (context) => projectDetailScreen(required,
+                                uid: uid,
+                                projectId: "${projects[index]!["projectId"]}"),
                           ),
                         ).then((value) {
                           getProjectsDataList();
                         });
                       },
                       child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        height: 169,
-                        decoration: BoxDecoration(
+                          duration: Duration(milliseconds: 300),
+                          height: 169,
+                          decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: NetworkImage(
                                     '${projects[index]!["background"]}'),
-                                fit: BoxFit.cover
-                            ),
+                                fit: BoxFit.cover),
                             borderRadius: BorderRadius.all(Radius.circular(16)),
                             boxShadow: [
                               BoxShadow(
@@ -291,187 +322,36 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                 offset: Offset(0, 28),
                               ),
                             ],
-                        ),
-                        margin: EdgeInsets.only(top: 16, bottom: 16.0),
-                        child: Container(
-                            padding: EdgeInsets.only(left: 24, right: 24),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 16),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 235,
-                                      child: Text(
-                                        "${projects[index]!["name"]}",
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            fontFamily: "Poppins",
-                                            fontSize: 20.0,
-                                            color: black,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Container(
-                                      width: 12,
-                                      height: 12,
-                                      decoration: new BoxDecoration(
-                                        color: (projects[index]!["status"] ==
-                                                "done")
-                                            ? doneColor
-                                            : ((projects[index]!["status"] ==
-                                                    "todo")
-                                                ? todoColor
-                                                : pendingColor),
-                                        shape: BoxShape.circle,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 16),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      child: Row(
-                                        children: [
-                                          Stack(
-                                            children: [
-                                              Container(
-                                                width: 32,
-                                                height: 32,
-                                                decoration: new BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          // '${projects[index]!["background"]}'),
-                                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                      fit: BoxFit.cover),
-                                                  shape: BoxShape.circle,
-                                                ),
-                                              ),
-                                              Container(
-                                                margin:
-                                                    EdgeInsets.only(left: 22),
-                                                width: 32,
-                                                height: 32,
-                                                decoration: new BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          // '${projects[index]!["background"]}'),
-                                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                      fit: BoxFit.cover),
-                                                  shape: BoxShape.circle,
-                                                ),
-                                              ),
-                                              Container(
-                                                margin:
-                                                    EdgeInsets.only(left: 44),
-                                                width: 32,
-                                                height: 32,
-                                                decoration: new BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          // '${projects[index]!["background"]}'),
-                                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                      fit: BoxFit.cover),
-                                                  shape: BoxShape.circle,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 24),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              alignment: Alignment.center,
-                                              height: 16,
-                                              width: 16,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: AssetImage(
-                                                        clockProject)),
-                                              ),
-                                            ),
-                                            SizedBox(width: 8),
-                                            Container(
-                                              width: 137,
-                                              child: Text(
-                                                "${projects[index]!["deadline"]}",
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                style: TextStyle(
-                                                    fontFamily: "Poppins",
-                                                    fontSize: 12.0,
-                                                    color: black,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ],
+                          ),
+                          margin: EdgeInsets.only(top: 16, bottom: 16.0),
+                          child: Container(
+                              padding: EdgeInsets.only(left: 24, right: 24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 16),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 235,
+                                        child: Text(
+                                          "${projects[index]!["name"]}",
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontFamily: "Poppins",
+                                              fontSize: 20.0,
+                                              color: black,
+                                              fontWeight: FontWeight.w600),
                                         ),
-                                        SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              alignment: Alignment.center,
-                                              height: 16,
-                                              width: 16,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: AssetImage(
-                                                        taskProject)),
-                                              ),
-                                            ),
-                                            SizedBox(width: 8),
-                                            Container(
-                                              width: 137,
-                                              child: Text(
-                                                "${projects[index]!["quantityTask"]} task",
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                style: TextStyle(
-                                                    fontFamily: "Poppins",
-                                                    fontSize: 12.0,
-                                                    color: black,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 18),
-                                Stack(
-                                  children: [
-                                    Container(
-                                      width: 271,
-                                      height: 9,
-                                      decoration: BoxDecoration(
-                                          color: white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(16))),
-                                    ),
-                                    Container(
-                                      width: (271 *
-                                          0.01 *
-                                          (double.parse(
-                                              projects[index]!["progress"]))),
-                                      height: 9,
-                                      decoration: BoxDecoration(
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        width: 12,
+                                        height: 12,
+                                        decoration: new BoxDecoration(
                                           color: (projects[index]!["status"] ==
                                                   "done")
                                               ? doneColor
@@ -479,35 +359,190 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                                       "todo")
                                                   ? todoColor
                                                   : pendingColor),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(16))),
+                                          shape: BoxShape.circle,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        child: Row(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: new BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            // '${projects[index]!["background"]}'),
+                                                            'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                        fit: BoxFit.cover),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(left: 22),
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: new BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            // '${projects[index]!["background"]}'),
+                                                            'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                        fit: BoxFit.cover),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(left: 44),
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: new BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            // '${projects[index]!["background"]}'),
+                                                            'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                        fit: BoxFit.cover),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 24),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.center,
+                                                height: 16,
+                                                width: 16,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          clockProject)),
+                                                ),
+                                              ),
+                                              SizedBox(width: 8),
+                                              Container(
+                                                width: 137,
+                                                child: Text(
+                                                  "${projects[index]!["deadline"]}",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: black,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.center,
+                                                height: 16,
+                                                width: 16,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          taskProject)),
+                                                ),
+                                              ),
+                                              SizedBox(width: 8),
+                                              Container(
+                                                width: 137,
+                                                child: Text(
+                                                  "${projects[index]!["quantityTask"]} task",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: black,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 18),
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        width: 271,
+                                        height: 9,
+                                        decoration: BoxDecoration(
+                                            color: white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(16))),
+                                      ),
+                                      Container(
+                                        width: (271 *
+                                            0.01 *
+                                            (double.parse(
+                                                projects[index]!["progress"]))),
+                                        height: 9,
+                                        decoration: BoxDecoration(
+                                            color:
+                                                (projects[index]!["status"] ==
+                                                        "done")
+                                                    ? doneColor
+                                                    : ((projects[index]![
+                                                                "status"] ==
+                                                            "todo")
+                                                        ? todoColor
+                                                        : pendingColor),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(16))),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  Row(children: [
+                                    Text(
+                                      "Progress",
+                                      style: TextStyle(
+                                          fontFamily: "Poppins",
+                                          fontSize: 12.0,
+                                          color: black,
+                                          fontWeight: FontWeight.w400),
                                     ),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Row(children: [
-                                  Text(
-                                    "Progress",
-                                    style: TextStyle(
-                                        fontFamily: "Poppins",
-                                        fontSize: 12.0,
-                                        color: black,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "${projects[index]!["progress"]}%",
-                                    style: TextStyle(
-                                        fontFamily: "Poppins",
-                                        fontSize: 12.0,
-                                        color: black,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ])
-                              ],
-                            )
-                        )
-                      ),
+                                    Spacer(),
+                                    Text(
+                                      "${projects[index]!["progress"]}%",
+                                      style: TextStyle(
+                                          fontFamily: "Poppins",
+                                          fontSize: 12.0,
+                                          color: black,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ])
+                                ],
+                              ))),
                     );
                   },
                 ),
@@ -530,7 +565,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                             projectCreatingScreen(required, uid: uid),
                       ),
                     ).then((value) {
-                      getProjectsDataList();
+                      // getProjectsDataList();
                     });
                   },
                   child: AnimatedContainer(
