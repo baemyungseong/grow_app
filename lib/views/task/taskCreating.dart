@@ -9,6 +9,7 @@ import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 import 'package:grow_app/models/projectModel.dart';
 import 'package:grow_app/models/userModel.dart';
+import 'package:grow_app/views/project/projectCenter.dart';
 import 'package:grow_app/views/project/userSearching.dart';
 import 'package:grow_app/views/task/assignTasks.dart';
 
@@ -227,6 +228,13 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                         } else {
                           createTask(newTaskId);
                           Navigator.pop(context);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) =>
+                          //         projectCenterScreen(required, uid: uid),
+                          //   ),
+                          // ).then((value) {});
                         }
                       },
                       child: Text(

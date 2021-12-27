@@ -56,6 +56,8 @@ class _projectDetailScreenState extends State<projectDetailScreen>
   List taskIds = [];
 
   List assigned = [];
+  List assignedTask = [];
+  List<UserModel> userListTask = [];
 
   List<Task> taskTodoList = [];
 
@@ -145,23 +147,61 @@ class _projectDetailScreenState extends State<projectDetailScreen>
         .collection("projects")
         .doc(projectId)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        userList.clear();
-        assigned = value.data()!["assigned"];
-        FirebaseFirestore.instance.collection("users").get().then((value) {
-          setState(() {
-            value.docs.forEach((element) {
-              if (assigned.contains(element.data()['userId'] as String)) {
-                userList.add(UserModel.fromDocument(element.data()));
-              }
-            });
-            print("userList.length");
-            print(userList.length);
+        .listen((value1) {
+      FirebaseFirestore.instance.collection("users").get().then((value2) {
+        setState(() {
+          userList.clear();
+          assigned = value1.data()!["assigned"];
+          value2.docs.forEach((element) {
+            if (assigned.contains(element.data()['userId'] as String)) {
+              userList.add(UserModel.fromDocument(element.data()));
+            }
           });
-          setState(() {});
+          print("userList.length");
+          print(userList.length);
         });
       });
+    });
+  }
+
+  List taskList = [];
+  Future getAssignedTask() async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .doc(projectId)
+        .snapshots()
+        .listen((value1) {
+      setState(() {
+        taskList = value1.data()!["tasksListId"];
+        taskList.forEach((element) {
+          FirebaseFirestore.instance
+              .collection("tasks")
+              .doc(element)
+              .snapshots()
+              .listen((value2) {
+            assignedTask.clear();
+            assignedTask = value2.data()!["assigned"];
+            setState(() {
+              FirebaseFirestore.instance
+                  .collection("users")
+                  .get()
+                  .then((value3) {
+                setState(() {
+                  userListTask.clear();
+                  value3.docs.forEach((element) {
+                    if (assignedTask
+                        .contains(element.data()['userId'] as String)) {
+                      userListTask.add(UserModel.fromDocument(element.data()));
+                    }
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+      print("task avatar ne");
+      print(userListTask.length);
     });
   }
 
@@ -170,31 +210,23 @@ class _projectDetailScreenState extends State<projectDetailScreen>
         .collection("projects")
         .doc(projectId)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        taskTodoList.clear();
-        taskIds = value.data()!["tasksListId"];
-        print(taskIds);
-        FirebaseFirestore.instance
-            .collection("tasks")
-            .where("status", isEqualTo: 'todo')
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            print('getTaskTodoList');
-            value.docs.forEach((element) {
-              var check = taskTodoList
-                  .where((element) => taskIds.contains(element.taskId));
-              if (check.isEmpty) {
-                if (taskIds.contains(element.data()['taskId'] as String)) {
-                  taskTodoList.add(Task.fromDocument(element.data()));
-                }
-              }
-            });
-            print(taskTodoList.length);
+        .listen((value1) {
+      FirebaseFirestore.instance
+          .collection("tasks")
+          .where("status", isEqualTo: 'todo')
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          taskTodoList.clear();
+          taskIds = value1.data()!["tasksListId"];
+          print('getTaskTodoList');
+          value2.docs.forEach((element) {
+            if (taskIds.contains(element.data()['taskId'] as String)) {
+              taskTodoList.add(Task.fromDocument(element.data()));
+            }
           });
+          print(taskTodoList.length);
         });
-        setState(() {});
       });
     });
   }
@@ -204,31 +236,22 @@ class _projectDetailScreenState extends State<projectDetailScreen>
         .collection("projects")
         .doc(projectId)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        taskPendingList.clear();
-        taskIds = value.data()!["tasksListId"];
-        print(taskIds);
-        FirebaseFirestore.instance
-            .collection("tasks")
-            .where("status", isEqualTo: 'pending')
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            print('getTaskIPendingList');
-            value.docs.forEach((element) {
-              var check = taskPendingList
-                  .where((element) => taskIds.contains(element.taskId));
-              if (check.isEmpty) {
-                if (taskIds.contains(element.data()['taskId'] as String)) {
-                  taskPendingList.add(Task.fromDocument(element.data()));
-                }
-              }
-            });
-            print(taskPendingList.length);
+        .listen((value1) {
+      print(taskIds);
+      FirebaseFirestore.instance
+          .collection("tasks")
+          .where("status", isEqualTo: 'pending')
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          taskPendingList.clear();
+          taskIds = value1.data()!["tasksListId"];
+          value2.docs.forEach((element) {
+            if (taskIds.contains(element.data()['taskId'] as String)) {
+              taskPendingList.add(Task.fromDocument(element.data()));
+            }
           });
         });
-        setState(() {});
       });
     });
   }
@@ -238,31 +261,24 @@ class _projectDetailScreenState extends State<projectDetailScreen>
         .collection("projects")
         .doc(projectId)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        taskDoneList.clear();
-        taskIds = value.data()!["tasksListId"];
-        print(taskIds);
-        FirebaseFirestore.instance
-            .collection("tasks")
-            .where("status", isEqualTo: 'done')
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            print('getTaskDoneList');
-            value.docs.forEach((element) {
-              var check = taskDoneList
-                  .where((element) => taskIds.contains(element.taskId));
-              if (check.isEmpty) {
-                if (taskIds.contains(element.data()['taskId'] as String)) {
-                  taskDoneList.add(Task.fromDocument(element.data()));
-                }
-              }
-            });
-            print(taskDoneList.length);
+        .listen((value1) {
+      print(taskIds);
+      FirebaseFirestore.instance
+          .collection("tasks")
+          .where("status", isEqualTo: 'done')
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          taskDoneList.clear();
+          taskIds = value1.data()!["tasksListId"];
+          print('getTaskDoneList');
+          value2.docs.forEach((element) {
+            if (taskIds.contains(element.data()['taskId'] as String)) {
+              taskDoneList.add(Task.fromDocument(element.data()));
+              // }
+            }
           });
         });
-        setState(() {});
       });
     });
   }
@@ -272,55 +288,34 @@ class _projectDetailScreenState extends State<projectDetailScreen>
         .collection("projects")
         .doc(projectId)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        taskAllList.clear();
-        taskAllId = value.data()!["tasksListId"];
-        print(taskIds);
-        FirebaseFirestore.instance
-            .collection("tasks")
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            value.docs.forEach((element) {
-              // var check = taskAllList
-              //     .where((element) => taskAllId.contains(element.taskId));
-              // if (check.isEmpty) {
-              if (taskAllId.contains(element.data()['taskId'] as String)) {
-                taskAllList.add(Task.fromDocument(element.data()));
-              }
-              // }
-            });
-            print(taskAllList.length);
-          });
-        });
-        setState(() {});
-      });
-    });
-  }
+        .listen((value1) {
+      // setState(() {
 
-  Future getProjectAllList() async {
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(uid)
-        .snapshots()
-        .listen((value) {
-      setState(() {
-        projectAllList.clear();
-        projectIds = value.data()!["projectsList"];
-        print("Danh sach project id nek");
-        print(projectIds);
-        FirebaseFirestore.instance
-            .collection("projects")
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            value.docs.forEach((element) {
-              if (projectIds.contains(element.data()['projectId'] as String)) {
-                projectAllList.add(Project.fromDocument(element.data()));
-              }
-            });
-            print(projectAllList.length);
+      //   // setState(() {});
+      // });
+      print("xoa thon tin ne");
+      // taskAllList.clear();
+      print("So luong task all ban dau ne");
+      print(taskAllList.length);
+      print(taskIds);
+      FirebaseFirestore.instance
+          .collection("tasks")
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          taskAllList.clear();
+          taskAllId.clear();
+          taskAllId = value1.data()!["tasksListId"];
+          value2.docs.forEach((element) {
+            // taskAllList.clear();
+            //     .where((element) => taskAllId.contains(element.taskId));
+            // if (check.isEmpty) {
+            if (taskAllId.contains(element.data()['taskId'] as String)) {
+              taskAllList.add(Task.fromDocument(element.data()));
+            }
+            // if (mounted) setState(() {});
+            // }
+            print(taskAllList.length);
           });
         });
       });
@@ -348,14 +343,14 @@ class _projectDetailScreenState extends State<projectDetailScreen>
       });
       _selectedIndex = _tabController!.index;
     });
+    getTaskAllList();
     getProjectsDetail();
     getTaskTodoList();
     getTaskDoneList();
     getTaskPendingList();
-    getTaskAllList();
-    getProjectAllList();
     getAssigned();
     getIdOwner();
+    getAssignedTask();
   }
 
   @override
@@ -800,7 +795,11 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                   ),
                                 ),
                               ).then((value) {
-                                // getProjectsDataList();
+                                //   setState(() {
+                                //    taskAllList.clear();
+                                //     getTaskAllList();
+                                //    });
+                                getTaskAllList();
                               });
                             },
                             child: AnimatedContainer(
@@ -898,44 +897,37 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                           ),
                                           Spacer(),
                                           Container(
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Stack(
-                                                  children: [
-                                                    Container(
-                                                      width: 20,
-                                                      height: 20,
-                                                      decoration:
-                                                          new BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(
-                                                                // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                            fit: BoxFit.cover),
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                    ),
+                                            height: 20,
+                                            child: ListView.builder(
+                                                padding:
+                                                    EdgeInsets.only(right: 8),
+                                                physics:
+                                                    const AlwaysScrollableScrollPhysics(),
+                                                shrinkWrap: true,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: userListTask.length
+                                                    .clamp(0, 3),
+                                                itemBuilder: (context, index) {
+                                                  return Stack(children: [
                                                     Container(
                                                       margin: EdgeInsets.only(
-                                                          left: 14),
+                                                          left: 4, right: 4),
                                                       width: 20,
                                                       height: 20,
                                                       decoration:
                                                           new BoxDecoration(
                                                         image: DecorationImage(
                                                             image: NetworkImage(
-                                                                // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/74483881_541590829928084_9212411211595907072_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=174925&_nc_ohc=_BcQsQo3ihUAX_iFJNa&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8yxbwpnASSB_vCn5GyqKTnu7aK4_HSbDxGf6MLdvxBYA&oe=61DCB50E'),
+                                                                userListTask[
+                                                                        index]
+                                                                    .avatar),
                                                             fit: BoxFit.cover),
                                                         shape: BoxShape.circle,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                                    )
+                                                  ]);
+                                                }),
                                           ),
                                         ])),
                                   ],
@@ -1054,54 +1046,51 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                             width: 10,
                                             height: 10,
                                             decoration: new BoxDecoration(
-                                              color: (index == 0)
-                                                  ? todoColor
-                                                  : ((index == 1)
-                                                      ? doneColor
-                                                      : pendingColor),
+                                              color:
+                                                  (taskTodoList[index].status ==
+                                                          "todo")
+                                                      ? todoColor
+                                                      : ((taskTodoList[index]
+                                                                  .status ==
+                                                              "done")
+                                                          ? doneColor
+                                                          : pendingColor),
                                               shape: BoxShape.circle,
                                             ),
                                           ),
                                           Spacer(),
                                           Container(
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Stack(
-                                                  children: [
-                                                    Container(
-                                                      width: 20,
-                                                      height: 20,
-                                                      decoration:
-                                                          new BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(
-                                                                // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                            fit: BoxFit.cover),
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                    ),
+                                            height: 20,
+                                            child: ListView.builder(
+                                                // padding:
+                                                //     EdgeInsets.only(right: 8),
+                                                physics:
+                                                    const AlwaysScrollableScrollPhysics(),
+                                                shrinkWrap: true,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: userListTask.length
+                                                    .clamp(0, 3),
+                                                itemBuilder: (context, index) {
+                                                  return Stack(children: [
                                                     Container(
                                                       margin: EdgeInsets.only(
-                                                          left: 14),
+                                                          left: 4),
                                                       width: 20,
                                                       height: 20,
                                                       decoration:
                                                           new BoxDecoration(
                                                         image: DecorationImage(
                                                             image: NetworkImage(
-                                                                // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/74483881_541590829928084_9212411211595907072_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=174925&_nc_ohc=_BcQsQo3ihUAX_iFJNa&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8yxbwpnASSB_vCn5GyqKTnu7aK4_HSbDxGf6MLdvxBYA&oe=61DCB50E'),
+                                                                userListTask[
+                                                                        index]
+                                                                    .avatar),
                                                             fit: BoxFit.cover),
                                                         shape: BoxShape.circle,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                                    )
+                                                  ]);
+                                                }),
                                           ),
                                         ])),
                                   ],
@@ -1220,9 +1209,13 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                             width: 10,
                                             height: 10,
                                             decoration: new BoxDecoration(
-                                              color: (index == 0)
+                                              color: (taskPendingList[index]
+                                                          .status ==
+                                                      "pending")
                                                   ? pendingColor
-                                                  : ((index == 1)
+                                                  : ((taskPendingList[index]
+                                                              .status ==
+                                                          "todo")
                                                       ? todoColor
                                                       : doneColor),
                                               shape: BoxShape.circle,
@@ -1230,44 +1223,37 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                           ),
                                           Spacer(),
                                           Container(
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Stack(
-                                                  children: [
-                                                    Container(
-                                                      width: 20,
-                                                      height: 20,
-                                                      decoration:
-                                                          new BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(
-                                                                // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                            fit: BoxFit.cover),
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                    ),
+                                            height: 20,
+                                            child: ListView.builder(
+                                                padding:
+                                                    EdgeInsets.only(right: 8),
+                                                physics:
+                                                    const AlwaysScrollableScrollPhysics(),
+                                                shrinkWrap: true,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: userListTask.length
+                                                    .clamp(0, 3),
+                                                itemBuilder: (context, index) {
+                                                  return Stack(children: [
                                                     Container(
                                                       margin: EdgeInsets.only(
-                                                          left: 14),
+                                                          left: 4, right: 4),
                                                       width: 20,
                                                       height: 20,
                                                       decoration:
                                                           new BoxDecoration(
                                                         image: DecorationImage(
                                                             image: NetworkImage(
-                                                                // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/74483881_541590829928084_9212411211595907072_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=174925&_nc_ohc=_BcQsQo3ihUAX_iFJNa&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8yxbwpnASSB_vCn5GyqKTnu7aK4_HSbDxGf6MLdvxBYA&oe=61DCB50E'),
+                                                                userListTask[
+                                                                        index]
+                                                                    .avatar),
                                                             fit: BoxFit.cover),
                                                         shape: BoxShape.circle,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                                    )
+                                                  ]);
+                                                }),
                                           ),
                                         ])),
                                   ],
@@ -1300,7 +1286,10 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                       projectId: projectId),
                                 ),
                               ).then((value) {
-                                // getProjectsDataList();
+                                setState(() {
+                                  taskAllList.clear();
+                                  getTaskAllList();
+                                });
                               });
                             },
                             child: AnimatedContainer(
@@ -1464,7 +1453,9 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                     uid: uid,
                                     projectId: projectId),
                               ),
-                            ).then((value) {});
+                            ).then((value) {
+                              getTaskAllList();
+                            });
                           },
                           child: AnimatedContainer(
                               alignment: Alignment.center,

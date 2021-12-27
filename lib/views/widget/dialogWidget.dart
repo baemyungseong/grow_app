@@ -849,8 +849,19 @@ removeTaskDialog(BuildContext mContext, String taskId, String userId,
                                                           .doc(taskId)
                                                           .delete())
                                             }));
-
-                                Navigator.pop(context);
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => projectDetailScreen(
+                                //         required,
+                                //         uid: userId,
+                                //         projectId: projectId),
+                                //   ),
+                                // );
+                                Navigator.of(context)
+                                  ..pop()
+                                  ..pop()
+                                  ..pop();
                               },
                               child: AnimatedContainer(
                                   alignment: Alignment.center,

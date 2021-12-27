@@ -10,6 +10,7 @@ import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 import 'package:grow_app/controllers/projectController.dart';
+import 'package:grow_app/models/projectModel.dart';
 import 'package:grow_app/models/taskModel.dart';
 import 'package:grow_app/models/userModel.dart';
 import 'package:grow_app/views/dashboard/dashboardCenter.dart';
@@ -83,7 +84,21 @@ class _taskDetailScreenState extends State<taskDetailScreen>
       phonenumber: '',
       projectsList: [],
       userId: '');
+  late Project project = Project(
+    background: '',
+    deadline: '',
+    description: '',
+    owner: '',
+    progress: '',
+    projectId: '',
+    quantityTask: '',
+    name: '',
+    status: '',
+    assigned: [],
+  );
+
   List<UserModel> userList = [];
+
   List taskIds = [];
   List<Task> taskDoneList = [];
 
@@ -107,24 +122,17 @@ class _taskDetailScreenState extends State<taskDetailScreen>
         .collection("tasks")
         .doc(taskId)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        userList.clear();
-        assignee = value.data()!["assigned"];
-        FirebaseFirestore.instance.collection("users").get().then((value) {
-          value.docs.forEach((element) {
-            // var check =
-            //     userList.where((element) => assignee.contains(element.userId));
-            // if (check.isEmpty) {
+        .listen((value1) {
+      FirebaseFirestore.instance.collection("users").get().then((value2) {
+        setState(() {
+          userList.clear();
+          assignee = value1.data()!["assigned"];
+          value2.docs.forEach((element) {
             if (assignee.contains(element.data()['userId'] as String)) {
               userList.add(UserModel.fromDocument(element.data()));
             }
             // }
           });
-          print("userList.length");
-          print(userList.length);
-
-          setState(() {});
         });
       });
     });
@@ -151,10 +159,14 @@ class _taskDetailScreenState extends State<taskDetailScreen>
         .listen((value) {
       setState(() {
         task = Task.fromDocument(value.docs.first.data());
-        if ((task.progress + ".0") == (progress).toString()) {
-          checkBoxValue = true;
-        } else {
+        if (progress == 0.0) {
           checkBoxValue = false;
+        } else {
+          if ((task.progress + ".0") == (progress).toString()) {
+            checkBoxValue = true;
+          } else {
+            checkBoxValue = false;
+          }
         }
       });
       print(task.name);
@@ -166,39 +178,54 @@ class _taskDetailScreenState extends State<taskDetailScreen>
         .collection("projects")
         .doc(projectId)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        taskDoneList.clear();
-        taskIds = value.data()!["tasksListId"];
-        print(taskIds);
-        FirebaseFirestore.instance
-            .collection("tasks")
-            .where("status", isEqualTo: 'done')
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            print('getTaskDoneList');
-            value.docs.forEach((element) {
-              if (taskIds.contains(element.data()['taskId'] as String)) {
-                taskDoneList.add(Task.fromDocument(element.data()));
-              }
-            });
-            print(taskDoneList.length);
+        .listen((value1) {
+      print(taskIds);
+      FirebaseFirestore.instance
+          .collection("tasks")
+          .where("status", isEqualTo: 'done')
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          taskDoneList.clear();
+          taskIds = value1.data()!["tasksListId"];
+          value2.docs.forEach((element) {
+            if (taskIds.contains(element.data()['taskId'] as String)) {
+              taskDoneList.add(Task.fromDocument(element.data()));
+            }
           });
+          print(taskDoneList.length);
         });
-        setState(() {});
       });
     });
   }
 
-  Future checkAssignment() async {
+  Future getProjectsDetail() async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .where("projectId", isEqualTo: projectId)
+        .snapshots()
+        .listen((value) {
+      project = Project.fromDocument(value.docs.first.data());
+      print("project.quantityTask");
+      print(project.quantityTask);
+    });
+  }
+
+  Future checkAssignment(double progress) async {
     FirebaseFirestore.instance.collection("projects").doc(projectId).update({
-      'progress': ((progress / double.parse(project.quantityTask + '.0')) * 100)
-          .toStringAsFixed(0)
-          .toString(),
-      'status': (progress.toStringAsFixed(0).toString() == "100")
+      if (progress == 100.0)
+        'progress': ((progress / double.parse(project.quantityTask + '.0')))
+            .toStringAsFixed(0)
+            .toString(),
+      'status': ((progress / double.parse(project.quantityTask + '.0'))
+                  .toStringAsFixed(0)
+                  .toString() ==
+              "100")
           ? "done"
-          : (progress.toStringAsFixed(0).toString() != "0")
+          : ((progress / double.parse(project.quantityTask + '.0'))
+                      .toStringAsFixed(0)
+                      .toString() !=
+                  "0")
               ? "todo"
               : "pending"
     }).whenComplete(() =>
@@ -231,6 +258,7 @@ class _taskDetailScreenState extends State<taskDetailScreen>
     getTaskDetail();
     getIdOwner();
     getAssigned();
+    getProjectsDetail();
   }
 
   @override
@@ -278,7 +306,7 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                           context,
                           MaterialPageRoute(
                             builder: (context) => taskEditingScreen(required,
-                                uid: uid, taskId: taskId),
+                                uid: uid, taskId: taskId, projectId: projectId),
                           ),
                         );
                       },
@@ -311,11 +339,9 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                       SizedBox(height: 16),
                       Container(
                         child: Text(
-                          (task.progress == "done")
+                          (task.status == "done")
                               ? "Done"
-                              : ((task.progress == "todo")
-                                  ? "To Do"
-                                  : "In Progress"),
+                              : ((task.status == "todo") ? "To Do" : "Pending"),
                           style: TextStyle(
                               fontFamily: "Poppins",
                               fontSize: 16.0,
@@ -344,7 +370,9 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                             ),
                           ),
                           Container(
-                            width: (271 * 0.01 * 70),
+                            width: (271 *
+                                0.01 *
+                                double.parse(task.progress + ".0")),
                             height: 9,
                             decoration: BoxDecoration(
                                 color: (task.progress == "done")
@@ -719,7 +747,7 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                                                                   setState(() {
                                                                     checkBoxValue =
                                                                         newValue;
-                                                                    (checkBoxValue ==
+                                                                    (newValue ==
                                                                             true)
                                                                         ? progress =
                                                                             ((1 / userList.length) *
@@ -727,8 +755,8 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                                                                         : progress =
                                                                             -((1 / userList.length) *
                                                                                 100);
-
-                                                                    checkAssignment();
+                                                                    checkAssignment(
+                                                                        progress);
                                                                   });
                                                                 }),
                                                       )

@@ -157,7 +157,7 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
           'progress': "0",
           'quantityTask': "0",
           'status': "pending",
-          'tasksListId': FieldValue.arrayUnion([""]),
+          'tasksListId': FieldValue.arrayUnion([]),
           'assigned': FieldValue.arrayUnion(assigned)
         })
         .then(

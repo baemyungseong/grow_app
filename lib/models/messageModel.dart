@@ -2,20 +2,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:ffi';
 
-class MessageModel {
+class Message {
   final String userId;
   final String createAt;
   final String message;
+  final List contentList;
 
-  MessageModel({
+  Message({
     required this.userId,
     required this.message,
     required this.createAt,
+    required this.contentList,
   });
-  factory MessageModel.fromDocument(Map<String, dynamic> doc) {
-    return MessageModel(
-        userId: doc['userIdS1'],
-        message: doc['userIdS2'],
-        createAt: doc['messageId']);
+  factory Message.fromDocument(Map<String, dynamic> doc) {
+    return Message(
+        contentList: doc['contentList'],
+        userId: doc['sendBy'],
+        message: doc['content'],
+        createAt: doc['timeSend']);
   }
 }

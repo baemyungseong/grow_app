@@ -18,6 +18,7 @@ import 'package:grow_app/views/profile/profileCenter.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 //import others
 import 'package:meta/meta.dart';
@@ -87,25 +88,17 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
   String newMessageId = "";
   List assignedMessage = [];
   Future createMessage(String userIdS2) async {
-    // FirebaseFirestore.instance
-    //     .collection("messages")
-    //     .get()
-    //     .then((value) => value.docs.forEach((element) {
-    //           assignedMessage.add(uid);
-    //           assignedMessage.add(userIdS2);
-    //           if (assignedMessage.contains(element.data()['assignedMessage'] as String)) {
-    //           } else {}
     FirebaseFirestore.instance.collection("messages").add({
-      'assignedMessage': FieldValue.arrayUnion([uid, userIdS2]),
+      'userId1': uid,
+      'userId2': userIdS2,
       'contentList': FieldValue.arrayUnion([""]),
-    }).then(
-      (value) => FirebaseFirestore.instance
-          .collection("messages")
-          .doc(value.id)
-          .update({
-        'messageId': newMessageId = value.id,
-      }),
-    );
+      'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
+    }).then((value) {
+      FirebaseFirestore.instance.collection("messages").doc(value.id).update({
+        'messageId': value.id,
+      });
+      newMessageId = value.id;
+    });
   }
   // }
   // ));
@@ -323,16 +316,17 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                   alignment: Alignment.center,
                                   child: GestureDetector(
                                     onTap: () {
-                                      createMessage(userList[index].userId);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               messageDetailScreen(required,
                                                   uid: uid,
-                                                  uid2: userList[index].userId),
+                                                  uid2: userList[index].userId,
+                                                  messagesId: newMessageId),
                                         ),
                                       );
+                                      createMessage(userList[index].userId);
                                     },
                                     child: AnimatedContainer(
                                       alignment: Alignment.center,

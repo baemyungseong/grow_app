@@ -112,30 +112,28 @@ class _projectCenterScreenState extends State<projectCenterScreen>
         .collection("users")
         .doc(uid)
         .snapshots()
-        .listen((value) {
-      taskAllId = value.data()!["tasksList"];
-      print(taskAllId);
+        .listen((value1) {
       FirebaseFirestore.instance
           .collection("tasks")
           .where('deadline',
               isEqualTo: "${DateFormat('yMMMMd').format(selectDate)}")
           .snapshots()
-          .listen((value) {
+          .listen((value2) {
         setState(() {
+          taskAllId = value1.data()!["tasksList"];
           print("${DateFormat('yMMMMd').format(selectDate)}");
-          value.docs.forEach((element) {
+          value2.docs.forEach((element) {
             // var check = taskAllList
             //     .where((element) => taskAllId.contains(element.taskId));
             // if (check.isEmpty) {
             if (taskAllId.contains(element.data()['taskId'] as String)) {
               taskAllList.add(Task.fromDocument(element.data()));
             }
-            // }
           });
-          print(taskAllList.length);
+
+          // }
         });
       });
-      setState(() {});
     });
   }
 
@@ -156,25 +154,22 @@ class _projectCenterScreenState extends State<projectCenterScreen>
         .collection("users")
         .doc(uid)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        projectTodoList.clear();
-        projectIds = value.data()!["projectsList"];
-        print(projectIds);
-        FirebaseFirestore.instance
-            .collection("projects")
-            .where("status", isEqualTo: 'todo')
-            .snapshots()
-            .listen((value) {
-          print('getProjectsIdList');
-          value.docs.forEach((element) {
+        .listen((value1) {
+      print(projectIds);
+      FirebaseFirestore.instance
+          .collection("projects")
+          .where("status", isEqualTo: 'todo')
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          projectTodoList.clear();
+          projectIds = value1.data()!["projectsList"];
+          value2.docs.forEach((element) {
             if (projectIds.contains(element.data()['projectId'] as String)) {
               projectTodoList.add(Project.fromDocument(element.data()));
             }
           });
-          print(projectTodoList.length);
         });
-        setState(() {});
       });
     });
   }
@@ -184,25 +179,22 @@ class _projectCenterScreenState extends State<projectCenterScreen>
         .collection("users")
         .doc(uid)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        projectDoneList.clear();
-        projectIds = value.data()!["projectsList"];
-        print(projectIds);
-        FirebaseFirestore.instance
-            .collection("projects")
-            .where("status", isEqualTo: 'done')
-            .snapshots()
-            .listen((value) {
-          print('getProjectsIdList');
-          value.docs.forEach((element) {
+        .listen((value1) {
+      print(projectIds);
+      FirebaseFirestore.instance
+          .collection("projects")
+          .where("status", isEqualTo: 'done')
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          projectDoneList.clear();
+          projectIds = value1.data()!["projectsList"];
+          value2.docs.forEach((element) {
             if (projectIds.contains(element.data()['projectId'] as String)) {
               projectDoneList.add(Project.fromDocument(element.data()));
             }
           });
-          print(projectDoneList.length);
         });
-        setState(() {});
       });
     });
   }
@@ -212,26 +204,21 @@ class _projectCenterScreenState extends State<projectCenterScreen>
         .collection("users")
         .doc(uid)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        projectPendingList.clear();
-        projectIds = value.data()!["projectsList"];
-        print(projectIds);
-        FirebaseFirestore.instance
-            .collection("projects")
-            .where("status", isEqualTo: 'pending')
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            print('getProjectsIdList');
-            value.docs.forEach((element) {
-              if (projectIds.contains(element.data()['projectId'] as String)) {
-                projectPendingList.add(Project.fromDocument(element.data()));
-              }
-            });
-            print(projectPendingList.length);
+        .listen((value1) {
+      FirebaseFirestore.instance
+          .collection("projects")
+          .where("status", isEqualTo: 'pending')
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          projectPendingList.clear();
+          projectIds = value1.data()!["projectsList"];
+          value2.docs.forEach((element) {
+            if (projectIds.contains(element.data()['projectId'] as String)) {
+              projectPendingList.add(Project.fromDocument(element.data()));
+            }
           });
-          setState(() {});
+          print(projectPendingList.length);
         });
       });
     });
@@ -242,24 +229,23 @@ class _projectCenterScreenState extends State<projectCenterScreen>
         .collection("users")
         .doc(uid)
         .snapshots()
-        .listen((value) {
+        .listen((value1) {
       setState(() {
-        projectIds = value.data()!["projectsList"];
         FirebaseFirestore.instance
             .collection("projects")
             .where("name", isGreaterThanOrEqualTo: search)
             .snapshots()
-            .listen((value) {
+            .listen((value2) {
+          projectIds = value1.data()!["projectsList"];
           setState(() {
             print('getProjectsIdList');
-            value.docs.forEach((element) {
+            value2.docs.forEach((element) {
               if (projectIds.contains(element.data()['projectId'] as String)) {
                 projectSearchList.add(Project.fromDocument(element.data()));
               }
             });
             print(projectSearchList.length);
           });
-          setState(() {});
         });
       });
     });

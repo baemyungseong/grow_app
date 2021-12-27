@@ -13,8 +13,11 @@ import 'package:grow_app/constants/others.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_app/models/messageModel.dart';
+import 'package:grow_app/models/userModel.dart';
 import 'package:grow_app/views/profile/notificationCenter.dart';
 import 'package:grow_app/views/profile/profileCenter.dart';
+import 'package:intl/intl.dart';
 
 //import others
 import 'package:meta/meta.dart';
@@ -23,14 +26,18 @@ import 'package:iconsax/iconsax.dart';
 class messageDetailScreen extends StatefulWidget {
   String uid;
   String uid2;
+  String messagesId;
 
   messageDetailScreen(Required required,
-      {Key? key, required this.uid, required this.uid2})
+      {Key? key,
+      required this.uid,
+      required this.uid2,
+      required this.messagesId})
       : super(key: key);
 
   @override
   _messageDetailScreenState createState() =>
-      _messageDetailScreenState(uid, uid2);
+      _messageDetailScreenState(uid, uid2, this.messagesId);
 }
 
 class _messageDetailScreenState extends State<messageDetailScreen> {
@@ -38,27 +45,71 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
 
   String uid = "";
   String uid2 = '';
+  String messagesId = "";
 
-  _messageDetailScreenState(uid, this.uid2);
+  _messageDetailScreenState(uid, this.uid2, this.messagesId);
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
   var taskcollections = FirebaseFirestore.instance.collection('users');
   late String task;
+  // Message chatting = Message(userId: '', message: '', createAt: '');
+  List<Message> chatting = [];
 
   TextEditingController messageController = TextEditingController();
   GlobalKey<FormState> messageFormKey = GlobalKey<FormState>();
   String message = '';
-  void sendMessage(String uid, String message) async {
+  late UserModel user = UserModel(
+      avatar: '',
+      dob: '',
+      email: '',
+      name: '',
+      job: '',
+      phonenumber: '',
+      projectsList: [],
+      tasksList: [],
+      userId: '');
+  Future getUserDetail() async {
     FirebaseFirestore.instance
-        .collection('chats/$uid/messages')
-        .add({"userId": uid, 'message': message, 'createAt': DateTime.now()});
+        .collection("users")
+        .where("userId", isEqualTo: uid)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        user = UserModel.fromDocument(value.docs.first.data());
+      });
+    });
+  }
+
+  Future sendMessage(String message) async {
+    if (message.isNotEmpty) {
+      FirebaseFirestore.instance.collection("contents").add({
+        'content': message,
+        'sendBy': uid,
+        'messageId': messagesId,
+        'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
+      }).then((value) => FirebaseFirestore.instance
+              .collection("messages")
+              .doc(messagesId)
+              .update({
+            'contentList': FieldValue.arrayUnion([value.id]),
+          }));
+      message = "";
+    }
   }
 
   Future getMessage() async {
     FirebaseFirestore.instance
-        .collection('chats/$uid/messages')
-        .orderBy('createAt', descending: true);
+        .collection("contents")
+        .get()
+        .then((value) => setState(() {
+              value.docs.forEach((element) {
+                if (messagesId
+                    .contains(element.data()['messagesId'] as String)) {
+                  chatting.add(Message.fromDocument(element.data()));
+                }
+              });
+            }));
   }
 
   void initState() {
@@ -67,6 +118,8 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
     final userid = user?.uid.toString();
     uid = userid!;
     print('The current uid is $uid');
+    getUserDetail();
+    getMessage();
   }
 
   @override
@@ -209,432 +262,93 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        height: 518,
-                        child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Column(
+                          height: 518,
+                          child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   SizedBox(height: 32),
                                   Container(
-                                    padding:
-                                        EdgeInsets.only(left: 28, right: 28),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.bottomCenter,
-                                          width: 32,
-                                          height: 32,
-                                          decoration: new BoxDecoration(
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    // '${projects[index]!["background"]}'),
-                                                    'https://i.imgur.com/FpZ9xFI.jpg'),
-                                                fit: BoxFit.cover),
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Container(
-                                          height: 54,
-                                          width: 172,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(24.0),
-                                                topRight: Radius.circular(24.0),
-                                                bottomRight:
-                                                    Radius.circular(24.0)),
-                                            color: whiteLight,
-                                          ),
-                                          child: Container(
-                                            // padding: EdgeInsets.only(left: 16),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Hey there! What's up?",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: black,
-                                                  fontWeight: FontWeight.w400),
+                                    padding: EdgeInsets.only(
+                                        left: appPaddingInApp,
+                                        right: appPaddingInApp),
+                                    child: ListView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        padding: EdgeInsets.zero,
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: chatting.length,
+                                        itemBuilder: (context, index) {
+                                          return Container(
+                                            padding: EdgeInsets.only(
+                                                left: 28, right: 28),
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  width: 32,
+                                                  height: 32,
+                                                  decoration: new BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            // '${projects[index]!["background"]}'),
+                                                            'https://i.imgur.com/FpZ9xFI.jpg'),
+                                                        fit: BoxFit.cover),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 8),
+                                                Container(
+                                                  height: 54,
+                                                  width: 172,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius
+                                                        .only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    24.0),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    24.0),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    24.0)),
+                                                    color: whiteLight,
+                                                  ),
+                                                  child: Container(
+                                                    // padding: EdgeInsets.only(left: 16),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      "Hey there! What's up?",
+                                                      style: TextStyle(
+                                                          fontFamily: "Poppins",
+                                                          fontSize: 12.0,
+                                                          color: black,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  "18:28",
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: greyDark,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                )
+                                              ],
                                             ),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          "18:28",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 12.0,
-                                              color: greyDark,
-                                              fontWeight: FontWeight.w400),
-                                        )
-                                      ],
-                                    ),
+                                          );
+                                        }),
                                   ),
-                                  SizedBox(height: 16),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(left: 28, right: 28),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.bottomCenter,
-                                          width: 32,
-                                          height: 32,
-                                          decoration: new BoxDecoration(
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    // '${projects[index]!["background"]}'),
-                                                    'https://i.imgur.com/FpZ9xFI.jpg'),
-                                                fit: BoxFit.cover),
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Container(
-                                          height: 54,
-                                          width: 172,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(24.0),
-                                                topRight: Radius.circular(24.0),
-                                                bottomRight:
-                                                    Radius.circular(24.0)),
-                                            color: whiteLight,
-                                          ),
-                                          child: Container(
-                                            // padding: EdgeInsets.only(left: 16),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Hey there! What's up?",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          "18:31",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 12.0,
-                                              color: greyDark,
-                                              fontWeight: FontWeight.w400),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 16),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(left: 28, right: 28),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.bottomCenter,
-                                          width: 32,
-                                          height: 32,
-                                          decoration: new BoxDecoration(
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    // '${projects[index]!["background"]}'),
-                                                    'https://i.imgur.com/FpZ9xFI.jpg'),
-                                                fit: BoxFit.cover),
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Container(
-                                          height: 54,
-                                          width: 172,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(24.0),
-                                                topRight: Radius.circular(24.0),
-                                                bottomRight:
-                                                    Radius.circular(24.0)),
-                                            color: whiteLight,
-                                          ),
-                                          child: Container(
-                                            // padding: EdgeInsets.only(left: 16),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Hey there! What's up?",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          "18:32",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 12.0,
-                                              color: greyDark,
-                                              fontWeight: FontWeight.w400),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 16),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(left: 28, right: 28),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "18:32",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 12.0,
-                                              color: greyDark,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                          height: 87,
-                                          width: 236,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(24.0),
-                                                topRight: Radius.circular(24.0),
-                                                bottomLeft:
-                                                    Radius.circular(24.0)),
-                                            color: purpleLight,
-                                          ),
-                                          child: Container(
-                                            // padding: EdgeInsets.only(left: 16),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Nothing. Just chilling and watching" +
-                                                  "\n" +
-                                                  "some film on Youtube. What about" +
-                                                  "\n" +
-                                                  "you?",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 16),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(left: 28, right: 28),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(width: 40),
-                                        Container(
-                                          height: 54,
-                                          width: 172,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(24.0)),
-                                            color: whiteLight,
-                                          ),
-                                          child: Container(
-                                            // padding: EdgeInsets.only(left: 16),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Jztr khum understand?",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          "18:33",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 12.0,
-                                              color: greyDark,
-                                              fontWeight: FontWeight.w400),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(left: 28, right: 28),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.bottomCenter,
-                                          width: 32,
-                                          height: 32,
-                                          decoration: new BoxDecoration(
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    // '${projects[index]!["background"]}'),
-                                                    'https://i.imgur.com/FpZ9xFI.jpg'),
-                                                fit: BoxFit.cover),
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Container(
-                                          height: 54,
-                                          width: 172,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(24.0),
-                                                topRight: Radius.circular(24.0),
-                                                bottomRight:
-                                                    Radius.circular(24.0)),
-                                            color: whiteLight,
-                                          ),
-                                          child: Container(
-                                            // padding: EdgeInsets.only(left: 16),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Jztr khum understand?",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          "18:33",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 12.0,
-                                              color: greyDark,
-                                              fontWeight: FontWeight.w400),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 16),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(left: 28, right: 28),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "18:35",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 12.0,
-                                              color: greyDark,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                          height: 87,
-                                          width: 236,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(24.0),
-                                                topRight: Radius.circular(24.0),
-                                                bottomLeft:
-                                                    Radius.circular(24.0)),
-                                            color: purpleLight,
-                                          ),
-                                          child: Container(
-                                            // padding: EdgeInsets.only(left: 16),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Yeah I know. I’m in the same with" +
-                                                  "\n" +
-                                                  "position",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 16),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(left: 28, right: 28),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.bottomCenter,
-                                          width: 32,
-                                          height: 32,
-                                          decoration: new BoxDecoration(
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    // '${projects[index]!["background"]}'),
-                                                    'https://i.imgur.com/FpZ9xFI.jpg'),
-                                                fit: BoxFit.cover),
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Container(
-                                          height: 87,
-                                          width: 236,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(24.0),
-                                                topRight: Radius.circular(24.0),
-                                                bottomRight:
-                                                    Radius.circular(24.0)),
-                                            color: whiteLight,
-                                          ),
-                                          child: Container(
-                                            // padding: EdgeInsets.only(left: 16),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Nothing. Just chilling and watching" +
-                                                  "\n" +
-                                                  "some film on Youtube. What about" +
-                                                  "\n" +
-                                                  "you?",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "18:33",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 12.0,
-                                                  color: greyDark,
-                                                  fontWeight: FontWeight.w400),
-                                            ))
-                                      ],
-                                    ),
-                                  ),
-                                ])),
-                      ),
+                                ],
+                              ))),
                       Spacer(),
                       Container(
                         height: 54,
@@ -668,50 +382,45 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                             )),
                             SizedBox(width: 20),
                             Container(
-                                padding: EdgeInsets.only(right: 28),
+                              child: AnimatedContainer(
                                 alignment: Alignment.center,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // print(message + "hihiha");
-                                    // message.trim().isEmpty
-                                    //     ? null
-                                    //     : sendMessage(uid, message);
-                                    // sendMessage(uid, message);
-                                  },
-                                  child: AnimatedContainer(
-                                    alignment: Alignment.center,
-                                    duration: Duration(milliseconds: 300),
-                                    height: 32,
-                                    width: 32,
-                                    decoration: BoxDecoration(
-                                      color: purpleMain,
-                                      borderRadius: BorderRadius.circular(24),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: black.withOpacity(0.25),
-                                          spreadRadius: 0,
-                                          blurRadius: 64,
-                                          offset: Offset(8, 8),
-                                        ),
-                                        BoxShadow(
-                                          color: black.withOpacity(0.2),
-                                          spreadRadius: 0,
-                                          blurRadius: 4,
-                                          offset: Offset(0, 4),
-                                        ),
-                                      ],
+                                duration: Duration(milliseconds: 300),
+                                height: 32,
+                                width: 32,
+                                decoration: BoxDecoration(
+                                  color: purpleMain,
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: black.withOpacity(0.25),
+                                      spreadRadius: 0,
+                                      blurRadius: 64,
+                                      offset: Offset(8, 8),
                                     ),
-                                    child: Container(
-                                        padding: EdgeInsets.zero,
-                                        alignment: Alignment.center,
-                                        child: IconButton(
-                                          icon: Icon(Iconsax.send1),
-                                          iconSize: 18,
-                                          color: white,
-                                          onPressed: () {},
-                                        )),
-                                  ),
-                                ))
+                                    BoxShadow(
+                                      color: black.withOpacity(0.2),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Container(
+                                    padding: EdgeInsets.zero,
+                                    alignment: Alignment.center,
+                                    child: IconButton(
+                                      icon: Icon(Iconsax.send1),
+                                      iconSize: 18,
+                                      color: white,
+                                      onPressed: () {
+                                        sendMessage(message);
+                                        getMessage();
+                                        print(message);
+                                        print(chatting.length);
+                                      },
+                                    )),
+                              ),
+                            ),
                           ],
                         ),
                       ),

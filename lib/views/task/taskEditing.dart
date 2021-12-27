@@ -32,19 +32,25 @@ import 'package:intl/intl.dart';
 class taskEditingScreen extends StatefulWidget {
   String uid;
   String taskId;
+  String projectId;
 
   taskEditingScreen(Required required,
-      {Key? key, required this.uid, required this.taskId})
+      {Key? key,
+      required this.uid,
+      required this.taskId,
+      required this.projectId})
       : super(key: key);
 
   @override
-  _taskEditingScreenState createState() => _taskEditingScreenState(uid, taskId);
+  _taskEditingScreenState createState() =>
+      _taskEditingScreenState(uid, taskId, projectId);
 }
 
 class _taskEditingScreenState extends State<taskEditingScreen> {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
+  String projectId = "";
   String taskId = "";
   String reName = '';
   String reDescription = "";
@@ -67,7 +73,7 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
 
   late DateTime selectDate = DateTime.now();
 
-  _taskEditingScreenState(uid, this.taskId);
+  _taskEditingScreenState(uid, this.taskId, this.projectId);
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -79,19 +85,6 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
   var taskcollections = FirebaseFirestore.instance.collection('users');
   List<UserModel> userListChoice = [];
   List<UserModel> userList = [];
-
-  Future getTaskDetail() async {
-    FirebaseFirestore.instance
-        .collection("tasks")
-        .where("taskId", isEqualTo: taskId)
-        .snapshots()
-        .listen((value) {
-      setState(() {
-        task = Task.fromDocument(value.docs.first.data());
-      });
-      print(task.name);
-    });
-  }
 
   List assigned = [];
   String email = '';
@@ -117,26 +110,37 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
       projectsList: [],
       tasksList: [],
       userId: '');
+  Future getTaskDetail() async {
+    FirebaseFirestore.instance
+        .collection("tasks")
+        .where("taskId", isEqualTo: taskId)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        task = Task.fromDocument(value.docs.first.data());
+      });
+      print(task.name);
+    });
+  }
+
   Future getAssigned() async {
     FirebaseFirestore.instance
         .collection("tasks")
         .doc(taskId)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        assigned = value.data()!["assigned"];
-        FirebaseFirestore.instance.collection("users").get().then((value) {
-          setState(() {
-            value.docs.forEach((element) {
-              if (assigned.contains(element.data()['userId'] as String)) {
-                userListChoice.add(UserModel.fromDocument(element.data()));
-              }
-            });
-            print("userListChoice");
-            print(userListChoice.length);
+        .listen((value1) {
+      FirebaseFirestore.instance.collection("users").get().then((value2) {
+        setState(() {
+          assigned = value1.data()!["assigned"];
+          value2.docs.forEach((element) {
+            if (assigned.contains(element.data()['userId'] as String)) {
+              userListChoice.add(UserModel.fromDocument(element.data()));
+            }
           });
-          setState(() {});
+          print("userListChoice");
+          print(userListChoice.length);
         });
+        setState(() {});
       });
     });
   }
@@ -168,13 +172,12 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
   Future getProjectsDetail() async {
     FirebaseFirestore.instance
         .collection("projects")
-        .where("projectId", isEqualTo: task.projectId)
+        .where("projectId", isEqualTo: projectId)
         .snapshots()
         .listen((value) {
-      setState(() {
-        project = Project.fromDocument(value.docs.first.data());
-      });
-      print(project.name);
+      project = Project.fromDocument(value.docs.first.data());
+      print("project.quantityTask");
+      print(project.quantityTask);
     });
   }
 
@@ -249,13 +252,7 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
                   child: GestureDetector(
                       onTap: () {
                         updateTaskDetail();
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                projectManagementScreen(required, uid: uid),
-                          ),
-                        );
+                        Navigator.pop(context);
                       },
                       child: Text(
                         "Save",
@@ -717,13 +714,17 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
                             Container(
                                 alignment: Alignment.centerLeft,
                                 child: GestureDetector(
-                                  onTap: () => removeTaskDialog(
-                                      context,
-                                      task.taskId,
-                                      uid,
-                                      assigned,
-                                      task.projectId,
-                                      project.quantityTask),
+                                  onTap: () {
+                                    removeTaskDialog(
+                                        context,
+                                        task.taskId,
+                                        uid,
+                                        assigned,
+                                        task.projectId,
+                                        project.quantityTask);
+                                    // Navigator.pop(context);
+                                    print("hahaha");
+                                  },
                                   child: AnimatedContainer(
                                       alignment: Alignment.center,
                                       duration: Duration(milliseconds: 300),

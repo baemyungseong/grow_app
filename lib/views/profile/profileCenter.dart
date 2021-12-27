@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:grow_app/models/userModel.dart';
@@ -11,6 +13,8 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:async';
 
 //import views
 import 'package:grow_app/views/profile/termCondition.dart';
@@ -60,6 +64,17 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
         user = UserModel.fromDocument(value.docs.first.data());
       });
     });
+  }
+
+  late File image = File('your initial file');
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    // final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    // final pickedImageFile = File(pickedImage!.path);
+    // setState(() {
+    //   image = pickedImageFile;
+    // });
   }
 
   _profileCenterScreenState(uid);
@@ -120,9 +135,13 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                             decoration: new BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(24)),
-                              image: DecorationImage(image: NetworkImage(
-                                  // '${projects[index]!["background"]}'),
-                                  user.avatar), fit: BoxFit.cover),
+                              image: (image != null)
+                                  ? DecorationImage(image: NetworkImage(
+                                      // '${projects[index]!["background"]}'),
+                                      user.avatar), fit: BoxFit.cover)
+                                  : DecorationImage(
+                                      image: FileImage(image),
+                                      fit: BoxFit.cover),
                               shape: BoxShape.rectangle,
                             ),
                           ),
@@ -130,16 +149,9 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                               padding: EdgeInsets.only(top: 72, left: 72),
                               alignment: Alignment.center,
                               child: GestureDetector(
-                                // onTap: () {
-                                //   Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) =>
-                                //           notificationCenterScreen(required,
-                                //               uid: uid),
-                                //     ),
-                                //   );
-                                // },
+                                onTap: () {
+                                  getImage();
+                                },
                                 child: AnimatedContainer(
                                   alignment: Alignment.center,
                                   duration: Duration(milliseconds: 300),
