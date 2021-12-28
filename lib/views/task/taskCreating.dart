@@ -93,6 +93,7 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
       dob: '',
       email: '',
       name: '',
+      messagesList: [],
       job: '',
       phonenumber: '',
       projectsList: [],

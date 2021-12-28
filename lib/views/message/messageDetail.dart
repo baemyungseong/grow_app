@@ -13,7 +13,9 @@ import 'package:grow_app/constants/others.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_app/models/contentModel.dart';
 import 'package:grow_app/models/messageModel.dart';
+
 import 'package:grow_app/models/userModel.dart';
 import 'package:grow_app/views/profile/notificationCenter.dart';
 import 'package:grow_app/views/profile/profileCenter.dart';
@@ -54,7 +56,6 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
   var taskcollections = FirebaseFirestore.instance.collection('users');
   late String task;
   // Message chatting = Message(userId: '', message: '', createAt: '');
-  List<Message> chatting = [];
 
   TextEditingController messageController = TextEditingController();
   GlobalKey<FormState> messageFormKey = GlobalKey<FormState>();
@@ -62,6 +63,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
   late UserModel user = UserModel(
       avatar: '',
       dob: '',
+      messagesList: [],
       email: '',
       name: '',
       job: '',
@@ -69,6 +71,8 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
       projectsList: [],
       tasksList: [],
       userId: '');
+  late Content content = Content(
+      contentId: '', userId: '', messageId: '', message: '', createAt: '');
   Future getUserDetail() async {
     FirebaseFirestore.instance
         .collection("users")
@@ -81,35 +85,59 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
     });
   }
 
-  Future sendMessage(String message) async {
+  Future sendMessage() async {
     if (message.isNotEmpty) {
       FirebaseFirestore.instance.collection("contents").add({
         'content': message,
         'sendBy': uid,
         'messageId': messagesId,
         'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
-      }).then((value) => FirebaseFirestore.instance
-              .collection("messages")
-              .doc(messagesId)
-              .update({
-            'contentList': FieldValue.arrayUnion([value.id]),
-          }));
+      }).then((value) {
+        FirebaseFirestore.instance
+            .collection("messages")
+            .doc(messagesId)
+            .update({
+          'contentList': FieldValue.arrayUnion([value.id]),
+        });
+        FirebaseFirestore.instance.collection("contents").doc(value.id).update({
+          'contentId': value.id,
+        });
+      });
       message = "";
     }
   }
 
+  late List contentList;
+  late List<Content> chatting;
   Future getMessage() async {
+    // FirebaseFirestore.instance
+    //     .collection("contents")
+    //     .where('messageId', isEqualTo: messagesId)
+    //     .snapshots()
+    //     .listen((value) {
+    //   value.docs.forEach((element) {
+    //     if (contentList.contains(element.data()['messageId'] as String)) {
+    //       chatting.add(Content.fromDocument(element.data()));
+    //     }
+    //   });
+    // });
     FirebaseFirestore.instance
-        .collection("contents")
-        .get()
-        .then((value) => setState(() {
-              value.docs.forEach((element) {
-                if (messagesId
-                    .contains(element.data()['messagesId'] as String)) {
-                  chatting.add(Message.fromDocument(element.data()));
-                }
-              });
-            }));
+        .collection("messages")
+        .doc(messagesId)
+        .snapshots()
+        .listen((value1) {
+      FirebaseFirestore.instance.collection("contents").get().then((value2) {
+        setState(() {
+          chatting.clear();
+          contentList = value1.data()!["contentList"];
+          value2.docs.forEach((element) {
+            if (contentList.contains(element.data()['messageId'] as String)) {
+              chatting.add(Content.fromDocument(element.data()));
+            }
+          });
+        });
+      });
+    });
   }
 
   void initState() {
@@ -322,7 +350,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                                                     // padding: EdgeInsets.only(left: 16),
                                                     alignment: Alignment.center,
                                                     child: Text(
-                                                      "Hey there! What's up?",
+                                                      chatting[index].message,
                                                       style: TextStyle(
                                                           fontFamily: "Poppins",
                                                           fontSize: 12.0,
@@ -334,7 +362,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                                                 ),
                                                 Spacer(),
                                                 Text(
-                                                  "18:28",
+                                                  chatting[index].createAt,
                                                   style: TextStyle(
                                                       fontFamily: "Poppins",
                                                       fontSize: 12.0,
@@ -413,7 +441,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                                       iconSize: 18,
                                       color: white,
                                       onPressed: () {
-                                        sendMessage(message);
+                                        sendMessage();
                                         getMessage();
                                         print(message);
                                         print(chatting.length);

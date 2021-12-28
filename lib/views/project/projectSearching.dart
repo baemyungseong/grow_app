@@ -66,25 +66,23 @@ class _projectSearchingScreenState extends State<projectSearchingScreen> {
         .collection("users")
         .doc(uid)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        projectIds = value.data()!["projectsList"];
-        FirebaseFirestore.instance
-            .collection("projects")
-            .where("name", isGreaterThanOrEqualTo: search)
-            .where("name", isLessThanOrEqualTo: search + "z")
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            print('getProjectsIdList');
-            value.docs.forEach((element) {
-              if (projectIds.contains(element.data()['projectId'] as String)) {
-                projectSearchList.add(Project.fromDocument(element.data()));
-              }
-            });
-            print(projectSearchList.length);
+        .listen((value1) {
+      FirebaseFirestore.instance
+          .collection("projects")
+          .where("name", isGreaterThanOrEqualTo: search)
+          .where("name", isLessThanOrEqualTo: search + "z")
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          projectIds = value1.data()!["projectsList"];
+          projectSearchList.clear();
+          print('getProjectsIdList');
+          value2.docs.forEach((element) {
+            if (projectIds.contains(element.data()['projectId'] as String)) {
+              projectSearchList.add(Project.fromDocument(element.data()));
+            }
           });
-          setState(() {});
+          print(projectSearchList.length);
         });
       });
     });
@@ -95,22 +93,21 @@ class _projectSearchingScreenState extends State<projectSearchingScreen> {
         .collection("users")
         .doc(uid)
         .snapshots()
-        .listen((value) {
-      setState(() {
-        projectIdAll = value.data()!["projectsList"];
-        FirebaseFirestore.instance
-            .collection("projects")
-            .snapshots()
-            .listen((value) {
-          setState(() {
-            value.docs.forEach((element) {
-              if (projectIdAll
-                  .contains(element.data()["projectId"] as String)) {
-                projectAllList.add(Project.fromDocument(element.data()));
-              }
-            });
-            print(projectAllList.length);
+        .listen((value1) {
+      projectIdAll = value1.data()!["projectsList"];
+      FirebaseFirestore.instance
+          .collection("projects")
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          projectIdAll = value1.data()!["projectsList"];
+          projectAllList.clear();
+          value2.docs.forEach((element) {
+            if (projectIdAll.contains(element.data()["projectId"] as String)) {
+              projectAllList.add(Project.fromDocument(element.data()));
+            }
           });
+          print(projectAllList.length);
         });
       });
     });
@@ -122,6 +119,7 @@ class _projectSearchingScreenState extends State<projectSearchingScreen> {
     final userid = user?.uid.toString();
     uid = userid!;
     print('The current uid is $uid');
+    getProjectAllList();
   }
 
   @override
@@ -198,12 +196,7 @@ class _projectSearchingScreenState extends State<projectSearchingScreen> {
                   IconButton(
                     padding: EdgeInsets.only(right: 20),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                projectManagementScreen(required, uid: uid),
-                          ));
+                      Navigator.pop(context);
                     },
                     icon: Icon(Iconsax.close_square, size: 28, color: black),
                   ),

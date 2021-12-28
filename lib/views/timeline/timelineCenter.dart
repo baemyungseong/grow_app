@@ -45,6 +45,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
       dob: '',
       email: '',
       name: '',
+      messagesList: [],
       job: '',
       tasksList: [],
       phonenumber: '',
@@ -98,6 +99,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
 
   ///time
   int now = int.parse("${DateFormat('d').format(DateTime.now())}");
+
   late DateTime date = DateTime.now();
   late bool checkMonday = false;
   late bool checkTuesDay = false;
@@ -321,13 +323,13 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          buildDateColumn('S', now - 5, checkSunDay),
-                          buildDateColumn('M', now - 4, checkMonday),
-                          buildDateColumn('T', now - 3, checkTuesDay),
-                          buildDateColumn('W', now - 2, checkWednesDay),
-                          buildDateColumn('T', now - 1, checkThursDay),
-                          buildDateColumn('F', now, checkFridayDay),
-                          buildDateColumn('S', now + 1, checkSunDay),
+                          buildDateColumn('S', now - 2, checkSunDay),
+                          buildDateColumn('M', now - 1, checkMonday),
+                          buildDateColumn('T', now, checkTuesDay),
+                          buildDateColumn('W', now + 1, checkWednesDay),
+                          buildDateColumn('T', now + 2, checkThursDay),
+                          buildDateColumn('F', now + 3, checkFridayDay),
+                          buildDateColumn('S', 1, checkSunDay),
                         ]),
                   ),
                   Column(

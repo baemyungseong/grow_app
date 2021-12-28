@@ -49,6 +49,7 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
       dob: '',
       email: '',
       name: '',
+      messagesList: [],
       job: '',
       phonenumber: '',
       projectsList: [],

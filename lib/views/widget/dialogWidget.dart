@@ -671,14 +671,10 @@ removeProjectDialog(BuildContext mContext, String projectId, String userId,
                                                     }
                                                   }))
                                         });
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        projectManagementScreen(required,
-                                            uid: userId),
-                                  ),
-                                );
+                                Navigator.of(context)
+                                  ..pop()
+                                  ..pop()
+                                  ..pop();
                               },
                               child: AnimatedContainer(
                                   alignment: Alignment.center,

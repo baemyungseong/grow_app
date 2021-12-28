@@ -64,6 +64,7 @@ class _assignTasksScreenState extends State<assignTasksScreen> {
       tasksList: [],
       dob: '',
       email: '',
+      messagesList: [],
       name: '',
       job: '',
       phonenumber: '',

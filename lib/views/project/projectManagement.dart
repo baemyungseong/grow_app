@@ -68,6 +68,46 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
   _projectManagementScreenState(uid);
 
   FirebaseAuth auth = FirebaseAuth.instance;
+  late List projectList = [];
+  late List assignedProject = [];
+  late List<UserModel> userListProject = [];
+
+  Future getAssignedProject() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .snapshots()
+        .listen((value1) {
+      setState(() {
+        projectList = value1.data()!["projectsList"];
+        projectList.forEach((element) {
+          FirebaseFirestore.instance
+              .collection("projects")
+              .doc(element)
+              .snapshots()
+              .listen((value2) {
+            assignedProject = value2.data()!["assigned"];
+            // setState(() {
+            FirebaseFirestore.instance.collection("users").get().then((value3) {
+              setState(() {
+                userListProject.clear();
+                value3.docs.forEach((element) {
+                  if (assignedProject
+                      .contains(element.data()['userId'] as String)) {
+                    userListProject.add(UserModel.fromDocument(element.data()));
+                  }
+                });
+              });
+            });
+            // });
+          });
+        });
+        userListProject.clear();
+      });
+      print("task avatar ne");
+      print(userListProject.length);
+    });
+  }
 
   void initState() {
     super.initState();
@@ -76,6 +116,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
     uid = userid!;
     print('The current uid is $uid');
     getProjectsDataList();
+    getAssignedProject();
   }
 
   @override
@@ -92,6 +133,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
       name: '',
       job: '',
       phonenumber: '',
+      messagesList: [],
       projectsList: [],
       userId: '');
   List<UserModel> userList = [];
@@ -124,28 +166,23 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
         .collection("users")
         .doc(uid)
         .snapshots()
-        .listen((value) {
-      projects.clear();
-      value.data();
-      print(value.data());
-      value["projectsList"].forEach((id) async {
-        projects.add(await getDataProject(id));
-        if (mounted) setState(() {});
+        .listen((value1) {
+      FirebaseFirestore.instance
+          .collection("projects")
+          .orderBy('deadline', descending: true)
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          projectAllList.clear();
+          projectIdAll = value1.data()!["projectsList"];
+          value2.docs.forEach((element) {
+            if (projectIdAll.contains(element.data()["projectId"] as String)) {
+              projectAllList.add(Project.fromDocument(element.data()));
+            }
+          });
+        });
       });
     });
-  }
-
-  Future<Map<String, dynamic>?> getDataProject(id) async {
-    var data;
-    await FirebaseFirestore.instance
-        .collection('projects')
-        .doc(id)
-        .get()
-        .then((value) {
-      data = value.data();
-      print(data);
-    });
-    return data;
   }
 
   @override
@@ -290,7 +327,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                   padding: EdgeInsets.zero,
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: projects.length,
+                  itemCount: projectAllList.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
@@ -299,7 +336,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                           MaterialPageRoute(
                             builder: (context) => projectDetailScreen(required,
                                 uid: uid,
-                                projectId: "${projects[index]!["projectId"]}"),
+                                projectId: projectAllList[index].projectId),
                           ),
                         ).then((value) {
                           getProjectsDataList();
@@ -311,7 +348,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: NetworkImage(
-                                    '${projects[index]!["background"]}'),
+                                    projectAllList[index].background),
                                 fit: BoxFit.cover),
                             borderRadius: BorderRadius.all(Radius.circular(16)),
                             boxShadow: [
@@ -337,7 +374,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                       Container(
                                         width: 235,
                                         child: Text(
-                                          "${projects[index]!["name"]}",
+                                          projectAllList[index].name,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           style: TextStyle(
@@ -352,13 +389,15 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                         width: 12,
                                         height: 12,
                                         decoration: new BoxDecoration(
-                                          color: (projects[index]!["status"] ==
-                                                  "done")
-                                              ? doneColor
-                                              : ((projects[index]!["status"] ==
-                                                      "todo")
-                                                  ? todoColor
-                                                  : pendingColor),
+                                          color:
+                                              (projectAllList[index].status ==
+                                                      "done")
+                                                  ? doneColor
+                                                  : ((projectAllList[index]
+                                                              .status ==
+                                                          "todo")
+                                                      ? todoColor
+                                                      : pendingColor),
                                           shape: BoxShape.circle,
                                         ),
                                       )
@@ -370,54 +409,36 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Container(
-                                        child: Row(
-                                          children: [
-                                            Stack(
-                                              children: [
-                                                Container(
-                                                  width: 32,
-                                                  height: 32,
-                                                  decoration: new BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            // '${projects[index]!["background"]}'),
-                                                            'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                        fit: BoxFit.cover),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
+                                        alignment: Alignment.topRight,
+                                        height: 34,
+                                        child: ListView.builder(
+                                            // padding:
+                                            //     EdgeInsets.only(right: 8),
+                                            physics:
+                                                const AlwaysScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: userListProject.length
+                                                .clamp(0, 3),
+                                            itemBuilder: (context, index) {
+                                              return Stack(children: [
                                                 Container(
                                                   margin:
-                                                      EdgeInsets.only(left: 22),
-                                                  width: 32,
-                                                  height: 32,
+                                                      EdgeInsets.only(left: 0),
+                                                  width: 34,
+                                                  height: 34,
                                                   decoration: new BoxDecoration(
                                                     image: DecorationImage(
                                                         image: NetworkImage(
-                                                            // '${projects[index]!["background"]}'),
-                                                            'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                            userListProject[
+                                                                    index]
+                                                                .avatar),
                                                         fit: BoxFit.cover),
                                                     shape: BoxShape.circle,
                                                   ),
-                                                ),
-                                                Container(
-                                                  margin:
-                                                      EdgeInsets.only(left: 44),
-                                                  width: 32,
-                                                  height: 32,
-                                                  decoration: new BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            // '${projects[index]!["background"]}'),
-                                                            'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                        fit: BoxFit.cover),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                                )
+                                              ]);
+                                            }),
                                       ),
                                       SizedBox(width: 24),
                                       Column(
@@ -440,7 +461,8 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                               Container(
                                                 width: 137,
                                                 child: Text(
-                                                  "${projects[index]!["deadline"]}",
+                                                  projectAllList[index]
+                                                      .deadline,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 1,
@@ -471,7 +493,9 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                               Container(
                                                 width: 137,
                                                 child: Text(
-                                                  "${projects[index]!["quantityTask"]} task",
+                                                  projectAllList[index]
+                                                          .quantityTask +
+                                                      " Task",
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 1,
@@ -503,16 +527,16 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                       Container(
                                         width: (271 *
                                             0.01 *
-                                            (double.parse(
-                                                projects[index]!["progress"]))),
+                                            (double.parse(projectAllList[index]
+                                                .progress))),
                                         height: 9,
                                         decoration: BoxDecoration(
                                             color:
-                                                (projects[index]!["status"] ==
+                                                (projectAllList[index].status ==
                                                         "done")
                                                     ? doneColor
-                                                    : ((projects[index]![
-                                                                "status"] ==
+                                                    : ((projectAllList[index]
+                                                                .status ==
                                                             "todo")
                                                         ? todoColor
                                                         : pendingColor),
@@ -533,7 +557,7 @@ class _projectManagementScreenState extends State<projectManagementScreen> {
                                     ),
                                     Spacer(),
                                     Text(
-                                      "${projects[index]!["progress"]}%",
+                                      projectAllList[index].progress + "%",
                                       style: TextStyle(
                                           fontFamily: "Poppins",
                                           fontSize: 12.0,

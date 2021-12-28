@@ -12,6 +12,7 @@ class UserModel {
   final String phonenumber;
   final List projectsList;
   final List tasksList;
+  final List messagesList;
   UserModel({
     required this.userId,
     required this.email,
@@ -22,6 +23,7 @@ class UserModel {
     required this.phonenumber,
     required this.projectsList,
     required this.tasksList,
+    required this.messagesList,
   });
 
   factory UserModel.fromDocument(Map<String, dynamic> doc) {
@@ -34,6 +36,7 @@ class UserModel {
         avatar: doc['avatar'],
         phonenumber: doc['phonenumber'],
         projectsList: doc['projectsList'],
+        messagesList: doc["messagesList"],
         tasksList: doc['tasksList']);
   }
 }

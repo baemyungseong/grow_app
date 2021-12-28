@@ -79,6 +79,7 @@ class _taskDetailScreenState extends State<taskDetailScreen>
       dob: '',
       tasksList: [],
       email: '',
+      messagesList: [],
       name: '',
       job: '',
       phonenumber: '',

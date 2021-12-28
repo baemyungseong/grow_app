@@ -8,6 +8,7 @@ import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 import 'package:grow_app/models/messageModel.dart';
+
 import 'package:grow_app/models/userModel.dart';
 
 //import views
@@ -48,6 +49,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
       avatar: '',
       dob: '',
       email: '',
+      messagesList: [],
       name: '',
       job: '',
       phonenumber: '',
@@ -57,6 +59,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
   // late MessageModel message =
   //     MessageModel(userIdS1: '', userIdS2: '', messageId: '', contentList: []);
   List<UserModel> userList = [];
+  String userName = "";
 
   Future getUserDetail() async {
     FirebaseFirestore.instance
@@ -67,6 +70,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
       setState(() {
         user = UserModel.fromDocument(value.docs.first.data());
       });
+      userName = user.name;
     });
   }
 
@@ -87,21 +91,96 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
 
   String newMessageId = "";
   List assignedMessage = [];
-  Future createMessage(String userIdS2) async {
-    FirebaseFirestore.instance.collection("messages").add({
-      'userId1': uid,
-      'userId2': userIdS2,
-      'contentList': FieldValue.arrayUnion([""]),
-      'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
-    }).then((value) {
-      FirebaseFirestore.instance.collection("messages").doc(value.id).update({
-        'messageId': value.id,
-      });
-      newMessageId = value.id;
-    });
+  Future createMessage(String userIdS2, String userName2) async {
+    // FirebaseFirestore.instance
+    //     .collection("messages")
+    //     .get()
+    //     .then((value) => value.docs.forEach((element) {
+    //           setState(() {
+    //             if (("$userName" + "_" + "$userName2")
+    //                     .contains((element.data()['name'] as String)) &&
+    //                 element.data()['timeSend'] != null) {
+    //               newMessageId = element.id;
+    //             } else {
+    FirebaseFirestore.instance
+        .collection("messages")
+        .add({
+          'userId1': uid,
+          'userId2': userIdS2,
+          'name': "$userName" + "_" + "$userName2",
+          'contentList': FieldValue.arrayUnion([""]),
+          'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
+        })
+        .then((value) {
+          setState(() {
+            FirebaseFirestore.instance
+                .collection("messages")
+                .doc(value.id)
+                .update({
+              'messageId': value.id,
+            });
+          });
+          newMessageId = value.id;
+        })
+        .whenComplete(() =>
+            FirebaseFirestore.instance.collection("users").doc(uid).update({
+              'messagesList': FieldValue.arrayUnion([newMessageId]),
+            }))
+        .whenComplete(() => FirebaseFirestore.instance
+                .collection("users")
+                .doc(userIdS2)
+                .update({
+              'messagesList': FieldValue.arrayUnion([newMessageId])
+            }));
   }
+
+  //   });
+  // }));
   // }
-  // ));
+  late List contentList;
+  late List<Message> messagesList = [];
+  late List messagesIdList;
+  Future getMessage() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .snapshots()
+        .listen((value1) {
+      FirebaseFirestore.instance
+          .collection("messages")
+          // .orderBy('timeSend', descending: true)
+          .snapshots()
+          .listen((value2) {
+        setState(() {
+          messagesList.clear();
+          messagesIdList = value1.data()!["messagesList"];
+          value2.docs.forEach((element) {
+            if (contentList.contains(element.data()['messageId'] as String)) {
+              messagesList.add(Message.fromDocument(element.data()));
+            }
+          });
+        });
+        print(messagesList.length);
+      });
+    });
+    // FirebaseFirestore.instance
+    //     .collection("messages")
+    //     .doc(messagesId)
+    //     .snapshots()
+    //     .listen((value1) {
+    //   FirebaseFirestore.instance.collection("contents").get().then((value2) {
+    //     setState(() {
+    //       // chatting.clear();
+    //       contentList = value1.data()!["contentList"];
+    //       value2.docs.forEach((element) {
+    //         if (contentList.contains(element.data()['messageId'] as String)) {
+    //           chatting.add(Message.fromDocument(element.data()));
+    //         }
+    //       });
+    //     });
+    //   });
+    // });
+  }
 
   void initState() {
     super.initState();
@@ -111,6 +190,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
     print('The current uid is $uid');
     getAllUser();
     getUserDetail();
+    getMessage();
   }
 
   @override
@@ -316,6 +396,9 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                   alignment: Alignment.center,
                                   child: GestureDetector(
                                     onTap: () {
+                                      createMessage(userList[index].userId,
+                                          userList[index].name);
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -326,7 +409,6 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                                   messagesId: newMessageId),
                                         ),
                                       );
-                                      createMessage(userList[index].userId);
                                     },
                                     child: AnimatedContainer(
                                       alignment: Alignment.center,
@@ -371,7 +453,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                       padding: EdgeInsets.only(top: 24),
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: 16,
+                      itemCount: messagesList.length,
                       itemBuilder: (context, index) {
                         return Container(
                           padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -418,7 +500,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                             Container(
                                               width: 180,
                                               child: Text(
-                                                'Bang Bro Best',
+                                                messagesList[index].name,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 style: TextStyle(

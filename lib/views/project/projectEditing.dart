@@ -68,6 +68,7 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
       avatar: '',
       dob: '',
       email: '',
+      messagesList: [],
       name: '',
       job: '',
       phonenumber: '',

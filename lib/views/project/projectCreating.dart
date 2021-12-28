@@ -75,6 +75,7 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
       dob: '',
       email: '',
       name: '',
+      messagesList: [],
       job: '',
       phonenumber: '',
       projectsList: [],

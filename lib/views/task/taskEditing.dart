@@ -104,6 +104,7 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
       avatar: '',
       dob: '',
       email: '',
+      messagesList: [],
       name: '',
       job: '',
       phonenumber: '',

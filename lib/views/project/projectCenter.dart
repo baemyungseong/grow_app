@@ -86,6 +86,7 @@ class _projectCenterScreenState extends State<projectCenterScreen>
       avatar: '',
       dob: '',
       email: '',
+      messagesList: [],
       name: '',
       job: '',
       phonenumber: '',
@@ -248,6 +249,47 @@ class _projectCenterScreenState extends State<projectCenterScreen>
           });
         });
       });
+    });
+  }
+
+  late List projectList = [];
+  late List assignedProject = [];
+  late List<UserModel> userListProject = [];
+
+  Future getAssignedProject() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .snapshots()
+        .listen((value1) {
+      setState(() {
+        projectList = value1.data()!["projectsList"];
+        projectList.forEach((element) {
+          FirebaseFirestore.instance
+              .collection("projects")
+              .doc(element)
+              .snapshots()
+              .listen((value2) {
+            assignedProject = value2.data()!["assigned"];
+            // setState(() {
+            FirebaseFirestore.instance.collection("users").get().then((value3) {
+              setState(() {
+                userListProject.clear();
+                value3.docs.forEach((element) {
+                  if (assignedProject
+                      .contains(element.data()['userId'] as String)) {
+                    userListProject.add(UserModel.fromDocument(element.data()));
+                  }
+                });
+              });
+            });
+            // });
+          });
+        });
+        userListProject.clear();
+      });
+      print("task avatar ne");
+      print(userListProject.length);
     });
   }
 
@@ -751,70 +793,45 @@ class _projectCenterScreenState extends State<projectCenterScreen>
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Container(
-                                                      child: Row(
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              Container(
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          NetworkImage(
-                                                                              // '${projects[index]!["background"]}'),
-                                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            22),
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          NetworkImage(
-                                                                              // '${projects[index]!["background"]}'),
-                                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            44),
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          NetworkImage(
-                                                                              // '${projects[index]!["background"]}'),
-                                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
+                                                      alignment:
+                                                          Alignment.topRight,
+                                                      height: 34,
+                                                      child: ListView.builder(
+                                                          // padding:
+                                                          //     EdgeInsets.only(right: 8),
+                                                          physics:
+                                                              const AlwaysScrollableScrollPhysics(),
+                                                          shrinkWrap: true,
+                                                          scrollDirection:
+                                                              Axis.horizontal,
+                                                          itemCount:
+                                                              userListProject
+                                                                  .length
+                                                                  .clamp(0, 3),
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            return Stack(
+                                                                children: [
+                                                                  Container(
+                                                                    margin: EdgeInsets
+                                                                        .only(
+                                                                            left:
+                                                                                0),
+                                                                    width: 34,
+                                                                    height: 34,
+                                                                    decoration:
+                                                                        new BoxDecoration(
+                                                                      image: DecorationImage(
+                                                                          image: NetworkImage(userListProject[index]
+                                                                              .avatar),
+                                                                          fit: BoxFit
+                                                                              .cover),
+                                                                      shape: BoxShape
+                                                                          .circle,
+                                                                    ),
+                                                                  )
+                                                                ]);
+                                                          }),
                                                     ),
                                                     SizedBox(width: 24),
                                                     Column(

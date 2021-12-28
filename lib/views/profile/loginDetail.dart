@@ -52,6 +52,7 @@ class loginDetailScreenState extends State<loginDetailScreen> {
       dob: '',
       email: '',
       name: '',
+      messagesList: [],
       job: '',
       phonenumber: '',
       projectsList: [],

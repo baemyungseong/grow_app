@@ -40,7 +40,10 @@ Future registerUser(String email, String password, String name,
         'phonenumber': phoneNumber,
         'dob': null,
         'job': null,
-        'avatar': "https://i.pinimg.com/564x/1c/63/9a/1c639ad0f44e6f450a8559305ca9cb0a.jpg",
+        'avatar':
+            "https://i.pinimg.com/564x/1c/63/9a/1c639ad0f44e6f450a8559305ca9cb0a.jpg",
+        'tasksList': FieldValue.arrayUnion([]),
+        'projectsList': FieldValue.arrayUnion([]),
       }).then((signedInUser) => {
             print("successfully registered!"),
           });

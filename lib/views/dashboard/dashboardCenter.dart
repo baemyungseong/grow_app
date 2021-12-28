@@ -74,6 +74,7 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
       email: '',
       name: '',
       job: '',
+      messagesList: [],
       phonenumber: '',
       projectsList: [],
       tasksList: [],
@@ -190,6 +191,45 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
     });
   }
 
+  late List projectList = [];
+  late List assignedProject = [];
+  late List<UserModel> userListProject = [];
+  Future getAssignedProject() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .snapshots()
+        .listen((value1) {
+      setState(() {
+        projectList = value1.data()!["projectsList"];
+        projectList.forEach((element) {
+          FirebaseFirestore.instance
+              .collection("projects")
+              .doc(element)
+              .snapshots()
+              .listen((value2) {
+            assignedProject = value2.data()!["assigned"];
+            // setState(() {
+            FirebaseFirestore.instance.collection("users").get().then((value3) {
+              setState(() {
+                userListProject.clear();
+                value3.docs.forEach((element) {
+                  if (assignedProject
+                      .contains(element.data()['userId'] as String)) {
+                    userListProject.add(UserModel.fromDocument(element.data()));
+                  }
+                });
+              });
+            });
+            // });
+          });
+        });
+      });
+      print("task avatar ne");
+      print(userListProject.length);
+    });
+  }
+
   late AnimationController _animatedController;
   late Animation<double> _animationDone;
   late Animation<double> _animationTodo;
@@ -233,6 +273,7 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
     getProjectTodoList();
     getProjectPendingList();
     getUserDetail();
+    getAssignedProject();
   }
 
   @override
@@ -484,6 +525,7 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
                         Spacer(),
                         Container(
                           child: Column(
+                            // padding: EdgeInsets.only(right: 20),
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
                               Container(
@@ -507,13 +549,15 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
                                               )),
                                           Spacer(),
                                           Text(
-                                            ((projectDoneList.length /
-                                                            projectAllList
-                                                                .length) *
-                                                        100)
-                                                    .toStringAsFixed(0)
-                                                    .toString() +
-                                                "%",
+                                            ((projectAllList.length == 0)
+                                                ? ("0 %")
+                                                : ((projectDoneList.length /
+                                                                projectAllList
+                                                                    .length) *
+                                                            100)
+                                                        .toStringAsFixed(0)
+                                                        .toString() +
+                                                    "%"),
                                             // projectDoneList.length.toString(),
                                             style: TextStyle(
                                               fontSize: 16,
@@ -560,13 +604,15 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
                                               )),
                                           Spacer(),
                                           Text(
-                                            ((projectTodoList.length /
-                                                            projectAllList
-                                                                .length) *
-                                                        100)
-                                                    .toStringAsFixed(0)
-                                                    .toString() +
-                                                "%",
+                                            ((projectAllList.length == 0)
+                                                ? ("0 %")
+                                                : ((projectTodoList.length /
+                                                                projectAllList
+                                                                    .length) *
+                                                            100)
+                                                        .toStringAsFixed(0)
+                                                        .toString() +
+                                                    "%"),
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontFamily: 'Poppins',
@@ -612,13 +658,15 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
                                               )),
                                           Spacer(),
                                           Text(
-                                            ((projectPendingList.length /
-                                                            projectAllList
-                                                                .length) *
-                                                        100)
-                                                    .toStringAsFixed(0)
-                                                    .toString() +
-                                                "%",
+                                            ((projectAllList.length == 0)
+                                                ? ("0 %")
+                                                : ((projectPendingList.length /
+                                                                projectAllList
+                                                                    .length) *
+                                                            100)
+                                                        .toStringAsFixed(0)
+                                                        .toString() +
+                                                    "%"),
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontFamily: 'Poppins',
@@ -815,44 +863,39 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
                                           ),
                                           Spacer(),
                                           Container(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Stack(
-                                                  children: [
-                                                    Container(
-                                                      width: 20,
-                                                      height: 20,
-                                                      decoration:
-                                                          new BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(
-                                                                // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                            fit: BoxFit.cover),
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                    ),
+                                            alignment: Alignment.topRight,
+                                            height: 20,
+                                            child: ListView.builder(
+                                                // padding:
+                                                //     EdgeInsets.only(right: 8),
+                                                physics:
+                                                    const AlwaysScrollableScrollPhysics(),
+                                                shrinkWrap: true,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: userListProject
+                                                    .length
+                                                    .clamp(0, 3),
+                                                itemBuilder: (context, index) {
+                                                  return Stack(children: [
                                                     Container(
                                                       margin: EdgeInsets.only(
-                                                          left: 12),
+                                                          left: 0),
                                                       width: 20,
                                                       height: 20,
                                                       decoration:
                                                           new BoxDecoration(
                                                         image: DecorationImage(
                                                             image: NetworkImage(
-                                                                // '${projects[index]!["background"]}'),
-                                                                'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                userListProject[
+                                                                        index]
+                                                                    .avatar),
                                                             fit: BoxFit.cover),
                                                         shape: BoxShape.circle,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                                    )
+                                                  ]);
+                                                }),
                                           ),
                                         ],
                                       )),

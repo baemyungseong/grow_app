@@ -100,6 +100,7 @@ class _projectDetailScreenState extends State<projectDetailScreen>
       dob: '',
       tasksList: [],
       email: '',
+      messagesList: [],
       name: '',
       job: '',
       phonenumber: '',
@@ -179,24 +180,21 @@ class _projectDetailScreenState extends State<projectDetailScreen>
               .doc(element)
               .snapshots()
               .listen((value2) {
-            assignedTask.clear();
             assignedTask = value2.data()!["assigned"];
-            setState(() {
-              FirebaseFirestore.instance
-                  .collection("users")
-                  .get()
-                  .then((value3) {
-                setState(() {
-                  userListTask.clear();
-                  value3.docs.forEach((element) {
-                    if (assignedTask
-                        .contains(element.data()['userId'] as String)) {
-                      userListTask.add(UserModel.fromDocument(element.data()));
-                    }
-                  });
+            // setState(() {
+
+            FirebaseFirestore.instance.collection("users").get().then((value3) {
+              setState(() {
+                userListTask.clear();
+                value3.docs.forEach((element) {
+                  if (assignedTask
+                      .contains(element.data()['userId'] as String)) {
+                    userListTask.add(UserModel.fromDocument(element.data()));
+                  }
                 });
               });
             });
+            // });
           });
         });
       });
@@ -900,7 +898,7 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                             height: 20,
                                             child: ListView.builder(
                                                 padding:
-                                                    EdgeInsets.only(right: 8),
+                                                    EdgeInsets.only(right: 0),
                                                 physics:
                                                     const AlwaysScrollableScrollPhysics(),
                                                 shrinkWrap: true,
@@ -912,7 +910,7 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                                   return Stack(children: [
                                                     Container(
                                                       margin: EdgeInsets.only(
-                                                          left: 4, right: 4),
+                                                          left: 0, right: 0),
                                                       width: 20,
                                                       height: 20,
                                                       decoration:

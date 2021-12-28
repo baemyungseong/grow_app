@@ -54,6 +54,7 @@ class _userSearchingScreenState extends State<userSearchingScreen> {
       tasksList: [],
       dob: '',
       email: '',
+      messagesList: [],
       name: '',
       job: '',
       phonenumber: '',
