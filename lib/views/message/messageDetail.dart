@@ -326,71 +326,139 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                                         shrinkWrap: true,
                                         itemCount: chatting.length,
                                         itemBuilder: (context, index) {
-                                          return Container(
-                                            padding: EdgeInsets.only(
-                                                left: 28, right: 28),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  width: 32,
-                                                  height: 32,
-                                                  decoration: new BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            // '${projects[index]!["background"]}'),
-                                                            'https://i.imgur.com/FpZ9xFI.jpg'),
-                                                        fit: BoxFit.cover),
-                                                    shape: BoxShape.circle,
+                                          return (uid == chatting[index].userId)
+                                              ? Container(
+                                                  padding: EdgeInsets.only(
+                                                      left: 28, right: 28),
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        chatting[index]
+                                                            .createAt,
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "Poppins",
+                                                            fontSize: 12.0,
+                                                            color: greyDark,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                      ),
+                                                      Spacer(),
+                                                      Container(
+                                                        height: 87,
+                                                        width: 236 - 12,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          24.0),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          24.0),
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          24.0)),
+                                                          color: purpleLight,
+                                                        ),
+                                                        child: Container(
+                                                          margin:
+                                                              EdgeInsets.all(8),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            chatting[index]
+                                                                .message,
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Poppins",
+                                                                fontSize: 12.0,
+                                                                color: black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                                SizedBox(width: 8),
-                                                Container(
-                                                  height: 54,
-                                                  width: 172,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius
-                                                        .only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    24.0),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    24.0),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    24.0)),
-                                                    color: whiteLight,
-                                                  ),
-                                                  child: Container(
-                                                    // padding: EdgeInsets.only(left: 16),
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      chatting[index].message,
-                                                      style: TextStyle(
-                                                          fontFamily: "Poppins",
-                                                          fontSize: 12.0,
-                                                          color: black,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Spacer(),
-                                                Text(
-                                                  chatting[index].createAt,
-                                                  style: TextStyle(
-                                                      fontFamily: "Poppins",
-                                                      fontSize: 12.0,
-                                                      color: greyDark,
-                                                      fontWeight:
-                                                          FontWeight.w400),
                                                 )
-                                              ],
-                                            ),
-                                          );
+                                              : Container(
+                                                  padding: EdgeInsets.only(
+                                                      left: 28, right: 28),
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        alignment: Alignment
+                                                            .bottomCenter,
+                                                        width: 32,
+                                                        height: 32,
+                                                        decoration:
+                                                            new BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  // '${projects[index]!["background"]}'),
+                                                                  'https://i.imgur.com/FpZ9xFI.jpg'),
+                                                              fit: BoxFit.cover),
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Container(
+                                                        height: 54,
+                                                        width: 172,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          24.0),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          24.0),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          24.0)),
+                                                          color: whiteLight,
+                                                        ),
+                                                        child: Container(
+                                                          // padding: EdgeInsets.only(left: 16),
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            chatting[index]
+                                                                .message,
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Poppins",
+                                                                fontSize: 12.0,
+                                                                color: black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Spacer(),
+                                                      Text(
+                                                        chatting[index]
+                                                            .createAt,
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "Poppins",
+                                                            fontSize: 12.0,
+                                                            color: greyDark,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
                                         }),
                                   ),
                                 ],
