@@ -46,9 +46,8 @@ class taskEditingScreen extends StatefulWidget {
       _taskEditingScreenState(uid, taskId, projectId);
 }
 
-class _taskEditingScreenState extends State<taskEditingScreen> {
-  // final String? uid = controllers.currentUserId;
-
+class _taskEditingScreenState extends State<taskEditingScreen>
+    with InputValidationMixin {
   String uid = "";
   String projectId = "";
   String taskId = "";
@@ -119,6 +118,11 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
         .listen((value) {
       setState(() {
         task = Task.fromDocument(value.docs.first.data());
+        nameController.text = task.name;
+        descriptionController.text = task.description;
+        (task.deadline == '')
+            ? haveDeadline = false
+            : selectDate = DateFormat('yMMMMd').parse(task.deadline);
       });
       print(task.name);
     });
@@ -156,10 +160,11 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
             assigned.add(element.data()['userId'] as String);
             if (check.isEmpty) {
               userListChoice.add(UserModel.fromDocument(element.data()));
-              showErrorSnackBar(context, "The asignee is added in your task");
+              showSnackBar(
+                  context, "The asignee is added in your task", "success");
             } else {
-              showErrorSnackBar(
-                  context, "The asignee was took part in your task");
+              showSnackBar(
+                  context, "The asignee was took part in your task", "error");
             }
           }
         });
@@ -191,9 +196,11 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
       setState(() {
         task = Task.fromDocument(value.docs.first.data());
         FirebaseFirestore.instance.collection("tasks").doc(task.taskId).update({
-          'name': reName,
-          'description': reDescription,
-          'deadline': reDeadline,
+          'name': nameController.text,
+          'description': descriptionController.text,
+          'deadline': (haveDeadline == true)
+              ? (DateFormat('yMMMMd').format(selectDate)).toString()
+              : "",
           'assigned': FieldValue.arrayUnion(assigned),
         }).whenComplete(() => FirebaseFirestore.instance
             .collection("users")
@@ -252,8 +259,20 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
                   padding: EdgeInsets.only(bottom: 6, right: 28),
                   child: GestureDetector(
                       onTap: () {
-                        updateTaskDetail();
-                        Navigator.pop(context);
+                        if (nameFormKey.currentState!.validate() &&
+                            descriptionFormKey.currentState!.validate()) {
+                          updateTaskDetail();
+                          showSnackBar(
+                              context,
+                              'Successfully changed the task detail!',
+                              'success');
+                          Navigator.pop(context);
+                        } else {
+                          showSnackBar(
+                              context,
+                              "Information can not be blank or incorrect!",
+                              'error');
+                        }
                       },
                       child: Text(
                         "Save",
@@ -309,10 +328,22 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: nameController,
                                           keyboardType: TextInputType.text,
-                                          onChanged: (val) {
-                                            reName = val;
+                                          // onChanged: (val) {
+                                          //   reName = val;
+                                          // },
+                                          validator: (name) {
+                                            if (isNameValid(name.toString())) {
+                                              return null;
+                                            } else {
+                                              return '';
+                                            }
                                           },
                                           decoration: InputDecoration(
+                                            errorStyle: TextStyle(
+                                              color: Colors.transparent,
+                                              fontSize: 0,
+                                              height: 0,
+                                            ),
                                             border: InputBorder.none,
                                             hintText: task.name,
                                             hintStyle: TextStyle(
@@ -366,10 +397,20 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: descriptionController,
                                           keyboardType: TextInputType.text,
-                                          onChanged: (val) {
-                                            reDescription = val;
+                                          validator: (name) {
+                                            if (isDescriptionValid(
+                                                name.toString())) {
+                                              return null;
+                                            } else {
+                                              return '';
+                                            }
                                           },
                                           decoration: InputDecoration(
+                                            errorStyle: TextStyle(
+                                              color: Colors.transparent,
+                                              fontSize: 0,
+                                              height: 0,
+                                            ),
                                             border: InputBorder.none,
                                             hintText: task.description,
                                             hintStyle: TextStyle(
@@ -772,4 +813,23 @@ class _taskEditingScreenState extends State<taskEditingScreen> {
       ),
     );
   }
+}
+
+mixin InputValidationMixin {
+  // bool isEmailValid(String email) {
+  //   RegExp regex = new RegExp(
+  //       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  //   return regex.hasMatch(email);
+  // }
+
+  bool isNameValid(String name) => name.length >= 1;
+
+  bool isDescriptionValid(String name) => name.length >= 1;
+
+  // bool isPasswordValid(String password) => password.length >= 6;
+
+  // bool isPhonenumberValid(String phoneNumber) {
+  //   RegExp regex = new RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+  //   return regex.hasMatch(phoneNumber);
+  // }
 }

@@ -466,7 +466,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                       image: DecorationImage(
                                           image: NetworkImage(
                                               // '${projects[index]!["background"]}'),
-                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                              messagesList[index].background),
                                           fit: BoxFit.cover),
                                       shape: BoxShape.circle,
                                     ),

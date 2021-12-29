@@ -8,6 +8,7 @@ class Content {
   final String messageId;
   final String createAt;
   final String message;
+  final String timeSendDetail;
 
   Content({
     required this.contentId,
@@ -15,6 +16,7 @@ class Content {
     required this.messageId,
     required this.message,
     required this.createAt,
+    required this.timeSendDetail,
   });
   factory Content.fromDocument(Map<String, dynamic> doc) {
     return Content(
@@ -22,6 +24,7 @@ class Content {
         messageId: doc['messageId'],
         userId: doc['sendBy'],
         message: doc['content'],
+        timeSendDetail: doc['timeSendDetail'],
         createAt: doc['timeSend']);
   }
 }

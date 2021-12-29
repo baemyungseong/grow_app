@@ -113,7 +113,7 @@ class _assignTasksScreenState extends State<assignTasksScreen> {
                   userSearchList.add(UserModel.fromDocument(element.data()));
                 }
               } else {
-                showErrorSnackBar(context, "This email is searched ");
+                showSnackBar(context, "This email is searched ", "error");
               }
             });
             print("Nhan r nha");

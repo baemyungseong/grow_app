@@ -194,10 +194,11 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
             assigned.add(element.data()['userId'] as String);
             if (check.isEmpty) {
               userListChoice.add(UserModel.fromDocument(element.data()));
-              showErrorSnackBar(context, "The asignee was add in your project");
+              showSnackBar(
+                  context, "The asignee was add in your project", 'success');
             } else {
-              showErrorSnackBar(
-                  context, "The asignee was assigned in your project");
+              showSnackBar(
+                  context, "The asignee was assigned in your project", 'error');
             }
           }
         });

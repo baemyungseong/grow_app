@@ -122,11 +122,11 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
             assigned.add(element.data()['userId'] as String);
             if (check.isEmpty) {
               userListChoice.add(UserModel.fromDocument(element.data()));
-              showErrorSnackBar(
-                  context, "The asignee has been add in your project");
+              showSnackBar(context, "The asignee has been add in your project",
+                  'success');
             } else {
-              showErrorSnackBar(
-                  context, "The asignee has been took part in your project");
+              showSnackBar(context,
+                  "The asignee has been took part in your project", 'error');
             }
           }
         });
@@ -224,8 +224,10 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                   child: GestureDetector(
                       onTap: () {
                         if (userListChoice.length == 0) {
-                          showErrorSnackBar(context,
-                              "The task must assignee, Please add assignee!");
+                          showSnackBar(
+                              context,
+                              "The task must assignee, Please add assignee!",
+                              'success');
                         } else {
                           createTask(newTaskId);
                           Navigator.pop(context);

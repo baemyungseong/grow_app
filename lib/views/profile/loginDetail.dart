@@ -20,6 +20,7 @@ import 'package:grow_app/views/profile/profileCenter.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_app/views/widget/snackBarWidget.dart';
 
 //import others
 import 'package:meta/meta.dart';
@@ -37,15 +38,18 @@ class loginDetailScreen extends StatefulWidget {
   loginDetailScreenState createState() => loginDetailScreenState(uid);
 }
 
-class loginDetailScreenState extends State<loginDetailScreen> {
+class loginDetailScreenState extends State<loginDetailScreen>
+    with InputValidationMixin {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
 
-  String reName = '';
-  String reDate = '';
-  String rePhone = "";
-  String reJob = "";
+  // String reName = '';
+  // String date = '';
+  // String rePhone = "";
+  // String reJob = "";
+
+  late DateTime selectDate = DateTime.now();
 
   late UserModel user = UserModel(
       avatar: '',
@@ -66,20 +70,22 @@ class loginDetailScreenState extends State<loginDetailScreen> {
         .listen((value) {
       setState(() {
         user = UserModel.fromDocument(value.docs.first.data());
+        usernameController.text = user.name;
+        jobController.text = user.job;
+        phonenumberController.text = user.phonenumber;
+        selectDate = DateFormat('yMMMMd').parse(user.dob);
       });
     });
   }
 
   Future updateUserDetail() async {
     FirebaseFirestore.instance.collection("users").doc(uid).update({
-      'name': reName,
-      'phonenumber': rePhone,
-      'job': reJob,
-      'dob': reDate,
+      'name': usernameController.text,
+      'phonenumber': phonenumberController.text,
+      'job': jobController.text,
+      'dob': (DateFormat('yMMMMd').format(selectDate)).toString(),
     });
   }
-
-  late DateTime selectDate = DateTime.now();
 
   loginDetailScreenState(uid);
 
@@ -132,14 +138,19 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                   padding: EdgeInsets.only(bottom: 6, right: 28),
                   child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                profileCenterScreen(required, uid: uid),
-                          ),
-                        );
-                        updateUserDetail();
+                        if (usernameFormKey.currentState!.validate() &&
+                            phonenumberFormKey.currentState!.validate() &&
+                            jobFormKey.currentState!.validate()) {
+                          updateUserDetail();
+                          showSnackBar(context,
+                              'Successfully changed the profile!', 'success');
+                          Navigator.pop(context);
+                        } else {
+                          showSnackBar(
+                              context,
+                              "Information can not be blank or incorrect!",
+                              'error');
+                        }
                       },
                       child: Text(
                         "Save",
@@ -185,7 +196,7 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Form(
-                                // key: formKey,
+                                key: usernameFormKey,
                                 child: Container(
                                   width: 319,
                                   height: 48,
@@ -202,12 +213,27 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                                           fontWeight: FontWeight.w400),
                                       controller: usernameController,
                                       keyboardType: TextInputType.text,
-                                      onChanged: (val) {
-                                        reName = val;
+                                      // onChanged: (val) {
+                                      //   reName = val;
+                                      // },
+                                      // initialValue: user.name,
+                                      //validator
+                                      validator: (name) {
+                                        if (isNameValid(name.toString())) {
+                                          return null;
+                                        } else {
+                                          return '';
+                                        }
                                       },
                                       decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          color: Colors.transparent,
+                                          fontSize: 0,
+                                          height: 0,
+                                        ),
                                         border: InputBorder.none,
-                                        hintText: user.name,
+                                        // hintText: user.name,
+                                        hintText: "Enter your user name",
                                         hintStyle: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 14,
@@ -246,8 +272,6 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                                         selectDate != selectDate;
                                       });
                                     }
-                                    reDate =
-                                        "${DateFormat('yMMMMd').format(selectDate)}";
                                     print(selectDate);
                                   },
                                   child: AnimatedContainer(
@@ -321,12 +345,27 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                                           fontWeight: FontWeight.w400),
                                       controller: jobController,
                                       keyboardType: TextInputType.text,
-                                      onChanged: (val) {
-                                        reJob = val;
+                                      // onChanged: (val) {
+                                      //   reJob = val;
+                                      // },
+                                      //validator
+                                      validator: (job) {
+                                        if (isJobValid(job.toString())) {
+                                          return null;
+                                        } else {
+                                          return '';
+                                        }
                                       },
+                                      // initialValue: user.job,
                                       decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          color: Colors.transparent,
+                                          fontSize: 0,
+                                          height: 0,
+                                        ),
                                         border: InputBorder.none,
-                                        hintText: user.job,
+                                        // hintText: user.job,
+                                        hintText: "Enter your job",
                                         hintStyle: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 14,
@@ -372,12 +411,28 @@ class loginDetailScreenState extends State<loginDetailScreen> {
                                           fontWeight: FontWeight.w400),
                                       controller: phonenumberController,
                                       keyboardType: TextInputType.phone,
-                                      onChanged: (val) {
-                                        rePhone = val;
+                                      // onChanged: (val) {
+                                      //   rePhone = val;
+                                      // },
+                                      //validator
+                                      validator: (phonenumber) {
+                                        if (isPhonenumberValid(
+                                            phonenumber.toString())) {
+                                          return null;
+                                        } else {
+                                          return '';
+                                        }
                                       },
+                                      // initialValue: user.phonenumber,
                                       decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          color: Colors.transparent,
+                                          fontSize: 0,
+                                          height: 0,
+                                        ),
                                         border: InputBorder.none,
-                                        hintText: user.phonenumber,
+                                        // hintText: user.phonenumber,
+                                        hintText: "Enter your phone number",
                                         hintStyle: TextStyle(
                                             fontFamily: 'Poppins',
                                             fontSize: 14,
@@ -470,5 +525,25 @@ class loginDetailScreenState extends State<loginDetailScreen> {
         ],
       ),
     );
+  }
+}
+
+//Create validation
+mixin InputValidationMixin {
+  // bool isEmailValid(String email) {
+  //   RegExp regex = new RegExp(
+  //       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  //   return regex.hasMatch(email);
+  // }
+
+  bool isNameValid(String name) => name.length >= 3;
+
+  bool isJobValid(String name) => name.length >= 1;
+
+  // bool isPasswordValid(String password) => password.length >= 6;
+
+  bool isPhonenumberValid(String phoneNumber) {
+    RegExp regex = new RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+    return regex.hasMatch(phoneNumber);
   }
 }

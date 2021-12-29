@@ -41,7 +41,8 @@ class projectEditingScreen extends StatefulWidget {
       _projectEditingScreenState(uid, projectId);
 }
 
-class _projectEditingScreenState extends State<projectEditingScreen> {
+class _projectEditingScreenState extends State<projectEditingScreen>
+    with InputValidationMixin {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
@@ -159,11 +160,11 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
             assigned.add(element.data()['userId'] as String);
             if (check.isEmpty) {
               userListChoice.add(UserModel.fromDocument(element.data()));
-              showErrorSnackBar(
-                  context, "The asignee has been add in your project");
+              showSnackBar(context, "The asignee has been add in your project",
+                  'success');
             } else {
-              showErrorSnackBar(
-                  context, "The asignee has been took part in your project");
+              showSnackBar(context,
+                  "The asignee has been took part in your project", 'error');
             }
           }
         });
@@ -182,6 +183,9 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
         .listen((value) {
       setState(() {
         project = Project.fromDocument(value.docs.first.data());
+        nameController.text = project.name;
+        descriptionController.text = project.description;
+        selectDate = DateFormat('yMMMMd').parse(project.deadline);
       });
       print(project.name);
     });
@@ -199,9 +203,9 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
             .collection("projects")
             .doc(project.projectId)
             .update({
-          'name': reName,
-          'description': reDescription,
-          'deadline': reDeadline,
+          'name': nameController.text,
+          'description': descriptionController.text,
+          'deadline': (DateFormat('yMMMMd').format(selectDate)).toString(),
           'assigned': FieldValue.arrayUnion(assigned),
         }).whenComplete(() => FirebaseFirestore.instance
                 .collection("users")
@@ -262,8 +266,20 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                   padding: EdgeInsets.only(bottom: 6, right: 28),
                   child: GestureDetector(
                       onTap: () {
-                        updateProjectsDetail();
-                        Navigator.pop(context);
+                        if (nameFormKey.currentState!.validate() &&
+                            descriptionFormKey.currentState!.validate()) {
+                          updateProjectsDetail();
+                          showSnackBar(
+                              context,
+                              'Successfully changed the project detail!',
+                              'success');
+                          Navigator.pop(context);
+                        } else {
+                          showSnackBar(
+                              context,
+                              "Information can not be blank or incorrect!",
+                              'error');
+                        }
                       },
                       child: Text(
                         "Save",
@@ -319,10 +335,22 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: nameController,
                                           keyboardType: TextInputType.text,
-                                          onChanged: (val) {
-                                            reName = val;
+                                          // onChanged: (val) {
+                                          //   reName = val;
+                                          // },
+                                          validator: (name) {
+                                            if (isNameValid(name.toString())) {
+                                              return null;
+                                            } else {
+                                              return '';
+                                            }
                                           },
                                           decoration: InputDecoration(
+                                            errorStyle: TextStyle(
+                                              color: Colors.transparent,
+                                              fontSize: 0,
+                                              height: 0,
+                                            ),
                                             border: InputBorder.none,
                                             hintText: project.name,
                                             hintStyle: TextStyle(
@@ -376,10 +404,23 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: descriptionController,
                                           keyboardType: TextInputType.text,
-                                          onChanged: (val) {
-                                            reDescription = val;
+                                          // onChanged: (val) {
+                                          //   reDescription = val;
+                                          // },
+                                          validator: (name) {
+                                            if (isDescriptionValid(
+                                                name.toString())) {
+                                              return null;
+                                            } else {
+                                              return '';
+                                            }
                                           },
                                           decoration: InputDecoration(
+                                            errorStyle: TextStyle(
+                                              color: Colors.transparent,
+                                              fontSize: 0,
+                                              height: 0,
+                                            ),
                                             border: InputBorder.none,
                                             hintText: project.description,
                                             hintStyle: TextStyle(
@@ -426,8 +467,8 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
                                               haveDeadline = true;
                                               haveDeadline != haveDeadline;
                                               selectDate != selectDate;
-                                              reDeadline =
-                                                  "${DateFormat('yMMMMd').format(selectDate)}";
+                                              // reDeadline =
+                                              //     "${DateFormat('yMMMMd').format(selectDate)}";
                                             });
                                           }
                                           print(haveDeadline);
@@ -814,4 +855,23 @@ class _projectEditingScreenState extends State<projectEditingScreen> {
       ),
     );
   }
+}
+
+mixin InputValidationMixin {
+  // bool isEmailValid(String email) {
+  //   RegExp regex = new RegExp(
+  //       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  //   return regex.hasMatch(email);
+  // }
+
+  bool isNameValid(String name) => name.length >= 1;
+
+  bool isDescriptionValid(String name) => name.length >= 1;
+
+  // bool isPasswordValid(String password) => password.length >= 6;
+
+  // bool isPhonenumberValid(String phoneNumber) {
+  //   RegExp regex = new RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+  //   return regex.hasMatch(phoneNumber);
+  // }
 }

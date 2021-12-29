@@ -194,6 +194,7 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
   late List projectList = [];
   late List assignedProject = [];
   late List<UserModel> userListProject = [];
+
   Future getAssignedProject() async {
     FirebaseFirestore.instance
         .collection("users")

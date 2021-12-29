@@ -72,11 +72,16 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
       tasksList: [],
       userId: '');
   late Content content = Content(
-      contentId: '', userId: '', messageId: '', message: '', createAt: '');
+      contentId: '',
+      userId: '',
+      messageId: '',
+      message: '',
+      createAt: '',
+      timeSendDetail: '');
   Future getUserDetail() async {
     FirebaseFirestore.instance
         .collection("users")
-        .where("userId", isEqualTo: uid)
+        .where("userId", isEqualTo: uid2)
         .snapshots()
         .listen((value) {
       setState(() {
@@ -85,6 +90,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
     });
   }
 
+  late DateTime date = DateTime.now();
   Future sendMessage() async {
     if (message.isNotEmpty) {
       FirebaseFirestore.instance.collection("contents").add({
@@ -92,6 +98,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
         'sendBy': uid,
         'messageId': messagesId,
         'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
+        'timeSendDetail': "$date"
       }).then((value) {
         FirebaseFirestore.instance
             .collection("messages")
@@ -141,7 +148,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
         .listen((value1) {
       FirebaseFirestore.instance
           .collection("contents")
-          .orderBy('timeSend', descending: false)
+          .orderBy('timeSendDetail', descending: true)
           .get()
           .then((value2) {
         setState(() {
@@ -164,7 +171,8 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
     uid = userid!;
     print('The current uid is $uid');
     getUserDetail();
-    getMessage1();
+    // getMessage1();
+    getMessage2();
   }
 
   @override
@@ -285,7 +293,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                 Container(
                   padding: EdgeInsets.only(left: 28),
                   child: Text(
-                    "Bang Pro Best",
+                    user.name,
                     style: TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 24.0,

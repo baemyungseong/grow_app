@@ -160,15 +160,15 @@ class _taskDetailScreenState extends State<taskDetailScreen>
         .listen((value) {
       setState(() {
         task = Task.fromDocument(value.docs.first.data());
-        if (progress == 0.0) {
-          checkBoxValue = false;
-        } else {
-          if ((task.progress + ".0") == (progress).toString()) {
-            checkBoxValue = true;
-          } else {
-            checkBoxValue = false;
-          }
-        }
+        // if (task.progress == '0') {
+        //   checkBoxValue = false;
+        // } else {
+        //   if ((task.progress + ".0") == (progress).toString()) {
+        //     checkBoxValue = true;
+        //   } else {
+        //     checkBoxValue = false;
+        //   }
+        // }
       });
       print(task.name);
     });
@@ -214,19 +214,13 @@ class _taskDetailScreenState extends State<taskDetailScreen>
 
   Future checkAssignment(double progress) async {
     FirebaseFirestore.instance.collection("projects").doc(projectId).update({
-      if (progress == 100.0)
-        'progress': ((progress / double.parse(project.quantityTask + '.0')))
-            .toStringAsFixed(0)
-            .toString(),
-      'status': ((progress / double.parse(project.quantityTask + '.0'))
-                  .toStringAsFixed(0)
-                  .toString() ==
-              "100")
+      'progress': (double.parse(project.progress + '.0') +
+              (progress / double.parse(project.quantityTask + '.0')))
+          .toStringAsFixed(0)
+          .toString(),
+      'status': (project.progress == "100")
           ? "done"
-          : ((progress / double.parse(project.quantityTask + '.0'))
-                      .toStringAsFixed(0)
-                      .toString() !=
-                  "0")
+          : (project.progress != "0")
               ? "todo"
               : "pending"
     }).whenComplete(() =>
@@ -234,9 +228,15 @@ class _taskDetailScreenState extends State<taskDetailScreen>
           'progress': (double.parse(task.progress + '.0') + progress)
               .toStringAsFixed(0)
               .toString(),
-          'status': (progress.toStringAsFixed(0).toString() == "100")
+          'status': ((double.parse(task.progress + '.0') + progress)
+                      .toStringAsFixed(0)
+                      .toString() ==
+                  "100")
               ? "done"
-              : (progress.toStringAsFixed(0).toString() != "0")
+              : ((double.parse(task.progress + '.0') + progress)
+                          .toStringAsFixed(0)
+                          .toString() !=
+                      "0")
                   ? "todo"
                   : "pending"
         }));
@@ -294,7 +294,11 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                     //         dashboardCenterScreen(required, uid: uid),
                     //   ),
                     // );
+                    // Navigator.pop(context).then((value) {
+                    //   setState(() {});
+                    // });
                     Navigator.pop(context);
+                    // setState(() {});
                   },
                   icon: Icon(Icons.arrow_back_ios, size: 28, color: black),
                 ),

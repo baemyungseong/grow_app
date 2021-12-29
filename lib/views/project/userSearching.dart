@@ -91,7 +91,7 @@ class _userSearchingScreenState extends State<userSearchingScreen> {
           if (check.isEmpty) {
             userSearchList.add(UserModel.fromDocument(element.data()));
           } else {
-            showErrorSnackBar(context, "This email is searched ");
+            showSnackBar(context, "This email is searched ", "error");
           }
         });
         print("Nhan r nha");
@@ -145,8 +145,13 @@ class _userSearchingScreenState extends State<userSearchingScreen> {
                                 fontWeight: FontWeight.w400),
                             controller: searchController,
                             keyboardType: TextInputType.text,
-                            onChanged: (val) {
-                              search = val;
+                            onChanged: (value) {
+                              setState(() {
+                                searchUserByEmail(searchController.text);
+                              });
+                            },
+                            onEditingComplete: () {
+                              searchUserByEmail(searchController.text);
                             },
                             decoration: InputDecoration(
                               prefixIcon: Container(
@@ -158,7 +163,7 @@ class _userSearchingScreenState extends State<userSearchingScreen> {
                                       iconSize: 20,
                                       color: black,
                                       onPressed: () {
-                                        searchUserByEmail(search);
+                                        // searchUserByEmail(search);
                                       },
                                     )
                                   ])),
