@@ -137,7 +137,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
   //   });
   // }));
   // }
-  late List contentList;
+
   late List<Message> messagesList = [];
   late List messagesIdList;
   Future getMessage() async {
@@ -151,35 +151,18 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
           // .orderBy('timeSend', descending: true)
           .snapshots()
           .listen((value2) {
-        setState(() {
-          messagesList.clear();
-          messagesIdList = value1.data()!["messagesList"];
-          value2.docs.forEach((element) {
-            if (contentList.contains(element.data()['messageId'] as String)) {
-              messagesList.add(Message.fromDocument(element.data()));
-            }
-          });
+        // setState(() {
+        messagesList.clear();
+        messagesIdList = value1.data()!["messagesList"];
+        value2.docs.forEach((element) {
+          if (messagesIdList.contains(element.data()['messageId'] as String)) {
+            messagesList.add(Message.fromDocument(element.data()));
+          }
         });
+        // });
         print(messagesList.length);
       });
     });
-    // FirebaseFirestore.instance
-    //     .collection("messages")
-    //     .doc(messagesId)
-    //     .snapshots()
-    //     .listen((value1) {
-    //   FirebaseFirestore.instance.collection("contents").get().then((value2) {
-    //     setState(() {
-    //       // chatting.clear();
-    //       contentList = value1.data()!["contentList"];
-    //       value2.docs.forEach((element) {
-    //         if (contentList.contains(element.data()['messageId'] as String)) {
-    //           chatting.add(Message.fromDocument(element.data()));
-    //         }
-    //       });
-    //     });
-    //   });
-    // });
   }
 
   void initState() {
@@ -396,19 +379,19 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                   alignment: Alignment.center,
                                   child: GestureDetector(
                                     onTap: () {
-                                      createMessage(userList[index].userId,
-                                          userList[index].name);
+                                      // createMessage(userList[index].userId,
+                                      //     userList[index].name);
 
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              messageDetailScreen(required,
-                                                  uid: uid,
-                                                  uid2: userList[index].userId,
-                                                  messagesId: newMessageId),
-                                        ),
-                                      );
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) =>
+                                      //         messageDetailScreen(required,
+                                      //             uid: uid,
+                                      //             uid2: userList[index].userId,
+                                      //             messagesId: messagesList[index].messageId),
+                                      //   ),
+                                      // );
                                     },
                                     child: AnimatedContainer(
                                       alignment: Alignment.center,
@@ -460,13 +443,17 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                           alignment: Alignment.center,
                           child: GestureDetector(
                               onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         dashboardCenterScreen(required, uid: uid),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => messageDetailScreen(
+                                        required,
+                                        uid: uid,
+                                        uid2: userList[index].userId,
+                                        messagesId:
+                                            messagesList[index].messageId),
+                                  ),
+                                );
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

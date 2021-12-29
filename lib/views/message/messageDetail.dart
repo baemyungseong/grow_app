@@ -108,30 +108,47 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
   }
 
   late List contentList;
-  late List<Content> chatting;
-  Future getMessage() async {
-    // FirebaseFirestore.instance
-    //     .collection("contents")
-    //     .where('messageId', isEqualTo: messagesId)
-    //     .snapshots()
-    //     .listen((value) {
-    //   value.docs.forEach((element) {
-    //     if (contentList.contains(element.data()['messageId'] as String)) {
-    //       chatting.add(Content.fromDocument(element.data()));
-    //     }
-    //   });
-    // });
+  late List<Content> chatting = [];
+  Future getMessage1() async {
     FirebaseFirestore.instance
         .collection("messages")
         .doc(messagesId)
         .snapshots()
         .listen((value1) {
-      FirebaseFirestore.instance.collection("contents").get().then((value2) {
+      FirebaseFirestore.instance
+          .collection("contents")
+          .orderBy('timeSend', descending: false)
+          .get()
+          .then((value2) {
+        // setState(() {
+        chatting.clear();
+        contentList = value1.data()!["contentList"];
+        value2.docs.forEach((element) {
+          if (contentList.contains(element.data()['contentId'] as String)) {
+            chatting.add(Content.fromDocument(element.data()));
+          }
+        });
+        // });
+      });
+    });
+  }
+
+  Future getMessage2() async {
+    FirebaseFirestore.instance
+        .collection("messages")
+        .doc(messagesId)
+        .snapshots()
+        .listen((value1) {
+      FirebaseFirestore.instance
+          .collection("contents")
+          .orderBy('timeSend', descending: false)
+          .get()
+          .then((value2) {
         setState(() {
           chatting.clear();
           contentList = value1.data()!["contentList"];
           value2.docs.forEach((element) {
-            if (contentList.contains(element.data()['messageId'] as String)) {
+            if (contentList.contains(element.data()['contentId'] as String)) {
               chatting.add(Content.fromDocument(element.data()));
             }
           });
@@ -147,7 +164,7 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
     uid = userid!;
     print('The current uid is $uid');
     getUserDetail();
-    getMessage();
+    getMessage1();
   }
 
   @override
@@ -348,7 +365,8 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                                                   ),
                                                   child: Container(
                                                     // padding: EdgeInsets.only(left: 16),
-                                                    alignment: Alignment.center,
+                                                    alignment:
+                                                        Alignment.centerLeft,
                                                     child: Text(
                                                       chatting[index].message,
                                                       style: TextStyle(
@@ -434,19 +452,20 @@ class _messageDetailScreenState extends State<messageDetailScreen> {
                                   ],
                                 ),
                                 child: Container(
-                                    padding: EdgeInsets.zero,
+                                    margin: EdgeInsets.only(right: 8),
+                                    // padding: EdgeInsets.zero,
                                     alignment: Alignment.center,
                                     child: IconButton(
-                                      icon: Icon(Iconsax.send1),
-                                      iconSize: 18,
-                                      color: white,
-                                      onPressed: () {
-                                        sendMessage();
-                                        getMessage();
-                                        print(message);
-                                        print(chatting.length);
-                                      },
-                                    )),
+                                        icon: Icon(Iconsax.send1),
+                                        iconSize: 18,
+                                        color: white,
+                                        onPressed: () {
+                                          setState(() {
+                                            sendMessage();
+                                            getMessage2();
+                                            messageController.clear();
+                                          });
+                                        })),
                               ),
                             ),
                           ],
