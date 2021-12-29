@@ -160,15 +160,15 @@ class _taskDetailScreenState extends State<taskDetailScreen>
         .listen((value) {
       setState(() {
         task = Task.fromDocument(value.docs.first.data());
-        // if (task.progress == '0') {
-        //   checkBoxValue = false;
-        // } else {
-        //   if ((task.progress + ".0") == (progress).toString()) {
-        //     checkBoxValue = true;
-        //   } else {
-        //     checkBoxValue = false;
-        //   }
-        // }
+        if (task.progress == '0') {
+          checkBoxValue = false;
+        } else {
+          if ((task.progress + ".0") == (100.0).toString()) {
+            checkBoxValue = true;
+          } else {
+            checkBoxValue = false;
+          }
+        }
       });
       print(task.name);
     });

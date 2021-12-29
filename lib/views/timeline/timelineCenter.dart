@@ -325,12 +325,12 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           buildDateColumn('S', now - 3, checkSunDay),
-                          buildDateColumn('M', now - 2, checkMonday),
-                          buildDateColumn('T', now - 1, checkTuesDay),
-                          buildDateColumn('W', now, checkWednesDay),
-                          buildDateColumn('T', now + 1, checkThursDay),
-                          buildDateColumn('F', now + 2, checkFridayDay),
-                          buildDateColumn('S', 1, checkSunDay),
+                          buildDateColumn('M', now - 3, checkMonday),
+                          buildDateColumn('T', now - 2, checkTuesDay),
+                          buildDateColumn('W', now - 1, checkWednesDay),
+                          buildDateColumn('T', now, checkThursDay),
+                          buildDateColumn('F', 1, checkFridayDay),
+                          buildDateColumn('S', 2, checkSunDay),
                         ]),
                   ),
                   Column(

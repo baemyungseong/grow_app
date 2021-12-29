@@ -797,71 +797,71 @@ class _projectCenterScreenState extends State<projectCenterScreen>
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Container(
-                                                      child: Row(
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              Container(
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image: NetworkImage(
-                                                                          // '${projects[index]!["background"]}'),
-                                                                          projectTodoList[index].background),
-                                                                      fit: BoxFit.cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            22),
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          NetworkImage(
-                                                                              // '${projects[index]!["background"]}'),
-                                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            44),
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          NetworkImage(
-                                                                              // '${projects[index]!["background"]}'),
-                                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 24),
+                                                    // Container(
+                                                    //   child: Row(
+                                                    //     children: [
+                                                    //       Stack(
+                                                    //         children: [
+                                                    //           Container(
+                                                    //             width: 32,
+                                                    //             height: 32,
+                                                    //             decoration:
+                                                    //                 new BoxDecoration(
+                                                    //               image: DecorationImage(
+                                                    //                   image: NetworkImage(
+                                                    //                       // '${projects[index]!["background"]}'),
+                                                    //                       projectTodoList[index].background),
+                                                    //                   fit: BoxFit.cover),
+                                                    //               shape: BoxShape
+                                                    //                   .circle,
+                                                    //             ),
+                                                    //           ),
+                                                    //           Container(
+                                                    //             margin: EdgeInsets
+                                                    //                 .only(
+                                                    //                     left:
+                                                    //                         22),
+                                                    //             width: 32,
+                                                    //             height: 32,
+                                                    //             decoration:
+                                                    //                 new BoxDecoration(
+                                                    //               image: DecorationImage(
+                                                    //                   image:
+                                                    //                       NetworkImage(
+                                                    //                           // '${projects[index]!["background"]}'),
+                                                    //                           'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                    //                   fit: BoxFit
+                                                    //                       .cover),
+                                                    //               shape: BoxShape
+                                                    //                   .circle,
+                                                    //             ),
+                                                    //           ),
+                                                    //           Container(
+                                                    //             margin: EdgeInsets
+                                                    //                 .only(
+                                                    //                     left:
+                                                    //                         44),
+                                                    //             width: 32,
+                                                    //             height: 32,
+                                                    //             decoration:
+                                                    //                 new BoxDecoration(
+                                                    //               image: DecorationImage(
+                                                    //                   image:
+                                                    //                       NetworkImage(
+                                                    //                           // '${projects[index]!["background"]}'),
+                                                    //                           'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                    //                   fit: BoxFit
+                                                    //                       .cover),
+                                                    //               shape: BoxShape
+                                                    //                   .circle,
+                                                    //             ),
+                                                    //           ),
+                                                    //         ],
+                                                    //       ),
+                                                    //     ],
+                                                    //   ),
+                                                    // ),
+                                                    // SizedBox(width: 24),
                                                     Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -1189,48 +1189,48 @@ class _projectCenterScreenState extends State<projectCenterScreen>
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Container(
-                                                      alignment:
-                                                          Alignment.topRight,
-                                                      height: 34,
-                                                      child: ListView.builder(
-                                                          // padding:
-                                                          //     EdgeInsets.only(right: 8),
-                                                          physics:
-                                                              const AlwaysScrollableScrollPhysics(),
-                                                          shrinkWrap: true,
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          itemCount:
-                                                              userListProject
-                                                                  .length
-                                                                  .clamp(0, 3),
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return Stack(
-                                                                children: [
-                                                                  Container(
-                                                                    margin: EdgeInsets
-                                                                        .only(
-                                                                            left:
-                                                                                0),
-                                                                    width: 34,
-                                                                    height: 34,
-                                                                    decoration:
-                                                                        new BoxDecoration(
-                                                                      image: DecorationImage(
-                                                                          image: NetworkImage(userListProject[index]
-                                                                              .avatar),
-                                                                          fit: BoxFit
-                                                                              .cover),
-                                                                      shape: BoxShape
-                                                                          .circle,
-                                                                    ),
-                                                                  )
-                                                                ]);
-                                                          }),
-                                                    ),
-                                                    SizedBox(width: 24),
+                                                    // Container(
+                                                    //   alignment:
+                                                    //       Alignment.topRight,
+                                                    //   height: 34,
+                                                    //   child: ListView.builder(
+                                                    //       // padding:
+                                                    //       //     EdgeInsets.only(right: 8),
+                                                    //       physics:
+                                                    //           const AlwaysScrollableScrollPhysics(),
+                                                    //       shrinkWrap: true,
+                                                    //       scrollDirection:
+                                                    //           Axis.horizontal,
+                                                    //       itemCount:
+                                                    //           userListProject
+                                                    //               .length
+                                                    //               .clamp(0, 3),
+                                                    //       itemBuilder:
+                                                    //           (context, index) {
+                                                    //         return Stack(
+                                                    //             children: [
+                                                    //               Container(
+                                                    //                 margin: EdgeInsets
+                                                    //                     .only(
+                                                    //                         left:
+                                                    //                             0),
+                                                    //                 width: 34,
+                                                    //                 height: 34,
+                                                    //                 decoration:
+                                                    //                     new BoxDecoration(
+                                                    //                   image: DecorationImage(
+                                                    //                       image: NetworkImage(userListProject[index]
+                                                    //                           .avatar),
+                                                    //                       fit: BoxFit
+                                                    //                           .cover),
+                                                    //                   shape: BoxShape
+                                                    //                       .circle,
+                                                    //                 ),
+                                                    //               )
+                                                    //             ]);
+                                                    //       }),
+                                                    // ),
+                                                    // SizedBox(width: 24),
                                                     Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -1557,73 +1557,73 @@ class _projectCenterScreenState extends State<projectCenterScreen>
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Container(
-                                                      child: Row(
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              Container(
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          NetworkImage(
-                                                                              // '${projects[index]!["background"]}'),
-                                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            22),
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          NetworkImage(
-                                                                              // '${projects[index]!["background"]}'),
-                                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            44),
-                                                                width: 32,
-                                                                height: 32,
-                                                                decoration:
-                                                                    new BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          NetworkImage(
-                                                                              // '${projects[index]!["background"]}'),
-                                                                              'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 24),
+                                                    // Container(
+                                                    //   child: Row(
+                                                    //     children: [
+                                                    //       Stack(
+                                                    //         children: [
+                                                    //           Container(
+                                                    //             width: 32,
+                                                    //             height: 32,
+                                                    //             decoration:
+                                                    //                 new BoxDecoration(
+                                                    //               image: DecorationImage(
+                                                    //                   image:
+                                                    //                       NetworkImage(
+                                                    //                           // '${projects[index]!["background"]}'),
+                                                    //                           'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                    //                   fit: BoxFit
+                                                    //                       .cover),
+                                                    //               shape: BoxShape
+                                                    //                   .circle,
+                                                    //             ),
+                                                    //           ),
+                                                    //           Container(
+                                                    //             margin: EdgeInsets
+                                                    //                 .only(
+                                                    //                     left:
+                                                    //                         22),
+                                                    //             width: 32,
+                                                    //             height: 32,
+                                                    //             decoration:
+                                                    //                 new BoxDecoration(
+                                                    //               image: DecorationImage(
+                                                    //                   image:
+                                                    //                       NetworkImage(
+                                                    //                           // '${projects[index]!["background"]}'),
+                                                    //                           'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                    //                   fit: BoxFit
+                                                    //                       .cover),
+                                                    //               shape: BoxShape
+                                                    //                   .circle,
+                                                    //             ),
+                                                    //           ),
+                                                    //           Container(
+                                                    //             margin: EdgeInsets
+                                                    //                 .only(
+                                                    //                     left:
+                                                    //                         44),
+                                                    //             width: 32,
+                                                    //             height: 32,
+                                                    //             decoration:
+                                                    //                 new BoxDecoration(
+                                                    //               image: DecorationImage(
+                                                    //                   image:
+                                                    //                       NetworkImage(
+                                                    //                           // '${projects[index]!["background"]}'),
+                                                    //                           'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                    //                   fit: BoxFit
+                                                    //                       .cover),
+                                                    //               shape: BoxShape
+                                                    //                   .circle,
+                                                    //             ),
+                                                    //           ),
+                                                    //         ],
+                                                    //       ),
+                                                    //     ],
+                                                    //   ),
+                                                    // ),
+                                                    // SizedBox(width: 24),
                                                     Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment

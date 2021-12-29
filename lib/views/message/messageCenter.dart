@@ -90,6 +90,31 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
     // print(userList.length);
   }
 
+  Future getAllUserMessage() async {
+    FirebaseFirestore.instance
+        .collection("messages")
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              setState(() {
+                if (uid.contains(element.data()['userId1'] as String)) {
+                  FirebaseFirestore.instance
+                      .collection("users")
+                      .where("userId", isEqualTo: uid)
+                      .snapshots()
+                      .listen((value) {
+                    setState(() {
+                      user = UserModel.fromDocument(value.docs.first.data());
+                    });
+                    userName = user.name;
+                  });
+                } else {
+                  userList.add(UserModel.fromDocument(element.data()));
+                }
+              });
+            }));
+    // print(userList.length);
+  }
+
   String newMessageId = "";
   String messageId = '';
   List assignedMessage = [];
@@ -97,7 +122,9 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
     FirebaseFirestore.instance.collection("messages").get().then((value) {
       value.docs.forEach((element) {
         if (("$userName" + "_" + "$userName2") ==
-                ((element.data()['name'] as String))
+                    ((element.data()['name1'] as String)) ||
+                (("$userName" + "_" + "$userName2") ==
+                    (element.data()['name2'] as String))
             //      &&
             // element.data()['timeSend'] != null
             ) {
@@ -112,7 +139,8 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
               .add({
                 'userId1': uid,
                 'userId2': userIdS2,
-                'name': "$userName" + "_" + "$userName2",
+                'name1': "$userName" + "_" + "$userName2",
+                'name2': "$userName2" + "_" + "$userName",
                 'background': 'https://i.imgur.com/YtZkAbe.jpg',
                 'contentList': FieldValue.arrayUnion([""]),
                 'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
@@ -549,7 +577,11 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                             Container(
                                               width: 180,
                                               child: Text(
-                                                messagesList[index].name,
+                                                (uid ==
+                                                        messagesList[index]
+                                                            .userId1)
+                                                    ? messagesList[index].name1
+                                                    : messagesList[index].name2,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 style: TextStyle(
@@ -562,7 +594,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                             ),
                                             Spacer(),
                                             Text(
-                                              '14:05',
+                                              '',
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
                                               style: TextStyle(
@@ -577,7 +609,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                         Container(
                                           width: 232,
                                           child: Text(
-                                            "Can I call you back later? I'm in a man do you",
+                                            "",
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
                                             style: TextStyle(
