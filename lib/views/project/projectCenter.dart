@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:grow_app/models/taskModel.dart';
 import 'package:grow_app/models/userModel.dart';
 import 'package:grow_app/views/project/projectDetail.dart';
+import 'package:grow_app/views/task/taskDetail.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 
@@ -1831,8 +1832,8 @@ class _projectCenterScreenState extends State<projectCenterScreen>
                 SizedBox(height: 12),
                 (taskAllList.length != 0)
                     ? Container(
-                        padding: EdgeInsets.only(
-                            left: appPaddingInApp, right: appPaddingInApp),
+                        // padding: EdgeInsets.only(
+                        //     left: appPaddingInApp, right: appPaddingInApp),
                         child: ListView.builder(
                           padding: EdgeInsets.zero,
                           scrollDirection: Axis.vertical,
@@ -1840,63 +1841,130 @@ class _projectCenterScreenState extends State<projectCenterScreen>
                           itemCount: taskAllList.length,
                           // itemCount: projects.length,
                           itemBuilder: (context, index) {
-                            return Container(
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => taskDetailScreen(
+                                      required,
+                                      uid: uid,
+                                      taskId: taskAllList[index].taskId,
+                                      projectId: taskAllList[index].projectId,
+                                    ),
+                                  ),
+                                ).then((value) {
+                                  // getProjectsDataList();
+                                });
+                              },
+                              child: AnimatedContainer(
                                 width: 319,
-                                height: 40,
+                                height: 80,
                                 decoration: BoxDecoration(
                                     color: purpleLight,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8))),
-                                margin: EdgeInsets.only(top: 8, bottom: 8.0),
+                                margin: EdgeInsets.only(
+                                    top: 8,
+                                    bottom: 8.0,
+                                    left: appPaddingInApp,
+                                    right: appPaddingInApp),
+                                duration: Duration(milliseconds: 300),
                                 child: Container(
-                                  padding: EdgeInsets.only(left: 16, right: 4),
+                                  padding: EdgeInsets.only(
+                                      left: 24, top: 12, bottom: 12, right: 24),
                                   child: Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
                                       Container(
-                                        width: 245,
-                                        child: Text(
-                                          taskAllList[index].name,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 12.0,
-                                              color: black,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                            Container(
+                                                width: 213,
+                                                child: Text(
+                                                  taskAllList[index].name,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 16.0,
+                                                      color: black,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                )),
+                                            SizedBox(height: 8),
+                                            Container(
+                                              width: 168,
+                                              child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Icon(
+                                                            Iconsax.calendar_1,
+                                                            size: 16,
+                                                            color: greyDark)),
+                                                    SizedBox(width: 8),
+                                                    Text(
+                                                      taskAllList[index]
+                                                          .deadline,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          fontFamily: "Poppins",
+                                                          fontSize: 12.0,
+                                                          color: greyDark,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ]),
+                                            )
+                                          ])),
                                       Spacer(),
                                       Container(
-                                        // padding: const EdgeInsets.only(right: 23.0),
-                                        alignment: Alignment.topRight,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: new CustomCheckBox(
-                                            value: checkBoxValue,
-                                            shouldShowBorder: true,
-                                            borderColor: purpleHide,
-                                            checkedFillColor: purpleHide,
-                                            checkedIconColor: white,
-                                            borderRadius: 4,
-                                            borderWidth: 1.5,
-                                            checkBoxSize: 16,
-                                            // onChanged: _activeCheckAccept,
-                                            onChanged: (bool newValue) {
-                                              setState(() {
-                                                checkBoxValue = newValue;
-                                              });
-                                            }),
-                                      ),
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                            SizedBox(height: 8),
+                                            Container(
+                                              width: 10,
+                                              height: 10,
+                                              decoration: new BoxDecoration(
+                                                color: (taskAllList[index]
+                                                            .status ==
+                                                        "todo")
+                                                    ? todoColor
+                                                    : ((taskAllList[index]
+                                                                .status ==
+                                                            "done")
+                                                        ? doneColor
+                                                        : pendingColor),
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                          ])),
                                     ],
                                   ),
-                                ));
+                                ),
+                              ),
+                            );
                           },
                         ),
                       )
                     : Container(
+                        padding: EdgeInsets.only(top: 64),
                         alignment: Alignment.center,
                         child: Text(
                           "You don't have tasks today!",
@@ -1904,7 +1972,7 @@ class _projectCenterScreenState extends State<projectCenterScreen>
                             fontFamily: "Poppins",
                             fontSize: 16.0,
                             color: black,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       )

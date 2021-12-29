@@ -43,6 +43,7 @@ class loginDetailScreenState extends State<loginDetailScreen>
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
+  String? providerId = "";
 
   // String reName = '';
   // String date = '';
@@ -105,6 +106,10 @@ class loginDetailScreenState extends State<loginDetailScreen>
     User? user = FirebaseAuth.instance.currentUser;
     final userid = user?.uid.toString();
     uid = userid!;
+    providerId = user?.providerData[0].providerId.toString();
+    print(providerId);
+    // dynamic providerData = user?.providerData;
+    // print(providerData);
     print('The current uid is $uid');
     getUserDetail();
   }
@@ -292,14 +297,14 @@ class loginDetailScreenState extends State<loginDetailScreen>
                                               padding: EdgeInsets.zero,
                                               alignment: Alignment.center,
                                               child: Icon(Iconsax.calendar_1,
-                                                  size: 16, color: greyDark)),
+                                                  size: 16, color: black)),
                                           SizedBox(width: 8),
                                           Text(
                                             // "12 November, 2021",
                                             "${DateFormat('yMMMMd').format(selectDate)}",
 
                                             style: TextStyle(
-                                              color: greyDark,
+                                              color: black,
                                               fontFamily: 'Poppins',
                                               fontWeight: FontWeight.w400,
                                               fontSize: 14,
@@ -444,80 +449,87 @@ class loginDetailScreenState extends State<loginDetailScreen>
                             ),
                           ]),
                       SizedBox(height: 24),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: Text(
-                                "Password",
-                                style: TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 20.0,
-                                    color: black,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            changingPasswordScreen(required,
-                                                uid: uid),
-                                      ),
-                                    );
-                                  },
-                                  child: AnimatedContainer(
-                                      alignment: Alignment.center,
-                                      duration: Duration(milliseconds: 300),
-                                      height: 56,
-                                      width: 256,
-                                      decoration: BoxDecoration(
-                                        color: purpleMain,
-                                        borderRadius: BorderRadius.circular(15),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: black.withOpacity(0.25),
-                                            spreadRadius: 0,
-                                            blurRadius: 4,
-                                            offset: Offset(0, 4),
-                                          ),
-                                          BoxShadow(
-                                            color: black.withOpacity(0.1),
-                                            spreadRadius: 0,
-                                            blurRadius: 64,
-                                            offset: Offset(15, 15),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                              padding: EdgeInsets.zero,
-                                              alignment: Alignment.center,
-                                              child: Icon(Iconsax.edit_2,
-                                                  size: 24, color: white)),
-                                          SizedBox(width: 12),
-                                          Text(
-                                            "Change Password",
-                                            style: TextStyle(
-                                              color: white,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18,
+                      (providerId == "password")
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                  Container(
+                                    child: Text(
+                                      "Password",
+                                      style: TextStyle(
+                                          fontFamily: "Poppins",
+                                          fontSize: 20.0,
+                                          color: black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20),
+                                  Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  changingPasswordScreen(
+                                                      required,
+                                                      uid: uid),
                                             ),
-                                          ),
-                                          SizedBox(width: 4)
-                                        ],
-                                      )),
-                                ))
-                          ])
+                                          );
+                                        },
+                                        child: AnimatedContainer(
+                                            alignment: Alignment.center,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            height: 56,
+                                            width: 256,
+                                            decoration: BoxDecoration(
+                                              color: purpleMain,
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color:
+                                                      black.withOpacity(0.25),
+                                                  spreadRadius: 0,
+                                                  blurRadius: 4,
+                                                  offset: Offset(0, 4),
+                                                ),
+                                                BoxShadow(
+                                                  color: black.withOpacity(0.1),
+                                                  spreadRadius: 0,
+                                                  blurRadius: 64,
+                                                  offset: Offset(15, 15),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: Icon(Iconsax.edit_2,
+                                                        size: 24,
+                                                        color: white)),
+                                                SizedBox(width: 12),
+                                                Text(
+                                                  "Change Password",
+                                                  style: TextStyle(
+                                                    color: white,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4)
+                                              ],
+                                            )),
+                                      ))
+                                ])
+                          : Column()
                     ]),
               )
             ]),

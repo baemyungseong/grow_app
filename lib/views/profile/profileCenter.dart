@@ -67,10 +67,14 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
     });
   }
 
-  late File image = File('your initial file');
-  final picker = ImagePicker();
+  late PickedFile image = PickedFile('');
+  final ImagePicker picker = ImagePicker();
 
-  Future getImage() async {
+  Future getImage(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source);
+    setState(() {
+      image = pickedFile!;
+    });
     // final pickedImage = await picker.pickImage(source: ImageSource.gallery);
     // final pickedImageFile = File(pickedImage!.path);
     // setState(() {
@@ -136,13 +140,13 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                             decoration: new BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(24)),
-                              image: (image != null)
-                                  ? DecorationImage(image: NetworkImage(
+                              image: (image == null)
+                                  ? DecorationImage(
+                                      image: FileImage(File(image.path)),
+                                      fit: BoxFit.cover)
+                                  : DecorationImage(image: NetworkImage(
                                       // '${projects[index]!["background"]}'),
-                                      user.avatar), fit: BoxFit.cover)
-                                  : DecorationImage(
-                                      image: FileImage(image),
-                                      fit: BoxFit.cover),
+                                      user.avatar), fit: BoxFit.cover),
                               shape: BoxShape.rectangle,
                             ),
                           ),
@@ -151,7 +155,7 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                               alignment: Alignment.center,
                               child: GestureDetector(
                                 onTap: () {
-                                  getImage();
+                                  getImage(ImageSource.camera);
                                 },
                                 child: AnimatedContainer(
                                   alignment: Alignment.center,

@@ -16,35 +16,28 @@ import 'package:grow_app/models/userModel.dart';
 import 'package:grow_app/views/project/projectDetail.dart';
 import 'package:grow_app/views/project/projectManagement.dart';
 import 'package:grow_app/views/widget/snackBarWidget.dart';
+import 'package:intl/intl.dart';
 
 //import others
 import 'package:meta/meta.dart';
 import 'package:iconsax/iconsax.dart';
 
-class assignTasksScreen extends StatefulWidget {
+class messageSearchingScreen extends StatefulWidget {
   String uid;
-  String email;
-  String projectId;
 
-  assignTasksScreen(Required required,
-      {Key? key,
-      required this.uid,
-      required this.projectId,
-      required this.email})
+  messageSearchingScreen(Required required, {Key? key, required this.uid})
       : super(key: key);
 
   @override
-  _assignTasksScreenState createState() =>
-      _assignTasksScreenState(this.uid, this.projectId, this.email);
+  _messageSearchingScreenState createState() =>
+      _messageSearchingScreenState(uid);
 }
 
-class _assignTasksScreenState extends State<assignTasksScreen> {
+class _messageSearchingScreenState extends State<messageSearchingScreen> {
   // final String? uid = controllers.currentUserId;
-  String uid = "";
-  String projectId = "";
-  String email = "";
 
   String search = '';
+  String uid = '';
   List projectIds = [];
   List projectIdAll = [];
   late Project project = Project(
@@ -75,13 +68,10 @@ class _assignTasksScreenState extends State<assignTasksScreen> {
 
   List<Project> projectSearchList = [];
   List<Project> projectAllList = [];
-  List assigned = [];
 
   List<UserModel> userSearchList = [];
 
-  List<UserModel> userList = [];
-
-  _assignTasksScreenState(uid, this.projectId, this.email);
+  _messageSearchingScreenState(uid);
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -90,57 +80,94 @@ class _assignTasksScreenState extends State<assignTasksScreen> {
 
   TextEditingController searchController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  searchUserByEmail(String search) async {
+  late String userName = '';
+  Future getUserDetail() async {
     FirebaseFirestore.instance
-        .collection("projects")
-        .doc(projectId)
+        .collection("users")
+        .where("userId", isEqualTo: uid)
         .snapshots()
         .listen((value) {
       setState(() {
-        assigned = value.data()!["assigned"];
-        FirebaseFirestore.instance
-            .collection("users")
-            .where("email", isEqualTo: search)
-            .get()
-            .then((value) {
+        user = UserModel.fromDocument(value.docs.first.data());
+      });
+      userName = user.name;
+    });
+  }
+
+  late String newMessageId;
+
+  Future createMessage(String userIdS2, String userName2) async {
+    // FirebaseFirestore.instance
+    //     .collection("messages")
+    //     .get()
+    //     .then((value) => value.docs.forEach((element) {
+    //           setState(() {
+    //             if (("$userName" + "_" + "$userName2")
+    //                     .contains((element.data()['name'] as String)) &&
+    //                 element.data()['timeSend'] != null) {
+    //               newMessageId = element.id;
+    //             } else {
+    FirebaseFirestore.instance
+        .collection("messages")
+        .add({
+          'userId1': uid,
+          'userId2': userIdS2,
+          'name': "$userName" + "_" + "$userName2",
+          'background': 'https://i.imgur.com/YtZkAbe.jpg',
+          'contentList': FieldValue.arrayUnion([""]),
+          'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
+        })
+        .then((value) {
           setState(() {
-            value.docs.forEach((element) {
-              var check =
-                  userSearchList.where((element) => element.email == search);
-              if (check.isEmpty) {
-                if (assigned.contains(element.data()['userId'] as String)) {
-                  userSearchList.add(UserModel.fromDocument(element.data()));
-                }
-              } else {
-                showSnackBar(context, "This email is searched ", "error");
-              }
+            FirebaseFirestore.instance
+                .collection("messages")
+                .doc(value.id)
+                .update({
+              'messageId': value.id,
             });
-            print("Nhan r nha");
-            print(search);
           });
-          setState(() {});
+          newMessageId = value.id;
+        })
+        .whenComplete(() =>
+            FirebaseFirestore.instance.collection("users").doc(uid).update({
+              'messagesList': FieldValue.arrayUnion([newMessageId]),
+            }))
+        .whenComplete(() => FirebaseFirestore.instance
+                .collection("users")
+                .doc(userIdS2)
+                .update({
+              'messagesList': FieldValue.arrayUnion([newMessageId])
+            }));
+  }
+
+  searchUserByEmail(String search) async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .where("email", isEqualTo: search)
+        .get()
+        .then((value) {
+      setState(() {
+        value.docs.forEach((element) {
+          var check =
+              userSearchList.where((element) => element.email == search);
+          if (check.isEmpty) {
+            userSearchList.add(UserModel.fromDocument(element.data()));
+          } else {
+            showSnackBar(context, "This email is searched ", "error");
+          }
         });
+        print("Nhan r nha");
+        print(search);
       });
     });
-
-    // FirebaseFirestore.instance
-    //     .collection("users")
-    //     .where("email", isEqualTo: search)
-    //     .get()
-    //     .then((value) {
-    //   setState(() {
-    //     value.docs.forEach((element) {
-    //       userSearchList.add(UserModel.fromDocument(element.data()));
-    //     });
-    //     print("Nhan r nha");
-    //     print(search);
-    //   });
-    // });
   }
 
   void initState() {
     super.initState();
+    User? user = FirebaseAuth.instance.currentUser;
+    final userid = user?.uid.toString();
+    uid = userid!;
+    getUserDetail();
   }
 
   @override
@@ -184,7 +211,7 @@ class _assignTasksScreenState extends State<assignTasksScreen> {
                                 fontWeight: FontWeight.w400),
                             controller: searchController,
                             keyboardType: TextInputType.text,
-                            onChanged: (val) {
+                            onChanged: (value) {
                               setState(() {
                                 searchUserByEmail(searchController.text);
                               });
@@ -202,8 +229,7 @@ class _assignTasksScreenState extends State<assignTasksScreen> {
                                       iconSize: 20,
                                       color: black,
                                       onPressed: () {
-                                        searchUserByEmail(
-                                            searchController.text);
+                                        // searchUserByEmail(search);
                                       },
                                     )
                                   ])),
@@ -242,6 +268,8 @@ class _assignTasksScreenState extends State<assignTasksScreen> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
+                        createMessage(userSearchList[index].userId,
+                            userSearchList[index].userId);
                         Navigator.pop(context, userSearchList[index].email);
                       },
                       child: Container(

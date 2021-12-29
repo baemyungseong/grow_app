@@ -9,6 +9,9 @@ import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
+//import controllers
+import 'package:grow_app/controllers/authController.dart';
+
 //import views
 import 'package:grow_app/views/profile/loginDetail.dart';
 import 'package:grow_app/views/profile/profileCenter.dart';
@@ -56,31 +59,6 @@ class changingPasswordScreenState extends State<changingPasswordScreen>
   TextEditingController confirmController = TextEditingController();
   GlobalKey<FormState> confirmFormKey = GlobalKey<FormState>();
 
-  Future<void> changePassword(currentPassword, newPassword) async {
-    final user = FirebaseAuth.instance.currentUser!;
-    try {
-      try {
-        var authResult = await user.reauthenticateWithCredential(
-          EmailAuthProvider.credential(
-            email: (user.email).toString(),
-            password: currentPassword,
-          ),
-        );
-        user.updatePassword(newPassword).then((_) {
-          showSnackBar(context, 'Successfully changed password!', 'success');
-          Navigator.pop(context);
-        }).catchError((error) {
-          showSnackBar(context, 'Your current password! is wrong', 'error');
-        });
-        return null;
-      } on FirebaseAuthException {
-        showSnackBar(context, 'Your current password! is wrong', 'error');
-      }
-    } on FirebaseAuthException {
-      showSnackBar(context, 'Your current password! is wrong', 'error');
-    }
-  }
-
   // changePassword() async {
   //   final user = FirebaseAuth.instance.currentUser;
   //   String currentPassword = currentController.text;
@@ -91,7 +69,7 @@ class changingPasswordScreenState extends State<changingPasswordScreen>
   //       print("Password can't be changed" + error.toString());
   //     }).then((value) {
   //       user.updatePassword(newPassword).then((_) {
-  //         showErrorSnackBar(context, 'Successfully changed password!', 'success');
+  //         showSnackBar(context, 'Successfully changed password!', 'success');
   //         Navigator.pop(context);
   //       }).catchError((error) {
   //       print("Password can't be changed" + error.toString());
@@ -100,7 +78,7 @@ class changingPasswordScreenState extends State<changingPasswordScreen>
   //       print("Password can't be changed" + error.toString());
   //     });
   //   } on FirebaseAuthException {
-  //     showErrorSnackBar(context, 'Your current password! is wrong', 'error');
+  //     showSnackBar(context, 'Your current password! is wrong', 'error');
   //   }
   //   // user.reauthenticateWithCredential(cred).then((value) {
   //   //   user.updatePassword(newController.text).then((_) {
@@ -500,8 +478,16 @@ class changingPasswordScreenState extends State<changingPasswordScreen>
                               if (currentFormKey.currentState!.validate() &&
                                   newFormKey.currentState!.validate() &&
                                   confirmFormKey.currentState!.validate()) {
-                                changePassword(
-                                    currentController.text, newController.text);
+                                if (newController.text ==
+                                    confirmController.text) {
+                                  changePassword(currentController.text,
+                                      newController.text, context);
+                                } else {
+                                  showSnackBar(
+                                      context,
+                                      "Confirm password does not match!",
+                                      'error');
+                                }
                               } else {
                                 showSnackBar(
                                     context,
@@ -582,10 +568,9 @@ mixin InputValidationMixin {
   //       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
   //   return regex.hasMatch(email);
   // }
-
   bool isCurrentPasswordValid(String Currentpassword) =>
-      Currentpassword.length >= 1;
-  bool isNewPasswordValid(String Newpassword) => Newpassword.length >= 1;
+      Currentpassword.length >= 6;
+  bool isNewPasswordValid(String Newpassword) => Newpassword.length >= 6;
   bool isConfirmPasswordValid(String Confirmpassword) =>
-      Confirmpassword.length >= 1;
+      Confirmpassword.length >= 6;
 }

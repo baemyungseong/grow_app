@@ -125,8 +125,8 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
               showSnackBar(context, "The asignee has been add in your project",
                   'success');
             } else {
-              showSnackBar(context,
-                  "The asignee has been took part in your project", 'error');
+              showSnackBar(context, "The asignee was took part in your project",
+                  'error');
             }
           }
         });
@@ -225,9 +225,7 @@ class _taskCreatingScreenState extends State<taskCreatingScreen> {
                       onTap: () {
                         if (userListChoice.length == 0) {
                           showSnackBar(
-                              context,
-                              "The task must assignee, Please add assignee!",
-                              'success');
+                              context, " Please add assignee!", 'success');
                         } else {
                           createTask(newTaskId);
                           Navigator.pop(context);

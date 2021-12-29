@@ -530,97 +530,103 @@ class _projectDetailScreenState extends State<projectDetailScreen>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Stack(
-                                        children: [
-                                          Container(
-                                              // margin: EdgeInsets.only(left: 32),
-                                              alignment: Alignment.center,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            projectEditingScreen(
-                                                                required,
-                                                                uid: uid,
-                                                                projectId:
-                                                                    projectId)),
-                                                  );
-                                                },
-                                                child: AnimatedContainer(
-                                                  alignment: Alignment.center,
-                                                  duration: Duration(
-                                                      milliseconds: 300),
-                                                  child: DottedBorder(
-                                                    child: Container(
-                                                      width: 36,
-                                                      height: 36,
-                                                      decoration:
-                                                          new BoxDecoration(
-                                                        color: Colors.white,
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: Container(
+                                      (uid == idOwner)
+                                          ? Column(
+                                              children: [
+                                                Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: 8),
+                                                    alignment: Alignment.center,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  projectEditingScreen(
+                                                                      required,
+                                                                      uid: uid,
+                                                                      projectId:
+                                                                          projectId)),
+                                                        );
+                                                      },
+                                                      child: AnimatedContainer(
                                                         alignment:
                                                             Alignment.center,
-                                                        child: Icon(Iconsax.add,
-                                                            size: 24,
-                                                            color: greyDark),
-                                                      ),
-                                                    ),
-                                                    borderType: BorderType.Oval,
-                                                    color: greyDark,
-                                                    dashPattern: [
-                                                      10,
-                                                      5,
-                                                      10,
-                                                      5,
-                                                      10,
-                                                      5
-                                                    ],
-                                                  ),
-                                                ),
-                                              )),
-                                          Container(
-                                            // width: 367,
-                                            height: 48,
-                                            child: ListView.builder(
-                                                padding: EdgeInsets.only(
-                                                    left: 36 + 8),
-                                                physics:
-                                                    const AlwaysScrollableScrollPhysics(),
-                                                shrinkWrap: true,
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount:
-                                                    userList.length.clamp(0, 3),
-                                                itemBuilder: (context, index) {
-                                                  return Stack(
-                                                    children: [
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                            left: 4, right: 4),
-                                                        width: 40,
-                                                        height: 40,
-                                                        decoration:
-                                                            new BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image: NetworkImage(
-                                                                  userList[
-                                                                          index]
-                                                                      .avatar),
-                                                              fit:
-                                                                  BoxFit.cover),
-                                                          shape:
-                                                              BoxShape.circle,
+                                                        duration: Duration(
+                                                            milliseconds: 300),
+                                                        child: DottedBorder(
+                                                          child: Container(
+                                                            width: 34,
+                                                            height: 34,
+                                                            decoration:
+                                                                new BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                            child: Container(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              child: Icon(
+                                                                  Iconsax.add,
+                                                                  size: 24,
+                                                                  color:
+                                                                      greyDark),
+                                                            ),
+                                                          ),
+                                                          borderType:
+                                                              BorderType.Oval,
+                                                          color: greyDark,
+                                                          dashPattern: [
+                                                            10,
+                                                            5,
+                                                            10,
+                                                            5,
+                                                            10,
+                                                            5
+                                                          ],
                                                         ),
-                                                      )
-                                                    ],
-                                                  );
-                                                }),
-                                          ),
-                                        ],
+                                                      ),
+                                                    )),
+                                                SizedBox(height: 4),
+                                              ],
+                                            )
+                                          : Container(),
+                                      Container(
+                                        // width: 367,
+                                        height: 48,
+                                        child: ListView.builder(
+                                            padding: EdgeInsets.only(left: 0),
+                                            physics:
+                                                const AlwaysScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount:
+                                                userList.length.clamp(0, 3),
+                                            itemBuilder: (context, index) {
+                                              return Stack(
+                                                children: [
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                        left: 0, right: 8),
+                                                    width: 40,
+                                                    height: 40,
+                                                    decoration:
+                                                        new BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              userList[index]
+                                                                  .avatar),
+                                                          fit: BoxFit.cover),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }),
                                       ),
                                     ],
                                   ),

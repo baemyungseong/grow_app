@@ -13,6 +13,7 @@ import 'package:grow_app/models/userModel.dart';
 
 //import views
 import 'package:grow_app/views/message/messageDetail.dart';
+import 'package:grow_app/views/message/searchMessage.dart';
 import 'package:grow_app/views/profile/notificationCenter.dart';
 import 'package:grow_app/views/profile/profileCenter.dart';
 
@@ -86,57 +87,116 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                 }
               });
             }));
-    print(userList.length);
+    // print(userList.length);
   }
 
   String newMessageId = "";
+  String messageId = '';
   List assignedMessage = [];
   Future createMessage(String userIdS2, String userName2) async {
-    // FirebaseFirestore.instance
-    //     .collection("messages")
-    //     .get()
-    //     .then((value) => value.docs.forEach((element) {
-    //           setState(() {
-    //             if (("$userName" + "_" + "$userName2")
-    //                     .contains((element.data()['name'] as String)) &&
-    //                 element.data()['timeSend'] != null) {
-    //               newMessageId = element.id;
-    //             } else {
-    FirebaseFirestore.instance
-        .collection("messages")
-        .add({
-          'userId1': uid,
-          'userId2': userIdS2,
-          'name': "$userName" + "_" + "$userName2",
-          'contentList': FieldValue.arrayUnion([""]),
-          'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
-        })
-        .then((value) {
-          setState(() {
-            FirebaseFirestore.instance
-                .collection("messages")
-                .doc(value.id)
-                .update({
-              'messageId': value.id,
-            });
-          });
-          newMessageId = value.id;
-        })
-        .whenComplete(() =>
-            FirebaseFirestore.instance.collection("users").doc(uid).update({
-              'messagesList': FieldValue.arrayUnion([newMessageId]),
-            }))
-        .whenComplete(() => FirebaseFirestore.instance
-                .collection("users")
-                .doc(userIdS2)
-                .update({
-              'messagesList': FieldValue.arrayUnion([newMessageId])
-            }));
-  }
+    FirebaseFirestore.instance.collection("messages").get().then((value) {
+      value.docs.forEach((element) {
+        if (("$userName" + "_" + "$userName2") ==
+                ((element.data()['name'] as String))
+            //      &&
+            // element.data()['timeSend'] != null
+            ) {
+          newMessageId = element.id;
+          print(newMessageId);
+        }
+      });
+      setState(() {
+        if (newMessageId == '') {
+          FirebaseFirestore.instance
+              .collection("messages")
+              .add({
+                'userId1': uid,
+                'userId2': userIdS2,
+                'name': "$userName" + "_" + "$userName2",
+                'background': 'https://i.imgur.com/YtZkAbe.jpg',
+                'contentList': FieldValue.arrayUnion([""]),
+                'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
+              })
+              .then((value) {
+                setState(() {
+                  FirebaseFirestore.instance
+                      .collection("messages")
+                      .doc(value.id)
+                      .update({
+                    'messageId': value.id,
+                  });
+                });
+                messageId = value.id;
+              })
+              .whenComplete(() => FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(uid)
+                      .update({
+                    'messagesList': FieldValue.arrayUnion([messageId]),
+                  }))
+              .whenComplete(() => FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(userIdS2)
+                      .update({
+                    'messagesList': FieldValue.arrayUnion([messageId])
+                  }));
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => messageDetailScreen(required,
+                  uid: uid, uid2: userIdS2, messagesId: newMessageId),
+            ),
+          );
+        }
 
-  //   });
-  // }));
-  // }
+        //  setState(() {
+        //   newMessageId = '';
+        // });
+      });
+      // print(("$userName" + "_" + "$userName2"));
+      // if (("$userName" + "_" + "$userName2")
+      //         .contains((element.data()['name'] as String))
+      //     //      &&
+      //     // element.data()['timeSend'] != null
+      //     ) {
+      //   newMessageId = element.id;
+      //   print("oke");
+      // } else {
+      //   print("haha");
+      // FirebaseFirestore.instance
+      //     .collection("messages")
+      //     .add({
+      //       'userId1': uid,
+      //       'userId2': userIdS2,
+      //       'name': "$userName" + "_" + "$userName2",
+      //       'background': 'https://i.imgur.com/YtZkAbe.jpg',
+      //       'contentList': FieldValue.arrayUnion([""]),
+      //       'timeSend': "${DateFormat('hh:mm a').format(DateTime.now())}",
+      //     })
+      //     .then((value) {
+      //       setState(() {
+      //         FirebaseFirestore.instance
+      //             .collection("messages")
+      //             .doc(value.id)
+      //             .update({
+      //           'messageId': value.id,
+      //         });
+      //       });
+      //       newMessageId = value.id;
+      //     })
+      //     .whenComplete(() =>
+      //         FirebaseFirestore.instance.collection("users").doc(uid).update({
+      //           'messagesList': FieldValue.arrayUnion([newMessageId]),
+      //         }))
+      //     .whenComplete(() => FirebaseFirestore.instance
+      //             .collection("users")
+      //             .doc(userIdS2)
+      //             .update({
+      //           'messagesList': FieldValue.arrayUnion([newMessageId])
+      //         }));
+    });
+  }
 
   late List<Message> messagesList = [];
   late List messagesIdList;
@@ -151,15 +211,16 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
           // .orderBy('timeSend', descending: true)
           .snapshots()
           .listen((value2) {
-        // setState(() {
-        messagesList.clear();
-        messagesIdList = value1.data()!["messagesList"];
-        value2.docs.forEach((element) {
-          if (messagesIdList.contains(element.data()['messageId'] as String)) {
-            messagesList.add(Message.fromDocument(element.data()));
-          }
+        setState(() {
+          messagesList.clear();
+          messagesIdList = value1.data()!["messagesList"];
+          value2.docs.forEach((element) {
+            if (messagesIdList
+                .contains(element.data()['messageId'] as String)) {
+              messagesList.add(Message.fromDocument(element.data()));
+            }
+          });
         });
-        // });
         print(messagesList.length);
       });
     });
@@ -341,13 +402,14 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                           alignment: Alignment.center,
                           child: GestureDetector(
                             onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) =>
-                              //         Screen(required, uid: uid),
-                              //   ),
-                              // );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => messageSearchingScreen(
+                                      required,
+                                      uid: uid),
+                                ),
+                              );
                             },
                             child: AnimatedContainer(
                               alignment: Alignment.center,
@@ -379,9 +441,9 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                   alignment: Alignment.center,
                                   child: GestureDetector(
                                     onTap: () {
-                                      // createMessage(userList[index].userId,
-                                      //     userList[index].name);
-
+                                      createMessage(userList[index].userId,
+                                          userList[index].name);
+                                      getMessage();
                                       // Navigator.push(
                                       //   context,
                                       //   MaterialPageRoute(
@@ -389,7 +451,7 @@ class _messageCenterScreenState extends State<messageCenterScreen> {
                                       //         messageDetailScreen(required,
                                       //             uid: uid,
                                       //             uid2: userList[index].userId,
-                                      //             messagesId: messagesList[index].messageId),
+                                      //             messagesId: newMessageId),
                                       //   ),
                                       // );
                                     },

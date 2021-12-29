@@ -8,6 +8,7 @@ import 'package:grow_app/models/taskModel.dart';
 import 'package:grow_app/models/userModel.dart';
 import 'package:grow_app/views/profile/notificationCenter.dart';
 import 'package:grow_app/views/profile/profileCenter.dart';
+import 'package:grow_app/views/task/taskDetail.dart';
 import 'package:iconsax/iconsax.dart';
 
 //import widgets
@@ -375,8 +376,8 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
           SizedBox(height: 8),
           (taskAllList.length != 0)
               ? Container(
-                  padding: EdgeInsets.only(
-                      left: appPaddingInApp, right: appPaddingInApp),
+                  // padding: EdgeInsets.only(
+                  //     left: appPaddingInApp, right: appPaddingInApp),
                   child: ListView.builder(
                     padding: EdgeInsets.zero,
                     scrollDirection: Axis.vertical,
@@ -384,62 +385,120 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                     itemCount: taskAllList.length,
                     // itemCount: projects.length,
                     itemBuilder: (context, index) {
-                      return Container(
-                          margin: EdgeInsets.only(top: 8),
-                          height: 48,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => taskDetailScreen(
+                                required,
+                                uid: uid,
+                                taskId: taskAllList[index].taskId,
+                                projectId: taskAllList[index].projectId,
+                              ),
+                            ),
+                          ).then((value) {
+                            // getProjectsDataList();
+                          });
+                        },
+                        child: AnimatedContainer(
+                          width: 319,
+                          height: 80,
                           decoration: BoxDecoration(
-                            color: purpleLight,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(width: 16),
-                              Container(
-                                width: 245 - 32 - 8,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  taskAllList[index].name,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Poppins',
-                                    color: black,
-                                    fontWeight: FontWeight.w500,
+                              color: purpleLight,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          padding: EdgeInsets.only(
+                              top: 8,
+                              bottom: 8,
+                              left: appPaddingInApp,
+                              right: appPaddingInApp),
+                          duration: Duration(milliseconds: 300),
+                          child: Container(
+                            // padding: EdgeInsets.only(
+                            //     left: 24, top: 12, bottom: 12, right: 24),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                      Container(
+                                          width: 213,
+                                          child: Text(
+                                            taskAllList[index].name,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                fontFamily: "Poppins",
+                                                fontSize: 16.0,
+                                                color: black,
+                                                fontWeight: FontWeight.w600),
+                                          )),
+                                      SizedBox(height: 8),
+                                      Container(
+                                        width: 168,
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                  padding: EdgeInsets.zero,
+                                                  alignment: Alignment.center,
+                                                  child: Icon(
+                                                      Iconsax.calendar_1,
+                                                      size: 16,
+                                                      color: greyDark)),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                taskAllList[index].deadline,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    fontFamily: "Poppins",
+                                                    fontSize: 12.0,
+                                                    color: greyDark,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                            ]),
+                                      )
+                                    ])),
+                                Spacer(),
+                                // Container(
+                                //     child: Column(
+                                //         crossAxisAlignment:
+                                //             CrossAxisAlignment.end,
+                                //         children: [
+                                // SizedBox(height: 8),
+                                Container(
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  width: 10,
+                                  height: 10,
+                                  decoration: new BoxDecoration(
+                                    color: (taskAllList[index].status == "todo")
+                                        ? todoColor
+                                        : ((taskAllList[index].status == "done")
+                                            ? doneColor
+                                            : pendingColor),
+                                    shape: BoxShape.circle,
                                   ),
-                                  textAlign: TextAlign.left,
                                 ),
-                              ),
-                              Spacer(),
-                              Container(
-                                padding: const EdgeInsets.only(right: 4.0),
-                                alignment: Alignment.topRight,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: new CustomCheckBox(
-                                    value: checkBoxValue,
-                                    shouldShowBorder: true,
-                                    borderColor: purpleHide,
-                                    checkedFillColor: purpleHide,
-                                    checkedIconColor: white,
-                                    borderRadius: 4,
-                                    borderWidth: 1.5,
-                                    checkBoxSize: 16,
-                                    // onChanged: _activeCheckAccept,
-                                    onChanged: (bool newValue) {
-                                      setState(() {
-                                        checkBoxValue = newValue;
-                                      });
-                                    }),
-                              ),
-                            ],
-                          ));
+                                // ])),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
                     },
                   ),
                 )
               : Container(
+                  padding: EdgeInsets.only(top: 64),
                   alignment: Alignment.center,
                   child: Text(
                     "You don't have tasks today!",
@@ -447,7 +506,7 @@ class _timelineCenterScreenState extends State<timelineCenterScreen> {
                       fontFamily: "Poppins",
                       fontSize: 16.0,
                       color: black,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 )

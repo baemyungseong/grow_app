@@ -38,10 +38,9 @@ Future registerUser(String email, String password, String name,
         'email': email,
         "userId": uid,
         'phonenumber': phoneNumber,
-        'dob': null,
-        'job': null,
-        'avatar':
-            "https://i.pinimg.com/564x/1c/63/9a/1c639ad0f44e6f450a8559305ca9cb0a.jpg",
+        'dob': '',
+        'job': 'Freelancer',
+        'avatar': "https://i.imgur.com/YtZkAbe.jpg",
         'tasksList': FieldValue.arrayUnion([]),
         'messagesList': FieldValue.arrayUnion([]),
         'projectsList': FieldValue.arrayUnion([]),
@@ -72,6 +71,31 @@ Future registerUser(String email, String password, String name,
       default:
         showSnackBar(context, "An undefined Error happened.", 'error');
     }
+  }
+}
+
+Future<void> changePassword(currentPassword, newPassword, context) async {
+  final user = FirebaseAuth.instance.currentUser!;
+  try {
+    try {
+      var authResult = await user.reauthenticateWithCredential(
+        EmailAuthProvider.credential(
+          email: (user.email).toString(),
+          password: currentPassword,
+        ),
+      );
+      user.updatePassword(newPassword).then((_) {
+        showSnackBar(context, 'Successfully changed password!', 'success');
+        Navigator.pop(context);
+      }).catchError((error) {
+        showSnackBar(context, 'Your current password is wrong!', 'error');
+      });
+      return null;
+    } on FirebaseAuthException {
+      showSnackBar(context, 'Your current password is wrong!', 'error');
+    }
+  } on FirebaseAuthException {
+    showSnackBar(context, 'Your current password is wrong!', 'error');
   }
 }
 
@@ -187,10 +211,13 @@ Future googleSignIn(context) async {
         'name': userData.displayName,
         'email': userData.email,
         "userId": uid,
-        'phonenumber': null,
-        'dob': null,
+        'phonenumber': '',
+        'dob': '',
         'avatar': userData.photoUrl,
-        'job': null,
+        'job': '',
+        'tasksList': FieldValue.arrayUnion([]),
+        'messagesList': FieldValue.arrayUnion([]),
+        'projectsList': FieldValue.arrayUnion([]),
       }).then((signedInUser) => {
             print("successfully registered!"),
           });
@@ -234,10 +261,13 @@ Future facebookSignIn(context) async {
           'name': userData['name'],
           'email': userData['email'],
           "userId": uid,
-          'phonenumber': null,
-          'dob': null,
-          'job': null,
+          'phonenumber': '',
+          'dob': '',
+          'job': '',
           'avatar': userData['picture']['data']['url'],
+          'tasksList': FieldValue.arrayUnion([]),
+          'messagesList': FieldValue.arrayUnion([]),
+          'projectsList': FieldValue.arrayUnion([]),
         }).then((signedInUser) => {
               print("successfully registered!"),
             });

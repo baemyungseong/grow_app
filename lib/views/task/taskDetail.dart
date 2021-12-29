@@ -242,6 +242,19 @@ class _taskDetailScreenState extends State<taskDetailScreen>
         }));
   }
 
+  String newTaskSubId = '';
+
+  Future checkAssignmentStatus(String taskId, String newTaskSubId) async {
+    FirebaseFirestore.instance.collection("subTasks").add({
+      'taskId': taskId,
+      'userId': uid,
+      'checked': checkBoxValue,
+    }).then((value) =>
+        FirebaseFirestore.instance.collection("subTasks").doc(value.id).update({
+          'taskSubId': value.id,
+        }));
+  }
+
   void initState() {
     super.initState();
     User? user = FirebaseAuth.instance.currentUser;
@@ -350,7 +363,11 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                           style: TextStyle(
                               fontFamily: "Poppins",
                               fontSize: 16.0,
-                              color: yellowDark,
+                              color: (task.status == "done")
+                                  ? doneColor
+                                  : ((task.status == "todo")
+                                      ? todoColor
+                                      : pendingColor),
                               fontWeight: FontWeight.w500),
                         ),
                       ),
@@ -358,7 +375,7 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                       Stack(
                         children: [
                           Container(
-                            width: 319,
+                            width: 271,
                             height: 9,
                             decoration: BoxDecoration(
                               color: white,
@@ -380,9 +397,9 @@ class _taskDetailScreenState extends State<taskDetailScreen>
                                 double.parse(task.progress + ".0")),
                             height: 9,
                             decoration: BoxDecoration(
-                                color: (task.progress == "done")
+                                color: (task.status == "done")
                                     ? doneColor
-                                    : ((task.progress == "todo")
+                                    : ((task.status == "todo")
                                         ? todoColor
                                         : pendingColor),
                                 boxShadow: [
