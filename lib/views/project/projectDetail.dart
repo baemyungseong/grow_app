@@ -348,7 +348,7 @@ class _projectDetailScreenState extends State<projectDetailScreen>
     getTaskPendingList();
     getAssigned();
     getIdOwner();
-    getAssignedTask();
+    // getAssignedTask();
   }
 
   @override

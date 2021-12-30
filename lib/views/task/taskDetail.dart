@@ -218,9 +218,18 @@ class _taskDetailScreenState extends State<taskDetailScreen>
               (progress / double.parse(project.quantityTask + '.0')))
           .toStringAsFixed(0)
           .toString(),
-      'status': (project.progress == "100")
+      'status': ((double.parse(project.progress + '.0') +
+                      (progress / double.parse(project.quantityTask + '.0')))
+                  .toStringAsFixed(0)
+                  .toString() ==
+              "100")
           ? "done"
-          : (project.progress != "0")
+          : ((double.parse(project.progress + '.0') +
+                          (progress /
+                              double.parse(project.quantityTask + '.0')))
+                      .toStringAsFixed(0)
+                      .toString() !=
+                  "0")
               ? "todo"
               : "pending"
     }).whenComplete(() =>
