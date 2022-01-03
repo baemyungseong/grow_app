@@ -43,8 +43,6 @@ class dashboardCenterScreen extends StatefulWidget {
 class _dashboardCenterScreenState extends State<dashboardCenterScreen>
     with SingleTickerProviderStateMixin {
   String uid = "";
-  late AnimationController _animatedController;
-  late Animation<double> _animation;
   List<ProjectCardInfo> projectcards = [
     ProjectCardInfo(
         deadline: '10:00 AM',
@@ -54,19 +52,50 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
 
   _dashboardCenterScreenState(String uid);
 
+  late AnimationController _animatedController;
+  late Animation<double> _animationDone;
+  late Animation<double> _animationTodo;
+  late Animation<double> _animationPending;
+  late Tween<double> _tweenDone;
+  late Tween<double> _tweenTodo;
+  late Tween<double> _tweenPending;
+  late double doneValue = 0;
+  late double todoValue = 0;
+  late double pendingValue = 0;
+
+  bool showChart = false;
+
   void initState() {
     super.initState();
     User? user = FirebaseAuth.instance.currentUser;
     final userid = user?.uid.toString();
     uid = userid!;
 
-    _animatedController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
-    _animation = Tween<double>(begin: 0, end: 41).animate(_animatedController)
+    _animatedController = AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
+
+    _tweenDone = Tween<double>(begin: 0, end: doneValue);
+    _animationDone = _tweenDone.animate(_animatedController)
       ..addListener(() {
-        setState(() {});
-      });
-    //
+        setState(() {
+        });
+      }
+    );
+
+    _tweenTodo = Tween<double>(begin: doneValue, end: todoValue);
+    _animationTodo = _tweenTodo.animate(_animatedController)
+      ..addListener(() {
+        setState(() {
+        });
+      }
+    );
+
+    _tweenPending = Tween<double>(begin: todoValue, end: pendingValue);
+    _animationPending = _tweenPending.animate(_animatedController)
+      ..addListener(() {
+        setState(() {
+        });
+      }
+    );
   }
 
   @override
@@ -247,17 +276,75 @@ class _dashboardCenterScreenState extends State<dashboardCenterScreen>
                         children: [
                           SizedBox(width: 8),
                           CustomPaint(
-                            foregroundPainter: circleProgressDashboard(_animation.value),
+                            foregroundPainter: circleProgressDashboard(
+                              _animationDone.value,
+                              _animationTodo.value,
+                              _animationPending.value
+                            ),
                             child: Container(
                                 width: 160,
                                 height: 160,
                                 child: GestureDetector(
                                   onTap: () {
-                                    if (_animation.value == 41) {
-                                      _animatedController.reverse();
-                                    } else {
-                                      _animatedController.forward();
-                                    }
+                                    setState(() {
+                                      // doneValue = ((projectDoneList.length /
+                                      //         projectAllList.length) *
+                                      //     100);
+                                      // todoValue = ((projectDoneList.length /
+                                      //             projectAllList.length) *
+                                      //         100) +
+                                      //     ((projectTodoList.length /
+                                      //             projectAllList.length) *
+                                      //         100);
+                                      // pendingValue = ((projectDoneList.length /
+                                      //             projectAllList.length) *
+                                      //         100) +
+                                      //     ((projectTodoList.length /
+                                      //             projectAllList.length) *
+                                      //         100) +
+                                      //     ((projectPendingList.length /
+                                      //             projectAllList.length) *
+                                      //         100);
+                                      doneValue = 20;
+                                      todoValue = 60;
+                                      pendingValue = 100;
+
+                                      print("doneValue" + doneValue.toString());
+                                      print("todoValue" + todoValue.toString());
+                                      print("pendingValue" + pendingValue.toString());
+
+                                      _animatedController.reset();
+
+                                      if (showChart == true) {
+                                        _tweenDone.begin = 0;
+                                        _tweenDone.end = 0;
+                                        _tweenTodo.begin = 0;
+                                        _tweenTodo.end = 0;
+                                        _tweenPending.begin = 0;
+                                        _tweenPending.end = 0;
+                                         _animatedController.reverse();
+                                         showChart = false;
+                                      } else {
+                                        _tweenDone.begin = 0;
+                                        _tweenDone.end = doneValue;
+                                        _tweenTodo.begin = doneValue;
+                                        _tweenTodo.end = todoValue;
+                                        _tweenPending.begin = todoValue;
+                                        _tweenPending.end = pendingValue;
+                                        _animatedController.forward();
+                                        showChart = true;
+                                      }
+
+                                      // if (_animationDone.value == 0 &&
+                                      //     _animationTodo.value == doneValue &&
+                                      //     _animationPending.value == todoValue) {
+                                      //       _animatedController.reverse();
+                                      //       _animatedController.reset();
+                                      //       print(_tweenPending.end);
+                                      // } else {
+                                      // _animatedController.forward();
+                                      // }
+                                    });
                                   },
                                   child: Center(
                                     child: Container(

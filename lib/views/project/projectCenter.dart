@@ -12,6 +12,7 @@ import 'package:grow_app/models/projectModel.dart';
 //import views
 import 'package:grow_app/views/profile/notificationCenter.dart';
 import 'package:grow_app/views/profile/profileCenter.dart';
+import 'package:grow_app/views/project/projectDetail.dart';
 import 'package:grow_app/views/project/projectManagement.dart';
 
 //import firebase
@@ -444,10 +445,11 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                     ],
                   ),
                 ),
+                // start
+                SizedBox(height: 24),
                 Container(
-                  padding: EdgeInsets.only(top: 10),
                   width: double.maxFinite,
-                  height: 300,
+                  height: 169,
                   child: TabBarView(
                     controller: _tabController,
                     children: [
@@ -467,8 +469,7 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                               controller: PageController(
                                   initialPage: 0,
                                   keepPage: true,
-                                  viewportFraction: 0.6),
-                              itemCount: _listImageInprogress.length,
+                                  viewportFraction: 0.85),
                               scrollDirection: Axis.horizontal,
                               onPageChanged: (num) {
                                 setState(() {
@@ -481,15 +482,294 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                                   }
                                 });
                               },
+                              itemCount: 3,
                               itemBuilder: (context, index) {
-                                return Container(
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 14.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    image: DecorationImage(
-                                        image: AssetImage(_listImageInprogress[index]),
-                                        fit: BoxFit.contain),
+                                // return Container(
+                                //   margin:
+                                //       EdgeInsets.symmetric(horizontal: 14.0),
+                                //   decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(20.0),
+                                //     image: DecorationImage(
+                                //         image: AssetImage(_listImageInprogress[index]),
+                                //         fit: BoxFit.contain),
+                                //   ),
+                                // );
+                                return Padding(
+                                  padding: EdgeInsets.only(right: 50),
+                                    child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              projectDetailScreen(required,
+                                                  uid: uid),
+                                        ),
+                                      ).then((value) {
+                                        // getProjectsDataList();
+                                      });
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: Duration(milliseconds: 300),
+                                      width: 267,
+                                      height: 169,
+                                      // margin: EdgeInsets.only(right: 50),
+                                      decoration: BoxDecoration(
+                                          // image: DecorationImage(
+                                          //   // image: NetworkImage(
+                                          //   //     '${projects[index]!["background"]}'),
+                                          //   image: NetworkImage('https://i.imgur.com/h59jgEn.png'),
+                                          //   fit: BoxFit.cover
+                                          // ),
+                                          color: purpleLight,
+                                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: purpleHShadow.withOpacity(0.6),
+                                              spreadRadius: -16,
+                                              blurRadius: 24,
+                                              offset: Offset(0, 28),
+                                            ),
+                                          ],
+                                      ),
+                                      child: Container(
+                                          padding: EdgeInsets.only(top: 20, left: 16, bottom: 12, right: 16),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              // SizedBox(height: 16),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 198,
+                                                    child: Text(
+                                                      // "${projects[index]!["name"]}",
+                                                      "Medical Dashboard UI",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          fontFamily: "Poppins",
+                                                          fontSize: 16.0,
+                                                          color: black,
+                                                          fontWeight: FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                  Spacer(),
+                                                  Container(
+                                                    width: 8,
+                                                    height: 8,
+                                                    decoration: new BoxDecoration(
+                                                      // color: (projects[index]!["status"] ==
+                                                      //         "done")
+                                                      //     ? doneColor
+                                                      //     : ((projects[index]!["status"] ==
+                                                      //             "todo")
+                                                      //         ? todoColor
+                                                      //         : pendingColor),
+                                                      color: todoColor,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 12),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    child: Row(
+                                                      children: [
+                                                        Stack(
+                                                          children: [
+                                                            Container(
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(left: 22),
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(left: 44),
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 24),
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            alignment: Alignment.center,
+                                                            height: 16,
+                                                            width: 16,
+                                                            decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: AssetImage(
+                                                                      clockProject)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Container(
+                                                            width: 112,
+                                                            child: Text(
+                                                              // "${projects[index]!["deadline"]}",
+                                                              "25 Mei 2021, 9PM",
+                                                              overflow: TextOverflow.ellipsis,
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                  fontFamily: "Poppins",
+                                                                  fontSize: 12.0,
+                                                                  color: black,
+                                                                  fontWeight:
+                                                                      FontWeight.w500),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 8),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            alignment: Alignment.center,
+                                                            height: 16,
+                                                            width: 16,
+                                                            decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: AssetImage(
+                                                                      taskProject)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Container(
+                                                            width: 112,
+                                                            child: Text(
+                                                              // "${projects[index]!["quantityTask"]} task",
+                                                              "10 task",
+                                                              overflow: TextOverflow.ellipsis,
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                  fontFamily: "Poppins",
+                                                                  fontSize: 12.0,
+                                                                  color: black,
+                                                                  fontWeight:
+                                                                      FontWeight.w500),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 18),
+                                              Stack(
+                                                children: [
+                                                  Container(
+                                                    width: 235,
+                                                    height: 9,
+                                                    decoration: BoxDecoration(
+                                                      color: white,
+                                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: black.withOpacity(0.25),
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: (271 * 0.01 *
+                                                        // (double.parse(
+                                                        //     projects[index]!["progress"]))
+                                                        60
+                                                    ),
+                                                    height: 9,
+                                                    decoration: BoxDecoration(
+                                                      // color: (projects[index]!["status"] ==
+                                                      //         "done")
+                                                      //     ? doneColor
+                                                      //     : ((projects[index]!["status"] ==
+                                                      //             "todo")
+                                                      //         ? todoColor
+                                                      //         : pendingColor),
+                                                      color: todoColor,
+                                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: black.withOpacity(0.25),
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 8),
+                                              Row(children: [
+                                                Text(
+                                                  "Progress",
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: black,
+                                                      fontWeight: FontWeight.w400),
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  // "${projects[index]!["progress"]}%",
+                                                  "60%",
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: black,
+                                                      fontWeight: FontWeight.w400),
+                                                ),
+                                              ])
+                                            ],
+                                          )
+                                      )
+                                    ),
                                   ),
                                 );
                               }
@@ -502,12 +782,11 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                               controller: PageController(
                                   initialPage: 0,
                                   keepPage: true,
-                                  viewportFraction: 0.6),
-                              itemCount: _listImageTodo.length,
+                                  viewportFraction: 0.85),
                               scrollDirection: Axis.horizontal,
                               onPageChanged: (num) {
                                 setState(() {
-                                  if (num + 1 == _listImageTodo.length) {
+                                  if (num + 1 == _listImageInprogress.length) {
                                     _currentPosition = 2.0;
                                   } else if (num == 0) {
                                     _currentPosition = 0.0;
@@ -516,16 +795,294 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                                   }
                                 });
                               },
+                              itemCount: 3,
                               itemBuilder: (context, index) {
-                                return Container(
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 14.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            _listImageTodo[index]),
-                                        fit: BoxFit.contain),
+                                // return Container(
+                                //   margin:
+                                //       EdgeInsets.symmetric(horizontal: 14.0),
+                                //   decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(20.0),
+                                //     image: DecorationImage(
+                                //         image: AssetImage(_listImageInprogress[index]),
+                                //         fit: BoxFit.contain),
+                                //   ),
+                                // );
+                                return Padding(
+                                  padding: EdgeInsets.only(right: 50),
+                                    child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              projectDetailScreen(required,
+                                                  uid: uid),
+                                        ),
+                                      ).then((value) {
+                                        // getProjectsDataList();
+                                      });
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: Duration(milliseconds: 300),
+                                      width: 267,
+                                      height: 169,
+                                      // margin: EdgeInsets.only(right: 50),
+                                      decoration: BoxDecoration(
+                                          // image: DecorationImage(
+                                          //   // image: NetworkImage(
+                                          //   //     '${projects[index]!["background"]}'),
+                                          //   image: NetworkImage('https://i.imgur.com/h59jgEn.png'),
+                                          //   fit: BoxFit.cover
+                                          // ),
+                                          color: purpleLight,
+                                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: purpleHShadow.withOpacity(0.6),
+                                              spreadRadius: -16,
+                                              blurRadius: 24,
+                                              offset: Offset(0, 28),
+                                            ),
+                                          ],
+                                      ),
+                                      child: Container(
+                                          padding: EdgeInsets.only(top: 20, left: 16, bottom: 12, right: 16),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              // SizedBox(height: 16),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 198,
+                                                    child: Text(
+                                                      // "${projects[index]!["name"]}",
+                                                      "Medical Dashboard UI",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          fontFamily: "Poppins",
+                                                          fontSize: 16.0,
+                                                          color: black,
+                                                          fontWeight: FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                  Spacer(),
+                                                  Container(
+                                                    width: 8,
+                                                    height: 8,
+                                                    decoration: new BoxDecoration(
+                                                      // color: (projects[index]!["status"] ==
+                                                      //         "done")
+                                                      //     ? doneColor
+                                                      //     : ((projects[index]!["status"] ==
+                                                      //             "todo")
+                                                      //         ? todoColor
+                                                      //         : pendingColor),
+                                                      color: todoColor,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 12),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    child: Row(
+                                                      children: [
+                                                        Stack(
+                                                          children: [
+                                                            Container(
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(left: 22),
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(left: 44),
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 24),
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            alignment: Alignment.center,
+                                                            height: 16,
+                                                            width: 16,
+                                                            decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: AssetImage(
+                                                                      clockProject)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Container(
+                                                            width: 112,
+                                                            child: Text(
+                                                              // "${projects[index]!["deadline"]}",
+                                                              "25 Mei 2021, 9PM",
+                                                              overflow: TextOverflow.ellipsis,
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                  fontFamily: "Poppins",
+                                                                  fontSize: 12.0,
+                                                                  color: black,
+                                                                  fontWeight:
+                                                                      FontWeight.w500),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 8),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            alignment: Alignment.center,
+                                                            height: 16,
+                                                            width: 16,
+                                                            decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: AssetImage(
+                                                                      taskProject)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Container(
+                                                            width: 112,
+                                                            child: Text(
+                                                              // "${projects[index]!["quantityTask"]} task",
+                                                              "10 task",
+                                                              overflow: TextOverflow.ellipsis,
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                  fontFamily: "Poppins",
+                                                                  fontSize: 12.0,
+                                                                  color: black,
+                                                                  fontWeight:
+                                                                      FontWeight.w500),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 18),
+                                              Stack(
+                                                children: [
+                                                  Container(
+                                                    width: 235,
+                                                    height: 9,
+                                                    decoration: BoxDecoration(
+                                                      color: white,
+                                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: black.withOpacity(0.25),
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: (271 * 0.01 *
+                                                        // (double.parse(
+                                                        //     projects[index]!["progress"]))
+                                                        60
+                                                    ),
+                                                    height: 9,
+                                                    decoration: BoxDecoration(
+                                                      // color: (projects[index]!["status"] ==
+                                                      //         "done")
+                                                      //     ? doneColor
+                                                      //     : ((projects[index]!["status"] ==
+                                                      //             "todo")
+                                                      //         ? todoColor
+                                                      //         : pendingColor),
+                                                      color: todoColor,
+                                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: black.withOpacity(0.25),
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 8),
+                                              Row(children: [
+                                                Text(
+                                                  "Progress",
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: black,
+                                                      fontWeight: FontWeight.w400),
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  // "${projects[index]!["progress"]}%",
+                                                  "60%",
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: black,
+                                                      fontWeight: FontWeight.w400),
+                                                ),
+                                              ])
+                                            ],
+                                          )
+                                      )
+                                    ),
                                   ),
                                 );
                               }
@@ -538,12 +1095,11 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                               controller: PageController(
                                   initialPage: 0,
                                   keepPage: true,
-                                  viewportFraction: 0.6),
-                              itemCount: _listImageDone.length,
+                                  viewportFraction: 0.85),
                               scrollDirection: Axis.horizontal,
                               onPageChanged: (num) {
                                 setState(() {
-                                  if (num + 1 == _listImageDone.length) {
+                                  if (num + 1 == _listImageInprogress.length) {
                                     _currentPosition = 2.0;
                                   } else if (num == 0) {
                                     _currentPosition = 0.0;
@@ -552,16 +1108,294 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                                   }
                                 });
                               },
+                              itemCount: 3,
                               itemBuilder: (context, index) {
-                                return Container(
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 14.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            _listImageDone[index]),
-                                        fit: BoxFit.contain),
+                                // return Container(
+                                //   margin:
+                                //       EdgeInsets.symmetric(horizontal: 14.0),
+                                //   decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(20.0),
+                                //     image: DecorationImage(
+                                //         image: AssetImage(_listImageInprogress[index]),
+                                //         fit: BoxFit.contain),
+                                //   ),
+                                // );
+                                return Padding(
+                                  padding: EdgeInsets.only(right: 50),
+                                    child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              projectDetailScreen(required,
+                                                  uid: uid),
+                                        ),
+                                      ).then((value) {
+                                        // getProjectsDataList();
+                                      });
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: Duration(milliseconds: 300),
+                                      width: 267,
+                                      height: 169,
+                                      // margin: EdgeInsets.only(right: 50),
+                                      decoration: BoxDecoration(
+                                          // image: DecorationImage(
+                                          //   // image: NetworkImage(
+                                          //   //     '${projects[index]!["background"]}'),
+                                          //   image: NetworkImage('https://i.imgur.com/h59jgEn.png'),
+                                          //   fit: BoxFit.cover
+                                          // ),
+                                          color: purpleLight,
+                                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: purpleHShadow.withOpacity(0.6),
+                                              spreadRadius: -16,
+                                              blurRadius: 24,
+                                              offset: Offset(0, 28),
+                                            ),
+                                          ],
+                                      ),
+                                      child: Container(
+                                          padding: EdgeInsets.only(top: 20, left: 16, bottom: 12, right: 16),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              // SizedBox(height: 16),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 198,
+                                                    child: Text(
+                                                      // "${projects[index]!["name"]}",
+                                                      "Medical Dashboard UI",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          fontFamily: "Poppins",
+                                                          fontSize: 16.0,
+                                                          color: black,
+                                                          fontWeight: FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                  Spacer(),
+                                                  Container(
+                                                    width: 8,
+                                                    height: 8,
+                                                    decoration: new BoxDecoration(
+                                                      // color: (projects[index]!["status"] ==
+                                                      //         "done")
+                                                      //     ? doneColor
+                                                      //     : ((projects[index]!["status"] ==
+                                                      //             "todo")
+                                                      //         ? todoColor
+                                                      //         : pendingColor),
+                                                      color: todoColor,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 12),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    child: Row(
+                                                      children: [
+                                                        Stack(
+                                                          children: [
+                                                            Container(
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(left: 22),
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(left: 44),
+                                                              width: 32,
+                                                              height: 32,
+                                                              decoration: new BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        // '${projects[index]!["background"]}'),
+                                                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
+                                                                    fit: BoxFit.cover),
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 24),
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            alignment: Alignment.center,
+                                                            height: 16,
+                                                            width: 16,
+                                                            decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: AssetImage(
+                                                                      clockProject)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Container(
+                                                            width: 112,
+                                                            child: Text(
+                                                              // "${projects[index]!["deadline"]}",
+                                                              "25 Mei 2021, 9PM",
+                                                              overflow: TextOverflow.ellipsis,
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                  fontFamily: "Poppins",
+                                                                  fontSize: 12.0,
+                                                                  color: black,
+                                                                  fontWeight:
+                                                                      FontWeight.w500),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 8),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            alignment: Alignment.center,
+                                                            height: 16,
+                                                            width: 16,
+                                                            decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: AssetImage(
+                                                                      taskProject)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Container(
+                                                            width: 112,
+                                                            child: Text(
+                                                              // "${projects[index]!["quantityTask"]} task",
+                                                              "10 task",
+                                                              overflow: TextOverflow.ellipsis,
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                  fontFamily: "Poppins",
+                                                                  fontSize: 12.0,
+                                                                  color: black,
+                                                                  fontWeight:
+                                                                      FontWeight.w500),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 18),
+                                              Stack(
+                                                children: [
+                                                  Container(
+                                                    width: 235,
+                                                    height: 9,
+                                                    decoration: BoxDecoration(
+                                                      color: white,
+                                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: black.withOpacity(0.25),
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: (271 * 0.01 *
+                                                        // (double.parse(
+                                                        //     projects[index]!["progress"]))
+                                                        60
+                                                    ),
+                                                    height: 9,
+                                                    decoration: BoxDecoration(
+                                                      // color: (projects[index]!["status"] ==
+                                                      //         "done")
+                                                      //     ? doneColor
+                                                      //     : ((projects[index]!["status"] ==
+                                                      //             "todo")
+                                                      //         ? todoColor
+                                                      //         : pendingColor),
+                                                      color: todoColor,
+                                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: black.withOpacity(0.25),
+                                                          spreadRadius: 0,
+                                                          blurRadius: 8,
+                                                          offset: Offset(0, 4),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 8),
+                                              Row(children: [
+                                                Text(
+                                                  "Progress",
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: black,
+                                                      fontWeight: FontWeight.w400),
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  // "${projects[index]!["progress"]}%",
+                                                  "60%",
+                                                  style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12.0,
+                                                      color: black,
+                                                      fontWeight: FontWeight.w400),
+                                                ),
+                                              ])
+                                            ],
+                                          )
+                                      )
+                                    ),
                                   ),
                                 );
                               }
@@ -570,6 +1404,9 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                     ],
                   ),
                 ),
+                SizedBox(height: 40),
+                // end
+
                 Container(
                   padding: EdgeInsets.only(left: 28, right: 28),
                   child: Text(
@@ -590,7 +1427,7 @@ class _projectCenterScreenState extends State<projectCenterScreen> with SingleTi
                       padding: EdgeInsets.zero,
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: 4,
+                      itemCount: 8,
                       // itemCount: projects.length,
                       itemBuilder: (context, index) {
                         return Container(
