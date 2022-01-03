@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:grow_app/models/userModel.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
@@ -10,6 +13,8 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:async';
 
 //import views
 import 'package:grow_app/views/profile/termCondition.dart';
@@ -39,6 +44,43 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
+  late UserModel user = UserModel(
+      avatar: '',
+      dob: '',
+      email: '',
+      name: '',
+      messagesList: [],
+      job: '',
+      phonenumber: '',
+      projectsList: [],
+      tasksList: [],
+      userId: '');
+  Future getUserDetail() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .where("userId", isEqualTo: uid)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        user = UserModel.fromDocument(value.docs.first.data());
+      });
+    });
+  }
+
+  late PickedFile image = PickedFile('');
+  final ImagePicker picker = ImagePicker();
+
+  Future getImage(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source);
+    setState(() {
+      image = pickedFile!;
+    });
+    // final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    // final pickedImageFile = File(pickedImage!.path);
+    // setState(() {
+    //   image = pickedImageFile;
+    // });
+  }
 
   _profileCenterScreenState(uid);
 
@@ -53,6 +95,7 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
     final userid = user?.uid.toString();
     uid = userid!;
     print('The current uid is $uid');
+    getUserDetail();
   }
 
   @override
@@ -97,61 +140,52 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                             decoration: new BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(24)),
-                              image: DecorationImage(
-                                  image: NetworkImage(
+                              image: (image == null)
+                                  ? DecorationImage(
+                                      image: FileImage(File(image.path)),
+                                      fit: BoxFit.cover)
+                                  : DecorationImage(image: NetworkImage(
                                       // '${projects[index]!["background"]}'),
-                                      'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                  fit: BoxFit.cover),
+                                      user.avatar), fit: BoxFit.cover),
                               shape: BoxShape.rectangle,
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.only(top: 72, left: 72),
-                            alignment: Alignment.center,
-                            child: GestureDetector(
-                              // onTap: () {
-                              //   Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) =>
-                              //           notificationCenterScreen(required,
-                              //               uid: uid),
-                              //     ),
-                              //   );
-                              // },
-                              child: AnimatedContainer(
-                                alignment: Alignment.center,
-                                duration: Duration(milliseconds: 300),
-                                height: 32,
-                                width: 32,
-                                decoration: BoxDecoration(
-                                  color: purpleDark,
-                                  borderRadius: BorderRadius.circular(8),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: black.withOpacity(0.25),
+                              padding: EdgeInsets.only(top: 72, left: 72),
+                              alignment: Alignment.center,
+                              child: GestureDetector(
+                                onTap: () {
+                                  getImage(ImageSource.camera);
+                                },
+                                child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 32,
+                                  width: 32,
+                                  decoration: BoxDecoration(
+                                    color: purpleDark,
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: black.withOpacity(0.25),
+                                          spreadRadius: 0,
+                                          blurRadius: 64,
+                                          offset: Offset(8, 8)),
+                                      BoxShadow(
+                                        color: black.withOpacity(0.2),
                                         spreadRadius: 0,
-                                        blurRadius: 64,
-                                        offset: Offset(8, 8)),
-                                    BoxShadow(
-                                      color: black.withOpacity(0.2),
-                                      spreadRadius: 0,
-                                      blurRadius: 4,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Container(
+                                      padding: EdgeInsets.zero,
+                                      alignment: Alignment.center,
+                                      child: Icon(Iconsax.edit,
+                                          size: 16, color: white)),
                                 ),
-                                child: Container(
-                                    padding: EdgeInsets.zero,
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      Iconsax.edit,
-                                      size: 16, color: white
-                                    )
-                                ),
-                              ),
-                            )
-                          ),
+                              )),
                         ],
                       ),
                     ),
@@ -160,23 +194,21 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Phan Anh Chaor",
+                          user.name,
                           style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 24
-                          ),
+                              fontFamily: 'Poppins',
+                              color: black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 24),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "nhatkb2001@gmail.com",
+                          user.email,
                           style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: greyDark,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12
-                          ),
+                              fontFamily: 'Poppins',
+                              color: greyDark,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12),
                         )
                       ],
                     ),
@@ -187,56 +219,57 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                       children: [
                         Container(
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 0.15,
-                                color: greyDark
-                              ),
+                              border: Border.all(width: 0.15, color: greyDark),
                               borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                topRight: Radius.circular(16)
-                              ),
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16)),
                             ),
                             child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => loginDetailScreen(required, uid: uid),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          loginDetailScreen(required, uid: uid),
+                                    ),
+                                  );
+                                },
+                                child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 64,
+                                  width: 319,
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(16),
+                                        topRight: Radius.circular(16)),
                                   ),
-                                );
-                              },
-                              child: AnimatedContainer(
-                                alignment: Alignment.center,
-                                duration: Duration(milliseconds: 300),
-                                height: 64,
-                                width: 319,
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(width: 24),
-                                    Container(
-                                      width: 32,
-                                      height: 32,
-                                      // alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: white,
-                                      ),
-                                      child: Container(
-                                        padding: EdgeInsets.zero,
-                                        child: Icon(Iconsax.profile_2user,
-                                            size: 20, color: purpleMain),
-                                      )),
-                                  SizedBox(width: 16),
-                                  Column(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      SizedBox(width: 24),
                                       Container(
-                                          child: Text(
+                                          width: 32,
+                                          height: 32,
+                                          // alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: white,
+                                          ),
+                                          child: Container(
+                                            padding: EdgeInsets.zero,
+                                            child: Icon(Iconsax.profile_2user,
+                                                size: 20, color: purpleMain),
+                                          )),
+                                      SizedBox(width: 16),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              child: Text(
                                             'Login details',
                                             style: TextStyle(
                                                 fontSize: 12,
@@ -244,37 +277,32 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                                                 color: purpleMain,
                                                 fontWeight: FontWeight.w600),
                                           )),
-                                      SizedBox(width: 4),
+                                          SizedBox(width: 4),
+                                          Container(
+                                              // alignment: Alignment.topLeft,
+                                              child: Text(
+                                                  'User name, Password,...',
+                                                  style: TextStyle(
+                                                    fontSize: 8,
+                                                    fontFamily: 'Poppins',
+                                                    color: greyDark,
+                                                    fontWeight: FontWeight.w400,
+                                                  ))),
+                                        ],
+                                      ),
+                                      Spacer(),
                                       Container(
-                                          // alignment: Alignment.topLeft,
-                                          child: Text('User name, Password,...',
-                                              style: TextStyle(
-                                                fontSize: 8,
-                                                fontFamily: 'Poppins',
-                                                color: greyDark,
-                                                fontWeight: FontWeight.w400,
-                                              ))),
+                                          padding: EdgeInsets.zero,
+                                          alignment: Alignment.center,
+                                          child: Icon(Iconsax.arrow_right,
+                                              size: 24, color: purpleMain)),
+                                      SizedBox(width: 20)
                                     ],
                                   ),
-                                    Spacer(),
-                                    Container(
-                                      padding: EdgeInsets.zero,
-                                      alignment: Alignment.center,
-                                      child: Icon(Iconsax.arrow_right,
-                                        size: 24, color: purpleMain)
-                                    ),
-                                    SizedBox(width: 20)
-                                  ],
-                                ),
-                              )
-                            )
-                        ),
+                                ))),
                         Container(
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 0.15,
-                                color: greyDark
-                              ),
+                              border: Border.all(width: 0.15, color: greyDark),
                             ),
                             child: GestureDetector(
                                 onTap: () {
@@ -333,8 +361,7 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                                           SizedBox(width: 4),
                                           Container(
                                               // alignment: Alignment.topLeft,
-                                              child: Text(
-                                                  'FAQs, Helpdesk',
+                                              child: Text('FAQs, Helpdesk',
                                                   style: TextStyle(
                                                     fontSize: 8,
                                                     fontFamily: 'Poppins',
@@ -352,61 +379,58 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                                       SizedBox(width: 20)
                                     ],
                                   ),
-                                )
-                            )
-                        ),
+                                ))),
                         Container(
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 0.15,
-                                color: greyDark
-                              ),
+                              border: Border.all(width: 0.15, color: greyDark),
                             ),
                             child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => conditionScreen(),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => conditionScreen(),
+                                    ),
+                                  );
+                                },
+                                child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 64,
+                                  width: 319,
+                                  decoration: BoxDecoration(
+                                    color: white,
                                   ),
-                                );
-                              },
-                              child: AnimatedContainer(
-                                alignment: Alignment.center,
-                                duration: Duration(milliseconds: 300),
-                                height: 64,
-                                width: 319,
-                                decoration: BoxDecoration(
-                                  color: white,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(width: 24),
-                                    Container(
-                                      width: 32,
-                                      height: 32,
-                                      // alignment: Alignment.center,
-                                      decoration: new BoxDecoration(
-                                        border:
-                                            Border.all(width: 0.2, color: greyDark),
-                                        color: white,
-                                        borderRadius:
-                                            BorderRadius.all(Radius.circular(8)),
-                                        shape: BoxShape.rectangle,
-                                      ),
-                                      child: Container(
-                                        padding: EdgeInsets.zero,
-                                        child: Icon(Iconsax.document_text,
-                                            size: 20, color: purpleMain),
-                                      )),
-                                  SizedBox(width: 16),
-                                  Column(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      SizedBox(width: 24),
                                       Container(
-                                          child: Text(
+                                          width: 32,
+                                          height: 32,
+                                          // alignment: Alignment.center,
+                                          decoration: new BoxDecoration(
+                                            border: Border.all(
+                                                width: 0.2, color: greyDark),
+                                            color: white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8)),
+                                            shape: BoxShape.rectangle,
+                                          ),
+                                          child: Container(
+                                            padding: EdgeInsets.zero,
+                                            child: Icon(Iconsax.document_text,
+                                                size: 20, color: purpleMain),
+                                          )),
+                                      SizedBox(width: 16),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              child: Text(
                                             'Legal information',
                                             style: TextStyle(
                                                 fontSize: 12,
@@ -414,87 +438,84 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                                                 color: purpleMain,
                                                 fontWeight: FontWeight.w600),
                                           )),
-                                      SizedBox(width: 4),
+                                          SizedBox(width: 4),
+                                          Container(
+                                              // alignment: Alignment.topLeft,
+                                              child: Text(
+                                                  'Terms & Conditions, Privacy Policy',
+                                                  style: TextStyle(
+                                                    fontSize: 8,
+                                                    fontFamily: 'Poppins',
+                                                    color: greyDark,
+                                                    fontWeight: FontWeight.w400,
+                                                  ))),
+                                        ],
+                                      ),
+                                      Spacer(),
                                       Container(
-                                          // alignment: Alignment.topLeft,
-                                          child: Text('Terms & Conditions, Privacy Policy',
-                                              style: TextStyle(
-                                                fontSize: 8,
-                                                fontFamily: 'Poppins',
-                                                color: greyDark,
-                                                fontWeight: FontWeight.w400,
-                                              ))),
+                                          padding: EdgeInsets.zero,
+                                          alignment: Alignment.center,
+                                          child: Icon(Iconsax.arrow_right,
+                                              size: 24, color: purpleMain)),
+                                      SizedBox(width: 20)
                                     ],
                                   ),
-                                    Spacer(),
-                                    Container(
-                                      padding: EdgeInsets.zero,
-                                      alignment: Alignment.center,
-                                      child: Icon(Iconsax.arrow_right,
-                                        size: 24, color: purpleMain)
-                                    ),
-                                    SizedBox(width: 20)
-                                  ],
-                                ),
-                              )
-                            )
-                        ),
+                                ))),
                         Container(
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 0.15,
-                                color: greyDark
-                              ),
+                              border: Border.all(width: 0.15, color: greyDark),
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(16),
-                                bottomRight: Radius.circular(16)
-                              ),
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16)),
                             ),
                             child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => settingAppScreen(required, uid: uid),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          settingAppScreen(required, uid: uid),
+                                    ),
+                                  );
+                                },
+                                child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  duration: Duration(milliseconds: 300),
+                                  height: 64,
+                                  width: 319,
+                                  decoration: BoxDecoration(
+                                    color: white,
                                   ),
-                                );
-                              },
-                              child: AnimatedContainer(
-                                alignment: Alignment.center,
-                                duration: Duration(milliseconds: 300),
-                                height: 64,
-                                width: 319,
-                                decoration: BoxDecoration(
-                                  color: white,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(width: 24),
-                                    Container(
-                                      width: 32,
-                                      height: 32,
-                                      // alignment: Alignment.center,
-                                      decoration: new BoxDecoration(
-                                        border:
-                                            Border.all(width: 0.2, color: greyDark),
-                                        color: white,
-                                        borderRadius:
-                                            BorderRadius.all(Radius.circular(8)),
-                                        shape: BoxShape.rectangle,
-                                      ),
-                                      child: Container(
-                                        padding: EdgeInsets.zero,
-                                        child: Icon(Iconsax.setting_2,
-                                            size: 20, color: purpleMain),
-                                      )),
-                                  SizedBox(width: 16),
-                                  Column(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      SizedBox(width: 24),
                                       Container(
-                                          child: Text(
+                                          width: 32,
+                                          height: 32,
+                                          // alignment: Alignment.center,
+                                          decoration: new BoxDecoration(
+                                            border: Border.all(
+                                                width: 0.2, color: greyDark),
+                                            color: white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8)),
+                                            shape: BoxShape.rectangle,
+                                          ),
+                                          child: Container(
+                                            padding: EdgeInsets.zero,
+                                            child: Icon(Iconsax.setting_2,
+                                                size: 20, color: purpleMain),
+                                          )),
+                                      SizedBox(width: 16),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              child: Text(
                                             'Setting',
                                             style: TextStyle(
                                                 fontSize: 12,
@@ -502,31 +523,29 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                                                 color: purpleMain,
                                                 fontWeight: FontWeight.w600),
                                           )),
-                                      SizedBox(width: 4),
+                                          SizedBox(width: 4),
+                                          Container(
+                                              // alignment: Alignment.topLeft,
+                                              child: Text(
+                                                  'Language, Theme Mode,...',
+                                                  style: TextStyle(
+                                                    fontSize: 8,
+                                                    fontFamily: 'Poppins',
+                                                    color: greyDark,
+                                                    fontWeight: FontWeight.w400,
+                                                  ))),
+                                        ],
+                                      ),
+                                      Spacer(),
                                       Container(
-                                          // alignment: Alignment.topLeft,
-                                          child: Text('Language, Theme Mode,...',
-                                              style: TextStyle(
-                                                fontSize: 8,
-                                                fontFamily: 'Poppins',
-                                                color: greyDark,
-                                                fontWeight: FontWeight.w400,
-                                              ))),
+                                          padding: EdgeInsets.zero,
+                                          alignment: Alignment.center,
+                                          child: Icon(Iconsax.arrow_right,
+                                              size: 24, color: purpleMain)),
+                                      SizedBox(width: 20)
                                     ],
                                   ),
-                                    Spacer(),
-                                    Container(
-                                      padding: EdgeInsets.zero,
-                                      alignment: Alignment.center,
-                                      child: Icon(Iconsax.arrow_right,
-                                        size: 24, color: purpleMain)
-                                    ),
-                                    SizedBox(width: 20)
-                                  ],
-                                ),
-                              )
-                            )
-                        )
+                                )))
                       ],
                     ),
                     SizedBox(height: 56),
@@ -535,58 +554,52 @@ class _profileCenterScreenState extends State<profileCenterScreen> {
                         child: GestureDetector(
                           onTap: () => logoutDialog(context),
                           child: AnimatedContainer(
-                            alignment: Alignment.center,
-                            duration: Duration(milliseconds: 300),
-                            height: 48,
-                            width: 200,
-                            decoration: BoxDecoration(
-                              // color: getColor(purpleDark, purpleDark.withOpacity(0.3)),
-                              color: purpleDark,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: black.withOpacity(0.25),
-                                  spreadRadius: 0,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 4),
-                                ),
-                                BoxShadow(
-                                  color: black.withOpacity(0.1),
-                                  spreadRadius: 0,
-                                  blurRadius: 64,
-                                  offset: Offset(15, 15),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.zero,
-                                  alignment: Alignment.center,
-                                  child: Icon(Iconsax.logout,
-                                    size: 24, color: white
-                                  )
-                                ),
-                                SizedBox(width: 12),
-                                Text(
-                                  "Log out",
-                                  style: TextStyle(
-                                    color: white,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
+                              alignment: Alignment.center,
+                              duration: Duration(milliseconds: 300),
+                              height: 48,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                // color: getColor(purpleDark, purpleDark.withOpacity(0.3)),
+                                color: purpleDark,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: black.withOpacity(0.25),
+                                    spreadRadius: 0,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 4),
                                   ),
-                                ),
-                                SizedBox(width: 12)
-                              ],
-                            )
-                          ),
-                        )
-                    )
-                  ]
-              )
-          ),
+                                  BoxShadow(
+                                    color: black.withOpacity(0.1),
+                                    spreadRadius: 0,
+                                    blurRadius: 64,
+                                    offset: Offset(15, 15),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      padding: EdgeInsets.zero,
+                                      alignment: Alignment.center,
+                                      child: Icon(Iconsax.logout,
+                                          size: 24, color: white)),
+                                  SizedBox(width: 12),
+                                  Text(
+                                    "Log out",
+                                    style: TextStyle(
+                                      color: white,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  SizedBox(width: 12)
+                                ],
+                              )),
+                        ))
+                  ])),
         ],
       ),
     );

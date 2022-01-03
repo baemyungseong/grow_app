@@ -11,18 +11,19 @@ class Project {
   final String progress;
   final String quantityTask;
   final String status;
+  final List assigned;
 
-  Project({
-    required this.projectId,
-    required this.name,
-    required this.description,
-    required this.deadline,
-    required this.background,
-    required this.owner,
-    required this.progress,
-    required this.quantityTask,
-    required this.status
-  });
+  Project(
+      {required this.projectId,
+      required this.name,
+      required this.description,
+      required this.deadline,
+      required this.background,
+      required this.owner,
+      required this.progress,
+      required this.quantityTask,
+      required this.status,
+      required this.assigned});
 
   factory Project.fromDocument(Map<String, dynamic> doc) {
     return Project(
@@ -35,6 +36,7 @@ class Project {
       progress: doc['progress'],
       quantityTask: doc['quantityTask'],
       status: doc['status'],
+      assigned: doc['assigned'],
     );
   }
 }

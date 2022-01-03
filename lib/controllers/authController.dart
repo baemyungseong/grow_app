@@ -38,9 +38,12 @@ Future registerUser(String email, String password, String name,
         'email': email,
         "userId": uid,
         'phonenumber': phoneNumber,
-        'dob': null,
-        'job': null,
-        'avatar': "https://i.pinimg.com/564x/1c/63/9a/1c639ad0f44e6f450a8559305ca9cb0a.jpg",
+        'dob': '',
+        'job': 'Freelancer',
+        'avatar': "https://i.imgur.com/YtZkAbe.jpg",
+        'tasksList': FieldValue.arrayUnion([]),
+        'messagesList': FieldValue.arrayUnion([]),
+        'projectsList': FieldValue.arrayUnion([]),
       }).then((signedInUser) => {
             print("successfully registered!"),
           });
@@ -50,24 +53,49 @@ Future registerUser(String email, String password, String name,
     print(e.code);
     switch (e.code) {
       case "operation-not-allowed":
-        showErrorSnackBar(context, "Anonymous accounts are not enabled!");
+        showSnackBar(context, "Anonymous accounts are not enabled!", 'error');
         break;
       case "weak-password":
-        showErrorSnackBar(context, "Your password is too weak!");
+        showSnackBar(context, "Your password is too weak!", 'error');
         break;
       case "invalid-email":
-        showErrorSnackBar(context, "Your email is invalid, please check!");
+        showSnackBar(context, "Your email is invalid, please check!", 'error');
         break;
       case "email-already-in-use":
-        showErrorSnackBar(context, "Email is used on different account!");
+        showSnackBar(context, "Email is used on different account!", 'error');
         break;
       case "invalid-credential":
-        showErrorSnackBar(context, "Your email is invalid, please check!");
+        showSnackBar(context, "Your email is invalid, please check!", 'error');
         break;
 
       default:
-        showErrorSnackBar(context, "An undefined Error happened.");
+        showSnackBar(context, "An undefined Error happened.", 'error');
     }
+  }
+}
+
+Future<void> changePassword(currentPassword, newPassword, context) async {
+  final user = FirebaseAuth.instance.currentUser!;
+  try {
+    try {
+      var authResult = await user.reauthenticateWithCredential(
+        EmailAuthProvider.credential(
+          email: (user.email).toString(),
+          password: currentPassword,
+        ),
+      );
+      user.updatePassword(newPassword).then((_) {
+        showSnackBar(context, 'Successfully changed password!', 'success');
+        Navigator.pop(context);
+      }).catchError((error) {
+        showSnackBar(context, 'Your current password is wrong!', 'error');
+      });
+      return null;
+    } on FirebaseAuthException {
+      showSnackBar(context, 'Your current password is wrong!', 'error');
+    }
+  } on FirebaseAuthException {
+    showSnackBar(context, 'Your current password is wrong!', 'error');
   }
 }
 
@@ -85,14 +113,15 @@ Future resetPasswordUser(String email, context) async {
     print(e.code);
     switch (e.code) {
       case "invalid-email":
-        showErrorSnackBar(context, "Your email is invalid, please check!");
+        showSnackBar(context, "Your email is invalid, please check!", 'error');
         break;
       case "user-not-found":
-        showErrorSnackBar(context, "Your email is not found, please check!");
+        showSnackBar(
+            context, "Your email is not found, please check!", 'error');
         break;
 
       default:
-        showErrorSnackBar(context, "An undefined Error happened.");
+        showSnackBar(context, "An undefined Error happened.", 'error');
     }
   }
 }
@@ -117,22 +146,24 @@ Future loginUser(String email, String password, context) async {
     print(e.code);
     switch (e.code) {
       case "user-not-found":
-        showErrorSnackBar(context, "Your email is not found, please check!");
+        showSnackBar(
+            context, "Your email is not found, please check!", 'error');
         break;
       case "wrong-password":
-        showErrorSnackBar(context, "Your password is wrong, please check!");
+        showSnackBar(context, "Your password is wrong, please check!", 'error');
         break;
       case "invalid-email":
-        showErrorSnackBar(context, "Your email is invalid, please check!");
+        showSnackBar(context, "Your email is invalid, please check!", 'error');
         break;
       case "user-disabled":
-        showErrorSnackBar(context, "The user account has been disabled!");
+        showSnackBar(context, "The user account has been disabled!", 'error');
         break;
       case "too-many-requests":
-        showErrorSnackBar(context, "There was too many attempts to sign in!");
+        showSnackBar(
+            context, "There was too many attempts to sign in!", 'error');
         break;
       case "operation-not-allowed":
-        showErrorSnackBar(context, "The user account are not enabled!");
+        showSnackBar(context, "The user account are not enabled!", 'error');
         break;
       // // Preventing user from entering email already provided by other login method
       // case "account-exists-with-different-credential":
@@ -140,7 +171,7 @@ Future loginUser(String email, String password, context) async {
       //   break;
 
       default:
-        showErrorSnackBar(context, "An undefined Error happened.");
+        showSnackBar(context, "An undefined Error happened.", 'error');
     }
   }
 }
@@ -180,10 +211,13 @@ Future googleSignIn(context) async {
         'name': userData.displayName,
         'email': userData.email,
         "userId": uid,
-        'phonenumber': null,
-        'dob': null,
+        'phonenumber': '',
+        'dob': '',
         'avatar': userData.photoUrl,
-        'job': null,
+        'job': '',
+        'tasksList': FieldValue.arrayUnion([]),
+        'messagesList': FieldValue.arrayUnion([]),
+        'projectsList': FieldValue.arrayUnion([]),
       }).then((signedInUser) => {
             print("successfully registered!"),
           });
@@ -227,10 +261,13 @@ Future facebookSignIn(context) async {
           'name': userData['name'],
           'email': userData['email'],
           "userId": uid,
-          'phonenumber': null,
-          'dob': null,
-          'job': null,
+          'phonenumber': '',
+          'dob': '',
+          'job': '',
           'avatar': userData['picture']['data']['url'],
+          'tasksList': FieldValue.arrayUnion([]),
+          'messagesList': FieldValue.arrayUnion([]),
+          'projectsList': FieldValue.arrayUnion([]),
         }).then((signedInUser) => {
               print("successfully registered!"),
             });

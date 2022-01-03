@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:grow_app/models/userModel.dart';
+import 'package:grow_app/views/project/projectDetail.dart';
+import 'package:grow_app/views/project/projectManagement.dart';
 
 //import views
 import 'package:grow_app/views/wrapper/authenticationWrapper.dart';
@@ -17,6 +22,8 @@ import 'package:iconsax/iconsax.dart';
 
 //import others
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+
+TextEditingController searchController = TextEditingController();
 
 logoutDialog(BuildContext mContext) {
   return showDialog(
@@ -106,14 +113,11 @@ logoutDialog(BuildContext mContext) {
                                   decoration: BoxDecoration(
                                     color: white,
                                     border: Border(
-                                      top: BorderSide(
-                                          width: 3, color: white),
-                                      left: BorderSide(
-                                          width: 3, color: white),
-                                      right: BorderSide(
-                                          width: 3, color: white),
-                                      bottom: BorderSide(
-                                          width: 3, color: white),
+                                      top: BorderSide(width: 3, color: white),
+                                      left: BorderSide(width: 3, color: white),
+                                      right: BorderSide(width: 3, color: white),
+                                      bottom:
+                                          BorderSide(width: 3, color: white),
                                     ),
                                     borderRadius: BorderRadius.circular(8),
                                     boxShadow: [
@@ -162,7 +166,7 @@ logoutDialog(BuildContext mContext) {
       });
 }
 
-addAssigneeDialog(BuildContext mContext) {
+addAssigneeDialog(BuildContext mContext, List<UserModel> userListChoice) {
   return showDialog(
       context: mContext,
       builder: (context) {
@@ -176,7 +180,7 @@ addAssigneeDialog(BuildContext mContext) {
           content: Container(
             width: 319,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16), 
+              borderRadius: BorderRadius.circular(16),
               color: white,
               boxShadow: [
                 BoxShadow(
@@ -208,13 +212,27 @@ addAssigneeDialog(BuildContext mContext) {
                               color: whiteLight),
                           alignment: Alignment.topCenter,
                           child: TextFormField(
+                              controller: searchController,
+                              onChanged: (val) {
+                                FirebaseFirestore.instance
+                                    .collection("users")
+                                    .where("email", isGreaterThanOrEqualTo: val)
+                                    .where("email",
+                                        isLessThanOrEqualTo: val + "z")
+                                    .snapshots()
+                                    .listen((value) {
+                                  value.docs.forEach((element) {
+                                    userListChoice.add(
+                                        UserModel.fromDocument(element.data()));
+                                  });
+                                });
+                              },
                               style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 12,
-                                color: black,
-                                fontWeight: FontWeight.w400,
-                                height: 1.5
-                              ),
+                                  fontFamily: 'Poppins',
+                                  fontSize: 12,
+                                  color: black,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.5),
                               // controller: searchController,
                               keyboardType: TextInputType.text,
                               decoration: InputDecoration(
@@ -232,8 +250,7 @@ addAssigneeDialog(BuildContext mContext) {
                                     fontSize: 12,
                                     color: Color(0xFF666666),
                                     fontWeight: FontWeight.w400,
-                                    height: 1.6
-                                ),
+                                    height: 1.6),
                               )),
                         ),
                       ),
@@ -255,158 +272,162 @@ addAssigneeDialog(BuildContext mContext) {
                 ),
                 SizedBox(height: 8),
                 SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
                   padding: EdgeInsets.only(left: 28, right: 28),
-                  child: ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: 3,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        width: 263,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: white,
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(width: 16),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              decoration: new BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                        // '${projects[index]!["background"]}'),
-                                        'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                    fit: BoxFit.cover),
-                                shape: BoxShape.rectangle,
+                  child: Container(
+                    width: 263,
+                    height: 48 * 4,
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: userListChoice.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 263,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: white,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(width: 16),
+                              Container(
+                                width: 30,
+                                height: 30,
+                                decoration: new BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8)),
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                          // '${projects[index]!["background"]}'),
+                                          userListChoice[index].avatar),
+                                      fit: BoxFit.cover),
+                                  shape: BoxShape.rectangle,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
-                                      'Pan Cái Chaor',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: 'Poppins',
-                                          color: black,
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.2),
-                                    )),
-                                Container(
-                                    // alignment: Alignment.topLeft,
-                                    child: Text('Project Director',
+                              SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        userListChoice[index].name,
                                         style: TextStyle(
-                                          fontSize: 8,
-                                          fontFamily: 'Poppins',
-                                          color: greyDark,
-                                          fontWeight: FontWeight.w400,
-                                        ))),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                                            fontSize: 12,
+                                            fontFamily: 'Poppins',
+                                            color: black,
+                                            fontWeight: FontWeight.w600,
+                                            height: 1.2),
+                                      )),
+                                  Container(
+                                      // alignment: Alignment.topLeft,
+                                      child: Text(userListChoice[index].job,
+                                          style: TextStyle(
+                                            fontSize: 8,
+                                            fontFamily: 'Poppins',
+                                            color: greyDark,
+                                            fontWeight: FontWeight.w400,
+                                          ))),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 SizedBox(height: 16),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center, 
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                  Container(
-                      alignment: Alignment.center,
-                      child: GestureDetector(
-                        // onTap: () => logoutDialog(context),
-                        child: AnimatedContainer(
-                            alignment: Alignment.center,
-                            duration: Duration(milliseconds: 300),
-                            height: 32,
-                            width: 102,
-                            decoration: BoxDecoration(
-                              color: purpleMain,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: black.withOpacity(0.25),
-                                  spreadRadius: 0,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 4),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          alignment: Alignment.center,
+                          child: GestureDetector(
+                            // onTap: () => logoutDialog(context),
+                            child: AnimatedContainer(
+                                alignment: Alignment.center,
+                                duration: Duration(milliseconds: 300),
+                                height: 32,
+                                width: 102,
+                                decoration: BoxDecoration(
+                                  color: purpleMain,
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: black.withOpacity(0.25),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                    ),
+                                    BoxShadow(
+                                      color: black.withOpacity(0.1),
+                                      spreadRadius: 0,
+                                      blurRadius: 64,
+                                      offset: Offset(15, 15),
+                                    ),
+                                  ],
                                 ),
-                                BoxShadow(
-                                  color: black.withOpacity(0.1),
-                                  spreadRadius: 0,
-                                  blurRadius: 64,
-                                  offset: Offset(15, 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Add",
+                                      style: TextStyle(
+                                        color: white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          )),
+                      SizedBox(width: 8),
+                      Container(
+                          alignment: Alignment.center,
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: AnimatedContainer(
+                                alignment: Alignment.center,
+                                duration: Duration(milliseconds: 300),
+                                height: 32,
+                                width: 102,
+                                decoration: BoxDecoration(
+                                  color: white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: black.withOpacity(0.10),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Add",
-                                  style: TextStyle(
-                                    color: white,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            )),
-                      )),
-                  SizedBox(width: 8),
-                  Container(
-                      alignment: Alignment.center,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: AnimatedContainer(
-                            alignment: Alignment.center,
-                            duration: Duration(milliseconds: 300),
-                            height: 32,
-                            width: 102,
-                            decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: black.withOpacity(0.10),
-                                  spreadRadius: 0,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Cancel",
-                                  style: TextStyle(
-                                    color: greyDark,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            )),
-                      )
-                    ),
-                ]),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                        color: greyDark,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          )),
+                    ]),
                 SizedBox(height: 28)
               ],
             ),
@@ -417,151 +438,146 @@ addAssigneeDialog(BuildContext mContext) {
 
 datePickerDialog(BuildContext context, selectDate, category) {
   return showRoundedDatePicker(
-    // customWeekDays: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
-    height: 320,
-    context: context,
-    fontFamily: "Poppins",
-    theme: ThemeData(primarySwatch: Colors.deepPurple),
-    // listDateDisabled: [
-    //   DateTime.now().add(Duration(days: 1)),
-    //   DateTime.now().add(Duration(days: 4)),
-    //   DateTime.now().add(Duration(days: 6)),
-    //   DateTime.now().add(Duration(days: 8)),
-    //   DateTime.now().add(Duration(days: 10)),
-    // ],
-    initialDate: selectDate,
-    // initialDate: DateTime(2022, 12, 17),
-    firstDate: DateTime(1900),
-    lastDate:  (category == "dob") ? DateTime.now() : DateTime(2050),
-    // onTapActionButton:() {
-    //   if()
-    // },
+      // customWeekDays: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
+      height: 320,
+      context: context,
+      fontFamily: "Poppins",
+      theme: ThemeData(primarySwatch: Colors.deepPurple),
+      // listDateDisabled: [
+      //   DateTime.now().add(Duration(days: 1)),
+      //   DateTime.now().add(Duration(days: 4)),
+      //   DateTime.now().add(Duration(days: 6)),
+      //   DateTime.now().add(Duration(days: 8)),
+      //   DateTime.now().add(Duration(days: 10)),
+      // ],
+      initialDate: selectDate,
+      // initialDate: DateTime(2022, 12, 17),
+      firstDate: DateTime(1900),
+      lastDate: (category == "dob") ? DateTime.now() : DateTime(2050),
+      // onTapActionButton:() {
+      //   if()
+      // },
 
-    styleDatePicker: MaterialRoundedDatePickerStyle(
-      //Section 1
-      paddingDateYearHeader: EdgeInsets.all(8),
-      backgroundHeader: purpleDark,
-      textStyleDayButton: TextStyle(
+      styleDatePicker: MaterialRoundedDatePickerStyle(
+        //Section 1
+        paddingDateYearHeader: EdgeInsets.all(8),
+        backgroundHeader: purpleDark,
+        textStyleDayButton: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 16,
+            color: white,
+            fontWeight: FontWeight.w500,
+            height: 1.0),
+        textStyleYearButton: TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 24,
+          color: white,
+          fontWeight: FontWeight.w500,
+        ),
+
+        //Section 2
+        textStyleMonthYearHeader: TextStyle(
           fontFamily: "Poppins",
           fontSize: 16,
           color: white,
-          fontWeight: FontWeight.w500,
-          height: 1.0),
-      textStyleYearButton: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 24,
-        color: white,
-        fontWeight: FontWeight.w500,
-      ),
+          fontWeight: FontWeight.w600,
+        ),
+        backgroundHeaderMonth: Colors.deepPurple[400],
+        paddingMonthHeader: EdgeInsets.only(top: 12, bottom: 12),
+        sizeArrow: 24,
+        colorArrowNext: white,
+        colorArrowPrevious: white,
+        // marginLeftArrowPrevious: 8,
+        // marginTopArrowPrevious: 0,
+        // marginTopArrowNext: 0,
+        // marginRightArrowNext: 8,
 
-      //Section 2
-      textStyleMonthYearHeader: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 16,
-        color: white,
-        fontWeight: FontWeight.w600,
-      ),
-      backgroundHeaderMonth: Colors.deepPurple[400],
-      paddingMonthHeader: EdgeInsets.only(top: 12, bottom: 12),
-      sizeArrow: 24,
-      colorArrowNext: white,
-      colorArrowPrevious: white,
-      // marginLeftArrowPrevious: 8,
-      // marginTopArrowPrevious: 0,
-      // marginTopArrowNext: 0,
-      // marginRightArrowNext: 8,
+        //Section 3
+        paddingDatePicker: EdgeInsets.all(0),
+        backgroundPicker: Colors.deepPurple[300],
+        textStyleDayHeader: TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 16,
+          color: white,
+          fontWeight: FontWeight.w600,
+        ),
+        textStyleDayOnCalendar: TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 16,
+          color: white,
+          fontWeight: FontWeight.w400,
+        ),
+        textStyleDayOnCalendarSelected: TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 16,
+          color: white,
+          fontWeight: FontWeight.w600,
+        ),
 
-      //Section 3
-      paddingDatePicker: EdgeInsets.all(0),
-      backgroundPicker: Colors.deepPurple[300],
-      textStyleDayHeader: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 16,
-        color: white,
-        fontWeight: FontWeight.w600,
-      ),
-      textStyleDayOnCalendar: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 16,
-        color: white,
-        fontWeight: FontWeight.w400,
-      ),
-      textStyleDayOnCalendarSelected: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 16,
-        color: white,
-        fontWeight: FontWeight.w600,
-      ),
+        decorationDateSelected: BoxDecoration(
+          color: purpleMain,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: black.withOpacity(0.10),
+              spreadRadius: 0,
+              blurRadius: 4,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
 
-      decorationDateSelected: BoxDecoration(
-        color: purpleMain, 
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: black.withOpacity(0.10),
-            spreadRadius: 0,
-            blurRadius: 4,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
+        textStyleDayOnCalendarDisabled:
+            TextStyle(fontSize: 20, color: white.withOpacity(0.1)),
 
-      textStyleDayOnCalendarDisabled: TextStyle(
-        fontSize: 20, 
-        color: white.withOpacity(0.1)
-      ),
+        textStyleCurrentDayOnCalendar: TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 20,
+          color: purpleMain,
+          fontWeight: FontWeight.w700,
+        ),
 
-      textStyleCurrentDayOnCalendar: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 20,
-        color: purpleMain,
-        fontWeight: FontWeight.w700,
+        //Section 4
+        paddingActionBar: EdgeInsets.all(8),
+        backgroundActionBar: Colors.deepPurple[300],
+        textStyleButtonAction: TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 16,
+          color: white,
+          fontWeight: FontWeight.w600,
+        ),
+        textStyleButtonPositive: TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 16,
+          color: white,
+          fontWeight: FontWeight.w600,
+        ),
+        textStyleButtonNegative: TextStyle(
+          fontFamily: "Poppins",
+          fontSize: 16,
+          color: white,
+          fontWeight: FontWeight.w600,
+        ),
       ),
-
-      //Section 4
-      paddingActionBar: EdgeInsets.all(8),
-      backgroundActionBar: Colors.deepPurple[300],
-      textStyleButtonAction: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 16,
-        color: white,
-        fontWeight: FontWeight.w600,
-      ),
-      textStyleButtonPositive: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 16,
-        color: white,
-        fontWeight: FontWeight.w600,
-      ),
-      textStyleButtonNegative: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 16,
-        color: white,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
-    
-    styleYearPicker: MaterialRoundedYearPickerStyle(
-      textStyleYear: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 24, 
-        color: Colors.white,
-        fontWeight: FontWeight.w400
-      ),
-      textStyleYearSelected: TextStyle(
-        fontFamily: "Poppins",
-        fontSize: 48, 
-        color: Colors.white, 
-        fontWeight: FontWeight.w600
-      ),
-      heightYearRow: 80,
-      backgroundPicker: Colors.deepPurple[400],
-    )
-  ); 
+      styleYearPicker: MaterialRoundedYearPickerStyle(
+        textStyleYear: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 24,
+            color: Colors.white,
+            fontWeight: FontWeight.w400),
+        textStyleYearSelected: TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 48,
+            color: Colors.white,
+            fontWeight: FontWeight.w600),
+        heightYearRow: 80,
+        backgroundPicker: Colors.deepPurple[400],
+      ));
 }
 
-removeProjectDialog(BuildContext mContext) {
+removeProjectDialog(BuildContext mContext, String projectId, String userId,
+    List assigned, List taskList) {
   return showDialog(
       context: mContext,
       builder: (context) {
@@ -595,13 +611,71 @@ removeProjectDialog(BuildContext mContext) {
                         Container(
                             alignment: Alignment.center,
                             child: GestureDetector(
-                              // onTap: () => signOutUser().then((value) {
-                              //   Navigator.of(context).pushAndRemoveUntil(
-                              //       MaterialPageRoute(
-                              //           builder: (context) =>
-                              //               authenticationWrapper()),
-                              //       (Route<dynamic> route) => false);
-                              // }),
+                              onTap: () {
+                                FirebaseFirestore.instance
+                                    .collection("projects")
+                                    .doc(projectId)
+                                    .snapshots()
+                                    .listen((value) => {
+                                          assigned = value.data()!["assigned"],
+                                          FirebaseFirestore.instance
+                                              .collection("users")
+                                              .get()
+                                              .then((value) =>
+                                                  value.docs.forEach((element) {
+                                                    if (assigned.contains(
+                                                        element.data()['userId']
+                                                            as String)) {
+                                                      FirebaseFirestore.instance
+                                                          .collection("users")
+                                                          .doc(element.id)
+                                                          .update({
+                                                            "projectsList":
+                                                                FieldValue
+                                                                    .arrayRemove([
+                                                              projectId
+                                                            ]),
+                                                            "tasksList":
+                                                                FieldValue
+                                                                    .arrayRemove(
+                                                                        taskList)
+                                                          })
+                                                          .whenComplete(() =>
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'tasks')
+                                                                  .where(
+                                                                      'projectId',
+                                                                      isEqualTo:
+                                                                          projectId)
+                                                                  .get()
+                                                                  .then((value) =>
+                                                                      value.docs
+                                                                          .forEach(
+                                                                              (element) {
+                                                                        FirebaseFirestore
+                                                                            .instance
+                                                                            .collection("tasks")
+                                                                            .doc(element.id)
+                                                                            .delete();
+                                                                      })))
+                                                          .whenComplete(() =>
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      "projects")
+                                                                  .doc(
+                                                                      projectId)
+                                                                  .delete());
+                                                    }
+                                                  }))
+                                        });
+                                Navigator.of(context)
+                                  ..pop()
+                                  ..pop()
+                                  ..pop();
+                              },
                               child: AnimatedContainer(
                                   alignment: Alignment.center,
                                   duration: Duration(milliseconds: 300),
@@ -649,14 +723,11 @@ removeProjectDialog(BuildContext mContext) {
                                   decoration: BoxDecoration(
                                     color: white,
                                     border: Border(
-                                      top: BorderSide(
-                                          width: 3, color: white),
-                                      left: BorderSide(
-                                          width: 3, color: white),
-                                      right: BorderSide(
-                                          width: 3, color: white),
-                                      bottom: BorderSide(
-                                          width: 3, color: white),
+                                      top: BorderSide(width: 3, color: white),
+                                      left: BorderSide(width: 3, color: white),
+                                      right: BorderSide(width: 3, color: white),
+                                      bottom:
+                                          BorderSide(width: 3, color: white),
                                     ),
                                     borderRadius: BorderRadius.circular(8),
                                     boxShadow: [
@@ -692,7 +763,8 @@ removeProjectDialog(BuildContext mContext) {
       });
 }
 
-removeTaskDialog(BuildContext mContext) {
+removeTaskDialog(BuildContext mContext, String taskId, String userId,
+    List assigned, String projectId, String quantityTask) {
   return showDialog(
       context: mContext,
       builder: (context) {
@@ -726,13 +798,67 @@ removeTaskDialog(BuildContext mContext) {
                         Container(
                             alignment: Alignment.center,
                             child: GestureDetector(
-                              // onTap: () => signOutUser().then((value) {
-                              //   Navigator.of(context).pushAndRemoveUntil(
-                              //       MaterialPageRoute(
-                              //           builder: (context) =>
-                              //               authenticationWrapper()),
-                              //       (Route<dynamic> route) => false);
-                              // }),
+                              onTap: () {
+                                FirebaseFirestore.instance
+                                    .collection('projects')
+                                    .doc(projectId)
+                                    .update({
+                                  "tasksListId":
+                                      FieldValue.arrayRemove([taskId]),
+                                  'quantityTask':
+                                      (double.parse(quantityTask + '.0') - 1)
+                                          .toStringAsFixed(0)
+                                          .toString()
+                                }).whenComplete(() => FirebaseFirestore.instance
+                                        .collection("tasks")
+                                        .doc(taskId)
+                                        .snapshots()
+                                        .listen((value) => {
+                                              assigned =
+                                                  value.data()!["assigned"],
+                                              FirebaseFirestore.instance
+                                                  .collection("users")
+                                                  .get()
+                                                  .then((value) => value.docs
+                                                          .forEach((element) {
+                                                        if (assigned.contains(
+                                                            element.data()[
+                                                                    'userId']
+                                                                as String)) {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(element.id)
+                                                              .update({
+                                                            "tasksList":
+                                                                FieldValue
+                                                                    .arrayRemove([
+                                                              taskId
+                                                            ]),
+                                                          });
+                                                        }
+                                                      }))
+                                                  .whenComplete(() =>
+                                                      FirebaseFirestore.instance
+                                                          .collection("tasks")
+                                                          .doc(taskId)
+                                                          .delete())
+                                            }));
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => projectDetailScreen(
+                                //         required,
+                                //         uid: userId,
+                                //         projectId: projectId),
+                                //   ),
+                                // );
+                                Navigator.of(context)
+                                  ..pop()
+                                  ..pop()
+                                  ..pop();
+                              },
                               child: AnimatedContainer(
                                   alignment: Alignment.center,
                                   duration: Duration(milliseconds: 300),
@@ -780,14 +906,11 @@ removeTaskDialog(BuildContext mContext) {
                                   decoration: BoxDecoration(
                                     color: white,
                                     border: Border(
-                                      top: BorderSide(
-                                          width: 3, color: white),
-                                      left: BorderSide(
-                                          width: 3, color: white),
-                                      right: BorderSide(
-                                          width: 3, color: white),
-                                      bottom: BorderSide(
-                                          width: 3, color: white),
+                                      top: BorderSide(width: 3, color: white),
+                                      left: BorderSide(width: 3, color: white),
+                                      right: BorderSide(width: 3, color: white),
+                                      bottom:
+                                          BorderSide(width: 3, color: white),
                                     ),
                                     borderRadius: BorderRadius.circular(8),
                                     boxShadow: [
@@ -825,7 +948,7 @@ removeTaskDialog(BuildContext mContext) {
 
 MaterialStateProperty<Color> getColor(Color color, Color colorPressed) {
   final getColor = (Set<MaterialState> states) {
-    if(states.contains(MaterialState.pressed)) {
+    if (states.contains(MaterialState.pressed)) {
       return colorPressed;
     } else {
       return color;

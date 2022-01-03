@@ -121,13 +121,13 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                                 padding:
                                                     EdgeInsets.only(right: 8),
                                                 child: IconButton(
-                                                  onPressed: () {
-                                                  },
+                                                  onPressed: () {},
                                                   icon: Icon(
                                                       Icons.error_outline,
                                                       size: 24,
                                                       color: notiColorEmail),
-                                                  tooltip: 'Your email must be valid',
+                                                  tooltip:
+                                                      'Your email must be valid',
                                                 ),
                                               )
                                             ])),
@@ -175,8 +175,7 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                       },
                                     ),
                                   ],
-                                )
-                            ),
+                                )),
                             SizedBox(height: 20),
                             Form(
                                 autovalidate: true,
@@ -198,13 +197,13 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                                 padding:
                                                     EdgeInsets.only(right: 8),
                                                 child: IconButton(
-                                                  onPressed: () {
-                                                  },
+                                                  onPressed: () {},
                                                   icon: Icon(
                                                       Icons.error_outline,
                                                       size: 24,
                                                       color: notiColorName),
-                                                  tooltip: 'Your name must have more than 3 characters',
+                                                  tooltip:
+                                                      'Your name must have more than 3 characters',
                                                 ),
                                               )
                                             ])),
@@ -252,8 +251,7 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                       },
                                     ),
                                   ],
-                                )
-                            ),
+                                )),
                             // Form(
                             //   autovalidate: true,
                             //   key: _formNameKey,
@@ -308,7 +306,9 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                     TextFormField(
                                       controller: phoneNumberController,
                                       keyboardType: TextInputType.phone,
-                                      autofillHints: [AutofillHints.telephoneNumber],
+                                      autofillHints: [
+                                        AutofillHints.telephoneNumber
+                                      ],
                                       style: TextStyle(color: greyDark),
                                       decoration: InputDecoration(
                                         suffixIcon: InkWell(
@@ -324,8 +324,10 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                                   icon: Icon(
                                                       Icons.error_outline,
                                                       size: 24,
-                                                      color: notiColorPhoneNumber),
-                                                  tooltip: 'Your phone numbers must be valid',
+                                                      color:
+                                                          notiColorPhoneNumber),
+                                                  tooltip:
+                                                      'Your phone numbers must be valid',
                                                 ),
                                               )
                                             ])),
@@ -353,7 +355,8 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                       ),
                                       //validator
                                       validator: (phoneNumber) {
-                                        if (isPhoneNumberValid(phoneNumber.toString())) {
+                                        if (isPhoneNumberValid(
+                                            phoneNumber.toString())) {
                                           WidgetsBinding.instance!
                                               .addPostFrameCallback((_) {
                                             setState(() {
@@ -373,8 +376,7 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                       },
                                     ),
                                   ],
-                                )
-                            ),
+                                )),
                             // Form(
                             //   autovalidate: true,
                             //   key: _formPhoneNumberKey,
@@ -441,76 +443,72 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                         suffixIcon: InkWell(
                                             // onTap: _togglePasswordView,
                                             child: Container(
-                                              width: 56,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  // isHiddenPassword
-                                                  //     ? Stack(
-                                                  //         alignment: Alignment
-                                                  //             .centerRight,
-                                                  //         children: [
-                                                  //             Container(
-                                                  //                 padding: EdgeInsets
-                                                  //                     .only(
-                                                  //                         right:
-                                                  //                             8),
-                                                  //                 child: SvgPicture.asset(
-                                                  //                     eyeVisibility,
-                                                  //                     color:
-                                                  //                         greyDark,
-                                                  //                     height:
-                                                  //                         24,
-                                                  //                     width:
-                                                  //                         24))
-                                                  //           ])
-                                                  //     : Stack(
-                                                  //         alignment: Alignment
-                                                  //             .centerRight,
-                                                  //         children: [
-                                                  //             Container(
-                                                  //                 padding: EdgeInsets
-                                                  //                     .only(
-                                                  //                         right:
-                                                  //                             8),
-                                                  //                 child: SvgPicture.asset(
-                                                  //                     eyeInvisibility,
-                                                  //                     color:
-                                                  //                         greyDark,
-                                                  //                     height:
-                                                  //                         24,
-                                                  //                     width:
-                                                  //                         24))
-                                                  //           ]),
-                                                  Stack(
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      children: [
-                                                        Container(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  right: 8),
-                                                          child: IconButton(
-                                                            onPressed: () {},
-                                                            icon: Icon(
-                                                                Icons
-                                                                    .error_outline,
-                                                                size: 24,
-                                                                color:
-                                                                    notiColorPassword),
-                                                            tooltip:
-                                                                'Your password must have more than 6 characters',
-                                                          ),
-                                                        )
-                                                      ]
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                        ),
-                                        contentPadding: EdgeInsets.only(
-                                            left: 20, right: 8),
+                                          width: 56,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              // isHiddenPassword
+                                              //     ? Stack(
+                                              //         alignment: Alignment
+                                              //             .centerRight,
+                                              //         children: [
+                                              //             Container(
+                                              //                 padding: EdgeInsets
+                                              //                     .only(
+                                              //                         right:
+                                              //                             8),
+                                              //                 child: SvgPicture.asset(
+                                              //                     eyeVisibility,
+                                              //                     color:
+                                              //                         greyDark,
+                                              //                     height:
+                                              //                         24,
+                                              //                     width:
+                                              //                         24))
+                                              //           ])
+                                              //     : Stack(
+                                              //         alignment: Alignment
+                                              //             .centerRight,
+                                              //         children: [
+                                              //             Container(
+                                              //                 padding: EdgeInsets
+                                              //                     .only(
+                                              //                         right:
+                                              //                             8),
+                                              //                 child: SvgPicture.asset(
+                                              //                     eyeInvisibility,
+                                              //                     color:
+                                              //                         greyDark,
+                                              //                     height:
+                                              //                         24,
+                                              //                     width:
+                                              //                         24))
+                                              //           ]),
+                                              Stack(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  children: [
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          right: 8),
+                                                      child: IconButton(
+                                                        onPressed: () {},
+                                                        icon: Icon(
+                                                            Icons.error_outline,
+                                                            size: 24,
+                                                            color:
+                                                                notiColorPassword),
+                                                        tooltip:
+                                                            'Your password must have more than 6 characters',
+                                                      ),
+                                                    )
+                                                  ])
+                                            ],
+                                          ),
+                                        )),
+                                        contentPadding:
+                                            EdgeInsets.only(left: 20, right: 8),
                                         hintStyle: TextStyle(
                                           fontFamily: 'Poppins',
                                           fontSize: content14,
@@ -557,40 +555,38 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                 ),
                                 new Spacer(),
                                 InkWell(
-                                  onTap: _togglePasswordView,
-                                  child: Container(
-                                  width: 48,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    color: isHiddenPassword ? purpleLight : purpleDark,
-                                    borderRadius: BorderRadius.circular(10)),
-                                  child: isHiddenPassword
-                                    ? Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Container(
-                                          child: SvgPicture.asset(
-                                            eyeInvisibility,
-                                            color: purpleDark,
-                                            height: 24,
-                                            width: 24))
-                                      ]
-                                    )
-                                    : Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Container(
-                                          child: SvgPicture.asset(
-                                            eyeVisibility,
-                                            color: white,
-                                            height: 24,
-                                            width: 24
-                                          )
-                                        )
-                                      ]
-                                    ),
-                                )
-                                )
+                                    onTap: _togglePasswordView,
+                                    child: Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                          color: isHiddenPassword
+                                              ? purpleLight
+                                              : purpleDark,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: isHiddenPassword
+                                          ? Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                  Container(
+                                                      child: SvgPicture.asset(
+                                                          eyeInvisibility,
+                                                          color: purpleDark,
+                                                          height: 24,
+                                                          width: 24))
+                                                ])
+                                          : Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                  Container(
+                                                      child: SvgPicture.asset(
+                                                          eyeVisibility,
+                                                          color: white,
+                                                          height: 24,
+                                                          width: 24))
+                                                ]),
+                                    ))
                               ],
                             ),
                           ],
@@ -656,19 +652,18 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                               _formPhoneNumberKey.currentState!.save();
                               _formPasswordKey.currentState!.save();
                               registerUser(
-                                emailController.text,
-                                passwordController.text,
-                                nameController.text,
-                                phoneNumberController.text,
-                                context
-                              );
+                                  emailController.text,
+                                  passwordController.text,
+                                  nameController.text,
+                                  phoneNumberController.text,
+                                  context);
                             } else {
-                              showErrorSnackBar(
-                                  context, 'Please accept terms & conditions!');
+                              showSnackBar(context,
+                                  'Please accept terms & conditions!', 'error');
                             }
                           } else {
-                            showErrorSnackBar(
-                                context, 'Please confirm validation!');
+                            showSnackBar(
+                                context, 'Please confirm validation!', 'error');
                           }
                         },
                         child: AnimatedContainer(
@@ -703,8 +698,7 @@ class _signUpPageState extends State<signupScreen> with InputValidationMixin {
                                   color: white,
                                   fontWeight: FontWeight.w600,
                                   fontSize: textButton),
-                            )
-                        ),
+                            )),
                       ),
                     ),
                     SizedBox(height: 32),

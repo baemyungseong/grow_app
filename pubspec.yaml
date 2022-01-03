@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  image_picker: ^0.8.4+4
   shared_preferences: ^2.0.8
   flutter_svg: ^0.23.0+1
   blur: ^3.0.0
@@ -36,11 +37,16 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
+  jiffy: ^5.0.0
+
   
   # firebase
   firebase_core: ^1.8.0
   cloud_firestore: ^2.5.4
   firebase_auth: ^3.1.4
+  firebase_messaging: ^11.2.4
+  overlay_support: ^1.2.1
+
 
   # sign in
   google_sign_in: ^5.2.1

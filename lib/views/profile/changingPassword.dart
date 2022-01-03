@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 //import constants
 import 'package:grow_app/constants/colors.dart';
@@ -8,6 +9,9 @@ import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
 
+//import controllers
+import 'package:grow_app/controllers/authController.dart';
+
 //import views
 import 'package:grow_app/views/profile/loginDetail.dart';
 import 'package:grow_app/views/profile/profileCenter.dart';
@@ -15,6 +19,7 @@ import 'package:grow_app/views/profile/profileCenter.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_app/views/widget/snackBarWidget.dart';
 
 //import others
 import 'package:meta/meta.dart';
@@ -31,7 +36,8 @@ class changingPasswordScreen extends StatefulWidget {
   changingPasswordScreenState createState() => changingPasswordScreenState(uid);
 }
 
-class changingPasswordScreenState extends State<changingPasswordScreen> {
+class changingPasswordScreenState extends State<changingPasswordScreen>
+    with InputValidationMixin {
   // final String? uid = controllers.currentUserId;
 
   String uid = "";
@@ -53,6 +59,46 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
   TextEditingController confirmController = TextEditingController();
   GlobalKey<FormState> confirmFormKey = GlobalKey<FormState>();
 
+  // changePassword() async {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   String currentPassword = currentController.text;
+  //   String newPassword = newController.text;
+  //   try {
+  //     AuthCredential cred = EmailAuthProvider.credential(email: (user!.email).toString(), password: currentPassword);
+  //     user.reauthenticateWithCredential(cred).catchError((error) {
+  //       print("Password can't be changed" + error.toString());
+  //     }).then((value) {
+  //       user.updatePassword(newPassword).then((_) {
+  //         showSnackBar(context, 'Successfully changed password!', 'success');
+  //         Navigator.pop(context);
+  //       }).catchError((error) {
+  //       print("Password can't be changed" + error.toString());
+  //       });
+  //     }).catchError((error) {
+  //       print("Password can't be changed" + error.toString());
+  //     });
+  //   } on FirebaseAuthException {
+  //     showSnackBar(context, 'Your current password! is wrong', 'error');
+  //   }
+  //   // user.reauthenticateWithCredential(cred).then((value) {
+  //   //   user.updatePassword(newController.text).then((_) {
+  //   //     showSnackBar(context, 'Successfully changed password!', 'success')
+  //   //     Navigator.pop(context);
+  //   //   }) on FirebaseAuthException {
+  //   //     showSnackBar(context, 'Your current password! is wrong', 'error');
+  //   //   });
+  //   // }).catchError((error) {
+  //   //   showSnackBar(context, 'Your current password! is wrong', 'error');
+  //   // });
+  // }
+
+  // .catchError((error) {
+  //       showSnackBar(context, 'Your current password! is wrong', 'error');
+  //     });
+  // .catchError((error) {
+  //     showSnackBar(context, 'Your current password! is wrong', 'error');
+  //   });
+
   void initState() {
     super.initState();
     User? user = FirebaseAuth.instance.currentUser;
@@ -64,6 +110,7 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Container(
@@ -141,7 +188,7 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Form(
-                                // key: formKey,
+                                key: currentFormKey,
                                 child: Container(
                                   width: 319,
                                   height: 48,
@@ -158,8 +205,17 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                                           fontWeight: FontWeight.w400),
                                       controller: currentController,
                                       obscureText: isHiddenCurrentPassword,
-                                      keyboardType: TextInputType.visiblePassword,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
                                       autofillHints: [AutofillHints.password],
+                                      validator: (Currentpassword) {
+                                        if (isCurrentPasswordValid(
+                                            Currentpassword.toString())) {
+                                          return null;
+                                        } else {
+                                          return '';
+                                        }
+                                      },
                                       // validator: (value) => value.isEmpty
                                       //     ? 'Password is required'
                                       //     : null,
@@ -174,32 +230,34 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                                       //   password = val;
                                       // },
                                       decoration: InputDecoration(
-                                        suffixIcon: InkWell(
-                                          onTap: _toggleCurrentPasswordView,
-                                          child: isHiddenCurrentPassword
-                                            ? Stack(
-                                              alignment: Alignment.centerRight,
-                                              children: [
-                                                SvgPicture.asset(
-                                                  eyeVisibility,
-                                                  color: greyDark,
-                                                  height: 24,
-                                                  width: 24
-                                                )
-                                              ]
-                                            )
-                                            : Stack(
-                                              alignment: Alignment.centerRight,
-                                              children: [
-                                                SvgPicture.asset(
-                                                  eyeInvisibility,
-                                                  color: greyDark,
-                                                  height: 24,
-                                                  width: 24
-                                                )
-                                              ]
-                                            )
+                                        errorStyle: TextStyle(
+                                          color: Colors.transparent,
+                                          fontSize: 0,
+                                          height: 0,
                                         ),
+                                        suffixIcon: InkWell(
+                                            onTap: _toggleCurrentPasswordView,
+                                            child: isHiddenCurrentPassword
+                                                ? Stack(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    children: [
+                                                        SvgPicture.asset(
+                                                            eyeVisibility,
+                                                            color: greyDark,
+                                                            height: 24,
+                                                            width: 24)
+                                                      ])
+                                                : Stack(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    children: [
+                                                        SvgPicture.asset(
+                                                            eyeInvisibility,
+                                                            color: greyDark,
+                                                            height: 24,
+                                                            width: 24)
+                                                      ])),
                                         border: InputBorder.none,
                                         hintText: "Enter your current password",
                                         hintStyle: TextStyle(
@@ -247,8 +305,17 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                                           fontWeight: FontWeight.w400),
                                       controller: newController,
                                       obscureText: isHiddenNewPassword,
-                                      keyboardType: TextInputType.visiblePassword,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
                                       autofillHints: [AutofillHints.password],
+                                      validator: (Newpassword) {
+                                        if (isNewPasswordValid(
+                                            Newpassword.toString())) {
+                                          return null;
+                                        } else {
+                                          return '';
+                                        }
+                                      },
                                       // validator: (value) => value.isEmpty
                                       //     ? 'Password is required'
                                       //     : null,
@@ -263,32 +330,34 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                                       //   password = val;
                                       // },
                                       decoration: InputDecoration(
-                                        suffixIcon: InkWell(
-                                          onTap: _toggleNewPasswordView,
-                                          child: isHiddenNewPassword
-                                            ? Stack(
-                                              alignment: Alignment.centerRight,
-                                              children: [
-                                                SvgPicture.asset(
-                                                  eyeVisibility,
-                                                  color: greyDark,
-                                                  height: 24,
-                                                  width: 24
-                                                )
-                                              ]
-                                            )
-                                            : Stack(
-                                              alignment: Alignment.centerRight,
-                                              children: [
-                                                SvgPicture.asset(
-                                                  eyeInvisibility,
-                                                  color: greyDark,
-                                                  height: 24,
-                                                  width: 24
-                                                )
-                                              ]
-                                            )
+                                        errorStyle: TextStyle(
+                                          color: Colors.transparent,
+                                          fontSize: 0,
+                                          height: 0,
                                         ),
+                                        suffixIcon: InkWell(
+                                            onTap: _toggleNewPasswordView,
+                                            child: isHiddenNewPassword
+                                                ? Stack(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    children: [
+                                                        SvgPicture.asset(
+                                                            eyeVisibility,
+                                                            color: greyDark,
+                                                            height: 24,
+                                                            width: 24)
+                                                      ])
+                                                : Stack(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    children: [
+                                                        SvgPicture.asset(
+                                                            eyeInvisibility,
+                                                            color: greyDark,
+                                                            height: 24,
+                                                            width: 24)
+                                                      ])),
                                         border: InputBorder.none,
                                         hintText: "Enter your new password",
                                         hintStyle: TextStyle(
@@ -336,8 +405,17 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                                           fontWeight: FontWeight.w400),
                                       controller: confirmController,
                                       obscureText: isHiddenConfirmPassword,
-                                      keyboardType: TextInputType.visiblePassword,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
                                       autofillHints: [AutofillHints.password],
+                                      validator: (Currentpassword) {
+                                        if (isConfirmPasswordValid(
+                                            Currentpassword.toString())) {
+                                          return null;
+                                        } else {
+                                          return '';
+                                        }
+                                      },
                                       // validator: (value) => value.isEmpty
                                       //     ? 'Password is required'
                                       //     : null,
@@ -352,32 +430,34 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                                       //   password = val;
                                       // },
                                       decoration: InputDecoration(
-                                        suffixIcon: InkWell(
-                                          onTap: _toggleConfirmPasswordView,
-                                          child: isHiddenConfirmPassword
-                                            ? Stack(
-                                              alignment: Alignment.centerRight,
-                                              children: [
-                                                SvgPicture.asset(
-                                                  eyeVisibility,
-                                                  color: greyDark,
-                                                  height: 24,
-                                                  width: 24
-                                                )
-                                              ]
-                                            )
-                                            : Stack(
-                                              alignment: Alignment.centerRight,
-                                              children: [
-                                                SvgPicture.asset(
-                                                  eyeInvisibility,
-                                                  color: greyDark,
-                                                  height: 24,
-                                                  width: 24
-                                                )
-                                              ]
-                                            )
+                                        errorStyle: TextStyle(
+                                          color: Colors.transparent,
+                                          fontSize: 0,
+                                          height: 0,
                                         ),
+                                        suffixIcon: InkWell(
+                                            onTap: _toggleConfirmPasswordView,
+                                            child: isHiddenConfirmPassword
+                                                ? Stack(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    children: [
+                                                        SvgPicture.asset(
+                                                            eyeVisibility,
+                                                            color: greyDark,
+                                                            height: 24,
+                                                            width: 24)
+                                                      ])
+                                                : Stack(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    children: [
+                                                        SvgPicture.asset(
+                                                            eyeInvisibility,
+                                                            color: greyDark,
+                                                            height: 24,
+                                                            width: 24)
+                                                      ])),
                                         border: InputBorder.none,
                                         hintText: "Confirm your new password",
                                         hintStyle: TextStyle(
@@ -392,52 +472,68 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
                           ]),
                       SizedBox(height: 64),
                       Container(
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          // onTap: () => logoutDialog(context),
-                          child: AnimatedContainer(
-                              alignment: Alignment.center,
-                              duration: Duration(milliseconds: 300),
-                              height: 48,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                color: purpleMain,
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: black.withOpacity(0.25),
-                                    spreadRadius: 0,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 4),
-                                  ),
-                                  BoxShadow(
-                                    color: black.withOpacity(0.1),
-                                    spreadRadius: 0,
-                                    blurRadius: 64,
-                                    offset: Offset(15, 15),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Confirm",
-                                    style: TextStyle(
-                                      color: white,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18,
+                          alignment: Alignment.center,
+                          child: GestureDetector(
+                            onTap: () {
+                              if (currentFormKey.currentState!.validate() &&
+                                  newFormKey.currentState!.validate() &&
+                                  confirmFormKey.currentState!.validate()) {
+                                if (newController.text ==
+                                    confirmController.text) {
+                                  changePassword(currentController.text,
+                                      newController.text, context);
+                                } else {
+                                  showSnackBar(
+                                      context,
+                                      "Confirm password does not match!",
+                                      'error');
+                                }
+                              } else {
+                                showSnackBar(
+                                    context,
+                                    "Information can not be blank or incorrect!",
+                                    'error');
+                              }
+                            },
+                            child: AnimatedContainer(
+                                alignment: Alignment.center,
+                                duration: Duration(milliseconds: 300),
+                                height: 48,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  color: purpleMain,
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: black.withOpacity(0.25),
+                                      spreadRadius: 0,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 4),
                                     ),
-                                  ),
-                                ],
-                              )
-                          ),
-                        )
-                      )
-                    ]
-                ),
+                                    BoxShadow(
+                                      color: black.withOpacity(0.1),
+                                      spreadRadius: 0,
+                                      blurRadius: 64,
+                                      offset: Offset(15, 15),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Confirm",
+                                      style: TextStyle(
+                                        color: white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ))
+                    ]),
               )
             ]),
           )
@@ -464,5 +560,17 @@ class changingPasswordScreenState extends State<changingPasswordScreen> {
       isHiddenConfirmPassword = !isHiddenConfirmPassword;
     });
   }
+}
 
+mixin InputValidationMixin {
+  // bool isEmailValid(String email) {
+  //   RegExp regex = new RegExp(
+  //       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  //   return regex.hasMatch(email);
+  // }
+  bool isCurrentPasswordValid(String Currentpassword) =>
+      Currentpassword.length >= 6;
+  bool isNewPasswordValid(String Newpassword) => Newpassword.length >= 6;
+  bool isConfirmPasswordValid(String Confirmpassword) =>
+      Confirmpassword.length >= 6;
 }

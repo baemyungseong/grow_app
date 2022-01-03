@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -7,6 +8,12 @@ import 'package:grow_app/constants/fonts.dart';
 import 'package:grow_app/constants/images.dart';
 import 'package:grow_app/constants/icons.dart';
 import 'package:grow_app/constants/others.dart';
+import 'package:grow_app/models/notificationModel.dart';
+import 'package:grow_app/models/projectModel.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:grow_app/models/userModel.dart';
+import 'package:grow_app/views/project/userSearching.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 //import widgets
 import 'package:grow_app/views/widget/dialogWidget.dart';
@@ -17,6 +24,8 @@ import 'package:grow_app/views/project/projectManagement.dart';
 //import firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_app/views/widget/snackBarWidget.dart';
+import 'package:intl/intl.dart';
 
 //import others
 import 'package:meta/meta.dart';
@@ -33,9 +42,50 @@ class projectCreatingScreen extends StatefulWidget {
 }
 
 class _projectCreatingScreenState extends State<projectCreatingScreen> {
-  // final String? uid = controllers.currentUserId;
+  //project
+  String newProjectId = "";
+  String projectId = "";
+  String name = '';
+  String description = "";
+  String deadline = '';
+  String background = '';
+  String email = '';
 
+  late Project project = Project(
+    background: '',
+    deadline: '',
+    description: '',
+    owner: '',
+    progress: '',
+    projectId: '',
+    quantityTask: '',
+    name: '',
+    status: '',
+    assigned: [],
+  );
+
+  //user
   String uid = "";
+  List assigned = [];
+  List<UserModel> userList = [];
+  List<UserModel> userListChoice = [];
+
+  late UserModel users = UserModel(
+      avatar: '',
+      dob: '',
+      email: '',
+      name: '',
+      messagesList: [],
+      job: '',
+      phonenumber: '',
+      projectsList: [],
+      tasksList: [],
+      userId: '');
+  bool? haveDeadline = true;
+
+  String newDeadline = "";
+
+  late DateTime selectDate = DateTime.now();
 
   int selected = 0;
 
@@ -50,41 +100,175 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
 
   var taskcollections = FirebaseFirestore.instance.collection('users');
 
+  late final FirebaseMessaging _messaging;
+  late final PushNotification _notificationInfo;
+
+  void registerNotification() async {
+    // 1. Initialize the Firebase app
+    await Firebase.initializeApp();
+
+    // 2. Instantiate Firebase Messaging
+    _messaging = FirebaseMessaging.instance;
+
+    // 3. On iOS, this helps to take the user permissions
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+      // TODO: handle the received notifications
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // Parse the message received
+        PushNotification notification = PushNotification(
+          title: message.notification?.title,
+          body: message.notification?.body,
+        );
+
+        setState(() {
+          _notificationInfo = notification;
+        });
+        if (_notificationInfo != null) {
+          // For displaying the notification as an overlay
+          showSimpleNotification(
+            Text(_notificationInfo.title!),
+            subtitle: Text(_notificationInfo.body!),
+            background: Colors.cyan.shade700,
+            duration: Duration(seconds: 2),
+          );
+        }
+      });
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+  Future createProject(String newProjectId) async {
+    FirebaseFirestore.instance
+        .collection("projects")
+        .add({
+          'name': name,
+          'description': description,
+          'deadline': newDeadline,
+          'background': background,
+          'owner': uid,
+          'progress': "0",
+          'quantityTask': "0",
+          'status': "pending",
+          'tasksListId': FieldValue.arrayUnion([]),
+          'assigned': FieldValue.arrayUnion(assigned)
+        })
+        .then(
+          (value) => FirebaseFirestore.instance
+              .collection("projects")
+              .doc(value.id)
+              .update({
+            'projectId': newProjectId = value.id,
+          }),
+        )
+        .whenComplete(() => FirebaseFirestore.instance
+            .collection("users")
+            .get()
+            .then((value) => value.docs.forEach((element) {
+                  if (assigned.contains(element.data()['userId'] as String)) {
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(element.id)
+                        .update({
+                      'projectsList': FieldValue.arrayUnion([newProjectId]),
+                    });
+                  }
+                })));
+  }
+
+  Future getUserAssigned() async {
+    FirebaseFirestore.instance.collection("users").get().then((value) {
+      setState(() {
+        value.docs.forEach((element) {
+          if (email.contains(element.data()['email'] as String)) {
+            var check =
+                userListChoice.where((element) => element.email == email);
+            assigned.add(element.data()['userId'] as String);
+            if (check.isEmpty) {
+              userListChoice.add(UserModel.fromDocument(element.data()));
+              showSnackBar(
+                  context, "The asignee was add in your project", 'success');
+            } else {
+              showSnackBar(
+                  context, "The asignee was assigned in your project", 'error');
+            }
+          }
+        });
+        print("userListChoice");
+        print(userListChoice);
+      });
+      setState(() {});
+    });
+  }
+
+  Future getUserDetail() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .where("userId", isEqualTo: uid)
+        .snapshots()
+        .listen((value) {
+      setState(() {
+        users = UserModel.fromDocument(value.docs.first.data());
+        userListChoice.add(users);
+        assigned.add(users.userId);
+        print(assigned);
+      });
+    });
+  }
+
   Widget customRadio(Color color, int index) {
     return Container(
-      alignment: Alignment.center,
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            selected = index;
-          });
-        },
-        child: AnimatedContainer(
-          alignment: Alignment.center,
-          duration: Duration(milliseconds: 300),
-          height: 48,
-          width: (index == 1 || index == 4) ? 180 : 123,
-          decoration: BoxDecoration(
-            color: color,
-            border: (selected == index) ? Border(
-              top: BorderSide(width: 1, color: black),
-              left: BorderSide(width: 1, color: black),
-              right: BorderSide(width: 1, color: black),
-              bottom: BorderSide(width: 1, color: black),
-            ) : Border(),
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: black.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 8,
-                offset: Offset(0, 4),
-              ),
-            ],
+        alignment: Alignment.center,
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              selected = index;
+              if (selected == 1) {
+                background = 'https://i.imgur.com/h59jgEn.png';
+              } else if (selected == 2) {
+                background = 'https://i.imgur.com/kNTZQty.png';
+              } else if (selected == 3) {
+                background = 'https://i.imgur.com/UzNFX7D.png';
+              } else if (selected == 4) {
+                background = 'https://i.imgur.com/IpLTKmv.png';
+              }
+            });
+          },
+          child: AnimatedContainer(
+            alignment: Alignment.center,
+            duration: Duration(milliseconds: 300),
+            height: 48,
+            width: (index == 1 || index == 4) ? 180 : 123,
+            decoration: BoxDecoration(
+              color: color,
+              border: (selected == index)
+                  ? Border(
+                      top: BorderSide(width: 1, color: black),
+                      left: BorderSide(width: 1, color: black),
+                      right: BorderSide(width: 1, color: black),
+                      bottom: BorderSide(width: 1, color: black),
+                    )
+                  : Border(),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: black.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 8,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
           ),
-        ),
-      )
-    );
+        ));
   }
 
   void initState() {
@@ -93,6 +277,9 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
     final userid = user?.uid.toString();
     uid = userid!;
     print('The current uid is $uid');
+    getUserDetail();
+
+    // getAssigned();
   }
 
   @override
@@ -123,13 +310,8 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
                   padding: EdgeInsets.only(bottom: 6, right: 28),
                   child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                projectManagementScreen(required, uid: uid),
-                          ),
-                        );
+                        createProject(projectId);
+                        Navigator.pop(context);
                       },
                       child: Text(
                         "Create",
@@ -196,19 +378,9 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: nameController,
                                           keyboardType: TextInputType.text,
-                                          // validator: (value) => value.isEmpty
-                                          //     ? 'Password is required'
-                                          //     : null,
-                                          // validator: MultiValidator([
-                                          //   RequiredValidator(
-                                          //       errorText: "Password Is Required"),
-                                          //   MinLengthValidator(6,
-                                          //       errorText:
-                                          //           "Minimum 6 Characters Required"),
-                                          // ]),
-                                          // onChanged: (val) {
-                                          //   password = val;
-                                          // },
+                                          onChanged: (val) {
+                                            name = val;
+                                          },
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             hintText: "Enter your project name",
@@ -263,19 +435,9 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
                                               fontWeight: FontWeight.w400),
                                           controller: descriptionController,
                                           keyboardType: TextInputType.text,
-                                          // validator: (value) => value.isEmpty
-                                          //     ? 'Password is required'
-                                          //     : null,
-                                          // validator: MultiValidator([
-                                          //   RequiredValidator(
-                                          //       errorText: "Password Is Required"),
-                                          //   MinLengthValidator(6,
-                                          //       errorText:
-                                          //           "Minimum 6 Characters Required"),
-                                          // ]),
-                                          // onChanged: (val) {
-                                          //   password = val;
-                                          // },
+                                          onChanged: (val) {
+                                            description = val;
+                                          },
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             hintText:
@@ -328,163 +490,368 @@ class _projectCreatingScreenState extends State<projectCreatingScreen> {
                                     )
                                   ],
                                 )
-                              ]
-                          ),
+                              ]),
                         ],
                       ),
                       SizedBox(height: 24),
                       Column(
                         children: [
                           Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                child: Text(
-                                  "Assignee",
-                                  style: TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 20.0,
-                                    color: black,
-                                    fontWeight: FontWeight.w600
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    "Deadline",
+                                    style: TextStyle(
+                                        fontFamily: "Poppins",
+                                        fontSize: 20.0,
+                                        color: black,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 12),
-                              Container(
-                                width: 319,
-                                padding: EdgeInsets.only(top: 24, left: 20, right: 20, bottom: 24),
-                                decoration: BoxDecoration(
-                                  color: purpleLight,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ListView.builder(
-                                      physics: const AlwaysScrollableScrollPhysics(),
-                                      padding: EdgeInsets.zero,
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount: 4,
-                                      itemBuilder: (context, index) {
-                                        return Container(
-                                          width: 280,
-                                          height: 48,
-                                          decoration: BoxDecoration(
-                                            color: white,
-                                            borderRadius: (index == 0) ? BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)) : BorderRadius.all(Radius.circular(0)),
-                                            border: (index == 2) ? Border() 
-                                            : Border(
-                                              top: BorderSide(width: 0.1, color: greyDark),
-                                              left: BorderSide(width: 0.1, color: greyDark),
-                                              right: BorderSide(width: 0.1, color: greyDark),
-                                              bottom: BorderSide(width: 0.1, color: greyDark),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              SizedBox(width: 16),
-                                              Container(
-                                                width: 30,
-                                                height: 30,
-                                                decoration: new BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(Radius.circular(8)),
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          // '${projects[index]!["background"]}'),
-                                                          'https://scontent.fvca1-2.fna.fbcdn.net/v/t1.6435-9/190035792_1051142615293798_577040670142118185_n.jpg?_nc_cat=100&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=1lB6NFX2w18AX-F1XX7&_nc_oc=AQkI-rgkX-fD7YGF3SqO8DG3EKUML4UyBDeaaKuTMD4VGaXQyiEjcX0Q3kUjtBKiIaM&tn=sOlpIfqnwCajxrnw&_nc_ht=scontent.fvca1-2.fna&oh=00_AT8lDJAVXKJ2EMEaFm9SlBJJkXuSfX2SqF9c56j1QOZXuA&oe=61DC63D7'),
-                                                      fit: BoxFit.cover),
-                                                  shape: BoxShape.rectangle,
-                                                ),
-                                              ),
-                                              SizedBox(width: 16),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Container(
-                                                    alignment: Alignment.topLeft,
-                                                    child: Text(
-                                                      'Pan Cái Chaor',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontFamily: 'Poppins',
-                                                        color: black,
-                                                        fontWeight: FontWeight.w600,
-                                                        height: 1.2
-                                                      ),
-                                                    )
-                                                  ),
-                                                  Container(
-                                                    // alignment: Alignment.topLeft,
-                                                    child: Text('Project Director',
-                                                      style: TextStyle(
-                                                        fontSize: 8,
-                                                        fontFamily: 'Poppins',
-                                                        color: greyDark,
-                                                        fontWeight: FontWeight.w400,
-                                                      )
-                                                    )
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
+                                SizedBox(height: 12),
+                                Row(children: [
+                                  Container(
+                                      alignment: Alignment.centerLeft,
                                       child: GestureDetector(
-                                        onTap: () => addAssigneeDialog(context),
+                                        onTap: () async {
+                                          String category = "task";
+                                          DateTime? dt = await datePickerDialog(
+                                              context, selectDate, category);
+                                          if (dt != null) {
+                                            selectDate = dt;
+                                            setState(() {
+                                              haveDeadline = true;
+                                              haveDeadline != haveDeadline;
+                                              selectDate != selectDate;
+                                              newDeadline =
+                                                  "${DateFormat('yMMMMd').format(selectDate)}";
+                                            });
+                                          }
+                                          print(haveDeadline);
+                                          print(selectDate);
+                                        },
                                         child: AnimatedContainer(
-                                          alignment: Alignment.centerLeft,
-                                          duration: Duration(milliseconds: 300),
-                                          height: 48,
-                                          width: 280,
-                                          decoration: BoxDecoration(
-                                            color: purpleMain,
-                                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              SizedBox(width: 21),
-                                              Container(
-                                                padding: EdgeInsets.zero,
-                                                alignment: Alignment.center,
-                                                child: Icon(Iconsax.add,
-                                                  size: 20, color: white
-                                                )
-                                              ),
-                                              SizedBox(width: 21),
-                                              Text(
-                                                "New Assignee",
-                                                style: TextStyle(
-                                                  color: white,
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 12,
+                                            alignment: Alignment.center,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            height: 48,
+                                            width: 180,
+                                            decoration: BoxDecoration(
+                                              color: (haveDeadline == true)
+                                                  ? purpleLight
+                                                  : white,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                SizedBox(width: 12),
+                                                Container(
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                        Iconsax.calendar_1,
+                                                        size: 16,
+                                                        color: greyDark)),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  // "12 November, 2021",
+                                                  "${DateFormat('yMMMMd').format(selectDate)}",
+                                                  // "${selectDate.day} ${selectDate.month}, ${selectDate.year}",
+                                                  style: TextStyle(
+                                                    color: greyDark,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          )
-                                        ),
-                                      )
-                                    )
-                                  ]
-                                )
-                              )
-                            ]
-                          ),
+                                                SizedBox(width: 4)
+                                              ],
+                                            )),
+                                      )),
+                                  Spacer(),
+                                  Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            haveDeadline = false;
+                                            haveDeadline != haveDeadline;
+                                            newDeadline = "";
+                                          });
+                                          print(haveDeadline);
+                                          print(selectDate);
+                                        },
+                                        child: AnimatedContainer(
+                                            alignment: Alignment.center,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            height: 48,
+                                            width: 130,
+                                            decoration: BoxDecoration(
+                                              color: (haveDeadline == true)
+                                                  ? white
+                                                  : purpleLight,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SizedBox(width: 8),
+                                                Container(
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                        (haveDeadline == true)
+                                                            ? Iconsax.cd
+                                                            : Iconsax
+                                                                .tick_circle,
+                                                        size: 16,
+                                                        color: greyDark)),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  "No Deadline",
+                                                  style: TextStyle(
+                                                    color: greyDark,
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4),
+                                              ],
+                                            )),
+                                      )),
+                                ])
+                              ]),
                         ],
                       ),
                       SizedBox(height: 24),
-                    ]
-                ),
+                      Column(
+                        children: [
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    "Assignee",
+                                    style: TextStyle(
+                                        fontFamily: "Poppins",
+                                        fontSize: 20.0,
+                                        color: black,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                SizedBox(height: 12),
+                                Container(
+                                    width: 319,
+                                    padding: EdgeInsets.only(
+                                        top: 24,
+                                        left: 20,
+                                        right: 20,
+                                        bottom: 24),
+                                    decoration: BoxDecoration(
+                                      color: purpleLight,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          ListView.builder(
+                                            physics:
+                                                const AlwaysScrollableScrollPhysics(),
+                                            padding: EdgeInsets.zero,
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            itemCount: userListChoice.length,
+                                            itemBuilder: (context, index) {
+                                              return Container(
+                                                width: 280,
+                                                height: 48,
+                                                decoration: BoxDecoration(
+                                                  color: white,
+                                                  borderRadius: (index == 0)
+                                                      ? BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  8),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  8))
+                                                      : BorderRadius.all(
+                                                          Radius.circular(0)),
+                                                  border: (index <=
+                                                          userListChoice
+                                                                  .length -
+                                                              1)
+                                                      ? Border()
+                                                      : Border(
+                                                          top: BorderSide(
+                                                              width: 0.1,
+                                                              color: greyDark),
+                                                          left: BorderSide(
+                                                              width: 0.1,
+                                                              color: greyDark),
+                                                          right: BorderSide(
+                                                              width: 0.1,
+                                                              color: greyDark),
+                                                          bottom: BorderSide(
+                                                              width: 0.1,
+                                                              color: greyDark),
+                                                        ),
+                                                ),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    SizedBox(width: 16),
+                                                    Container(
+                                                      width: 30,
+                                                      height: 30,
+                                                      decoration:
+                                                          new BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8)),
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                // '${projects[index]!["background"]}'),
+                                                                userListChoice[
+                                                                        index]
+                                                                    .avatar),
+                                                            fit: BoxFit.cover),
+                                                        shape:
+                                                            BoxShape.rectangle,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 16),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        Container(
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                            child: Text(
+                                                              userListChoice[
+                                                                      index]
+                                                                  .name,
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color: black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  height: 1.2),
+                                                            )),
+                                                        Container(
+                                                            // alignment: Alignment.topLeft,
+                                                            child: Text(
+                                                                userListChoice[
+                                                                        index]
+                                                                    .job,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 8,
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color:
+                                                                      greyDark,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                ))),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          Container(
+                                              alignment: Alignment.center,
+                                              child: GestureDetector(
+                                                onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        userSearchingScreen(
+                                                            required,
+                                                            email: email),
+                                                  ),
+                                                ).then((value) {
+                                                  email = value;
+                                                  getUserAssigned();
+                                                }),
+                                                child: AnimatedContainer(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    duration: Duration(
+                                                        milliseconds: 300),
+                                                    height: 48,
+                                                    width: 280,
+                                                    decoration: BoxDecoration(
+                                                      color: purpleMain,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              bottomLeft: Radius
+                                                                  .circular(8),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          8)),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        SizedBox(width: 21),
+                                                        Container(
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Icon(
+                                                                Iconsax.add,
+                                                                size: 20,
+                                                                color: white)),
+                                                        SizedBox(width: 21),
+                                                        Text(
+                                                          "New Assignee",
+                                                          style: TextStyle(
+                                                            color: white,
+                                                            fontFamily:
+                                                                'Poppins',
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )),
+                                              ))
+                                        ]))
+                              ]),
+                        ],
+                      ),
+                      SizedBox(height: 24),
+                    ]),
               ),
             ]),
           ),
